@@ -1,304 +1,133 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <title>Data vis</title>
+
+    <!-- Bootstrap JavaScripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://github.com/bobhaslett/d3-v4-sliders/blob/master/sliders.css">
 
-
-    <script src="//d3js.org/d3.v4.min.js"></script>
+    <!-- d3 javascripts -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-    <title>Hello, world!</title>
 
 </head>
 
-<style>
-    .node {
-        stroke: #000;
-        stroke-width: 1.5px;
-    }
-    .link {
-        stroke: #999;
-        stroke-width: 1.5px;
-    }
-</style>
 <body>
-<canvas width="960" height="960"></canvas>
+<nav class="navbar navbar-dark bg-primary">
+    <form class="form-inline">
+        <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" id="searchButton" type="submit">Reload Page</button>
+    </form>
+</nav>
 
-<svg width="1000" height="1000"></svg>
+<br>
 
-<div class="container" id="main-container">
+
+
+<div class="container">
     <div class="row">
-        <div class="col-8">
-            <script>
-                var request = new XMLHttpRequest();
-                request.open("GET", "matejik.json", false);
-                request.send(null);
-                var myJson = JSON.parse(request.responseText);
-                function createNodes( myObject){
-                    arr = [];
-                    pole = [];
-                    for (let i = 0; i < myObject.data.hierarchy.length; i++){
-                        if ( !( pole.includes( myObject.data.hierarchy[i][0]) ) ){
-                            pole.push(myObject.data.hierarchy[i][0]);
-                            let node = {};
-                            node.id = myObject.data.hierarchy[i][0];
-                            node.label = myObject.data.hierarchy[i][0];
-                            arr.push(node);
-                        }
-                        if ( !( pole.includes( myObject.data.hierarchy[i][2]) ) ){
-                            pole.push(myObject.data.hierarchy[i][2]);
-                            let node = {};
-                            node.id = myObject.data.hierarchy[i][2];
-                            node.label = myObject.data.hierarchy[i][2];
-                            arr.push(node);
-                        }
-                    }
-                    return arr;
-                }
-                function createLinks( myObject){
-                    arr = [];
-                    for (let i = 0; i < myObject.data.hierarchy.length; i++){
-                        let link = {};
-                        link.source = myObject.data.hierarchy[i][2];
-                        link.target = myObject.data.hierarchy[i][0];
-                        arr.push(link);
-                    }
-                    return arr;
-                }
-                var countNodes = 0;
-                function buildHierarchy( nody, linky ){
-                    countNodes = nody.length;
-                    var zbyvajiciVrcholy = nody.slice();
-                    var zbyvajiciLinky = linky.slice();
-                    var arr = nody.slice();
-                    var level = 0;
-                    var odstraneno = 0;
-                    for (let i = 0 ; i<zbyvajiciVrcholy.length; i++){
-                        zbyvajiciVrcholy[i].thisLayer = false;
-                        zbyvajiciVrcholy[i].nextLayer = true;
-                    }
-                    for ( let i = 0; i < zbyvajiciVrcholy.length; i++){
-                        for (let j = 0; j < zbyvajiciLinky.length; j++){
-                            if ( zbyvajiciLinky[j].source === zbyvajiciVrcholy[i].id ){
-                                zbyvajiciVrcholy[i].nextLayer = false;
-                            }
-                        }
-                    }
-                    while (odstraneno < countNodes ){
-                        naposledOdstraneno = odstraneno;
-                        level++;
-                        maxLevel = level;
-                        for(let i = 0 ; i < zbyvajiciVrcholy.length; i++){
-                            if (zbyvajiciVrcholy[i].nextLayer){
-                                zbyvajiciVrcholy[i].thisLayer = true;
-                                zbyvajiciVrcholy[i].nextLayer = false;
-                            }
-                        }
-                        for ( let i = 0; i < zbyvajiciVrcholy.length; i++){
-                            if (zbyvajiciVrcholy[i].thisLayer){
-                                for(let j = 0; j<zbyvajiciLinky.length; j++){
-                                    if(zbyvajiciLinky[j].target === zbyvajiciVrcholy[i].id){
-                                        for(let k = 0 ; k < zbyvajiciVrcholy.length; k++){
-                                            if (zbyvajiciVrcholy[k].id === zbyvajiciLinky[j].source ){
-                                                zbyvajiciVrcholy[k].nextLayer = true;
-                                            }
-                                        }
-                                        zbyvajiciLinky.splice(j,1);
-                                        j--;
-                                    }
-                                }
-                            }
-                        }
-                        for ( let i = 0; i < zbyvajiciVrcholy.length; i++){
-                            if (zbyvajiciVrcholy[i].thisLayer){
-                                arr.find(x => x.id === zbyvajiciVrcholy[i].id).level = level;
-                                zbyvajiciVrcholy.splice(i,1);
-                                i--;
-                                odstraneno++;
-                            }
-                        }
-                    }
-                    return arr;
-                }
-                function convert(nody, linkss){
-                    var aktualniJmeno;
-                    for ( let i = 0 ; i < nody.length; i++){
-                        aktualniJmeno = nody[i].id;
-                        for (let j = 0 ; j < linkss.length; j++){
-                            if (linkss[j].source === aktualniJmeno){
-                                linkss[j].source = i;
-                            }
-                            if (linkss[j].target === aktualniJmeno){
-                                linkss[j].target = i;
-                            }
-                            linkss[j].strength = 0.7;
-                        }
-                        nody[i].id = i;
-                    }
-                }
-                //nodes = JSON.stringify(createNodes(myJson));
-                //links = JSON.stringify(createLinks(myJson));
-                var myNodes = (createNodes(myJson));
-                var myLinks = (createLinks(myJson));
-                var nodes = buildHierarchy(myNodes,myLinks);
-                var links = myLinks;
-                convert(nodes,links);
-                console.log(nodes);
-                console.log(links);
-                var myColor = d3.scaleSequential().domain([1,12])
-                    .interpolator(d3.interpolateRdYlBu);
-                var width = window.innerWidth
-                var height = window.innerHeight
-                var svg = d3.select('svg')
-                svg.attr('width', width).attr('height', height)
-                // simulation setup with all forces
-                var linkForce = d3
-                    .forceLink()
-                    .id(function (link) { return link.id })
-                    .strength(function (link) { return link.strength })
-                var simulation = d3
-                    .forceSimulation()
-                    .force('link', linkForce)
-                    .force('charge', d3.forceManyBody().strength(-150))
-                    .force('center', d3.forceCenter(width / 2, height / 2))
-                var dragDrop = d3.drag().on('start', function (node) {
-                    node.fx = node.x
-                    node.fy = node.y
-                }).on('drag', function (node) {
-                    simulation.alphaTarget(0.7).restart()
-                    node.fx = d3.event.x
-                    node.fy = d3.event.y
-                }).on('end', function (node) {
-                    if (!d3.event.active) {
-                        simulation.alphaTarget(0)
-                    }
-                    node.fx = null
-                    node.fy = null
-                })
-                var linkElements = svg.append("g")
-                    .attr("class", "links")
-                    .selectAll("line")
-                    .data(links)
-                    .enter().append("line")
-                    .attr("stroke-width", 1)
-                    .attr("stroke", "rgba(50, 50, 50, 0.2)")
-                var nodeElements = svg.append("g")
-                    .attr("class", "nodes")
-                    .selectAll("circle")
-                    .data(nodes)
-                    .enter().append("circle")
-                    .attr("r", 10)
-                    .attr("fill", function(d){return myColor(d.level) })
-                    .on("mouseover", mouseover)
-                    .on("mouseout", mouseout);
+        <div class="col-sm-11">
+            <svg id="mojesvg"></svg>
+        </div>
+        <div class="col-sm-2" id="slider-container">
+            <div class="slider-wrapper">
+                <input type="range" class="custom-range" id="customRange1" min="0" max="5" value="0" step="1">
+            </div>
+            <div class="legend">
+                <div class="legend-node">
 
-                function mouseover(d) {
-                    d3.select(this).append("text")
-                        .attr("class", "hover")
-                        .attr('transform', function(d){
-                            return 'translate(5, -10)';
-                        })
-                        .text(d.name + ": " + d.id);
-                }
+                </div>
+            </div>
 
-                function mouseout(d) {
-                    d3.select(this).select("text.hover").remove();
-                }
-
-                var textElements = svg.append("g")
-                    .attr("class", "texts")
-                    .selectAll("text")
-                    .data(nodes)
-                    .enter().append("text")
-                    .style("visibility", "hidden")
-                    .text(function (node) { return  node.label })
-                    .attr("font-size", 15)
-                    .attr("dx", 15)
-                    .attr("dy", 4)
-
-                function getRndInteger(max) {
-                    return Math.floor(Math.random() * (max*2) ) -max;
-                }
-
-                simulation.nodes(nodes).on('tick', () => {
-                    nodeElements
-                        .attr('cx', function (node) { return node.x })
-                        .attr('cy', function (node) {
-                            if (node.level ===1){
-                                return height-20;
-                            }
-                            else{
-                                if (node.level === maxLevel){
-                                    return 10;
-                                }
-                                else{
-                                    return (height - node.level/maxLevel*height);
-                                }
-                            }
-                        })
-                    textElements
-                        .attr('x', function (node) { return node.x })
-                        .attr('y', function (node) {
-                            if (node.level ===1){
-                                return height-20;
-                            }
-                            else{
-                                if (node.level === maxLevel){
-                                    return 10;
-                                }
-                                else{
-                                    return (height - node.level/maxLevel*height);
-                                }
-                            }
-                        })
-                    linkElements
-                        .attr('x1', function (link) { return link.source.x })
-                        .attr('y1', function (link) {
-                            if (link.source.level === 1){
-                                return height-20;
-                            }
-                            else{
-                                if (link.source.level === maxLevel){
-                                    return 10;
-                                }
-                                else{
-                                    return (height - link.source.level/maxLevel*height);
-                                }
-                            }                        })
-                        .attr('x2', function (link) { return link.target.x })
-                        .attr('y2', function (link) {
-                            if (link.target.level ===1){
-                                return height-20;
-                            }
-                            else{
-                                if (link.target.level === maxLevel){
-                                    return 10;
-                                }
-                                else{
-                                    return (height - link.target.level/maxLevel*height);
-                                }
-                            }
-                        })
-                })
-                simulation.force("link").links(links)
-            </script>
 
         </div>
-        <div class="col-4">
-        </div>
+    <hr>
     </div>
 </div>
+<br>
 
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<div class="container text-center">
+    <h3>Entities</h3>
+
+    <div class="row">
+        <div class="col-sm-6 entity-option-column">
+            <p>Entity1</p>
+            <br>
+            <div class="row" id="entitySelectrow1">
+                <p>select entity</p>
+                <select class="custom-select"  id="entitySelect1">
+                </select>
+                <p id="selected-dropdown"></p>
+            </div>
+            <div class="row">
+                <p>map by</p>
+                <select class="custom-select" id="selectBy1">
+                    <option>You must select entity</option>
+                </select>
+            </div>
+            <div class="row">
+                <p>map to</p>
+                <select class="custom-select" id="mapTo1">
+                    <option>You must select entity and by</option>
+
+                </select>
+
+            </div>
+        </div>
+        <div class="col-sm-6 entity-option-column">
+            <p>Entity2</p>
+            <br>
+            <div class="row">
+                <p>select entity</p>
+                <select class="custom-select" id="entitySelect2">
+                </select>
+
+            </div>
+            <div class="row">
+                <p>map by</p>
+                <select class="custom-select" id="selectBy2">
+                    <option>You must select entity</option>
+                </select>
+
+            </div>
+            <div class="row">
+                <p>map to</p>
+                <select class="custom-select" id="mapTo2">
+                    <option>You must select entity and by</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+</div>
+
+<br>
+
+<footer class="container-fluid text-center">
+    <p>MFF UK</p>
+</footer>
+
 </body>
+
 </html>
+
+<script src="index.js"></script>
+<script src="visualization.js"></script>
+
+

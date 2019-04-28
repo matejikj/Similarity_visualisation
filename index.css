@@ -1,0 +1,53 @@
+#mojesvg{
+    width: 100%;
+    height: 700px;
+    border : 2px solid darkgrey;
+    border-radius: 25px;
+}
+
+.node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.link {
+    fill: none;
+    stroke: #bbb;
+}
+
+#searchButton{
+    color: white;
+    border : 1px solid white;
+}
+
+#slider-container{
+    border : 2px solid darkgrey;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#slider8 {
+    height: 250px;
+}
+
+.slider-wrapper {
+
+    width: 30px;
+    height: 250px;
+    padding: 0;
+}
+.slider-wrapper input {
+    width: 250px;
+    height: 30px;
+    margin: 0;
+    transform-origin: 125px 125px;
+    transform: rotate(-90deg);
+}
+
+.entity-option-column{
+    padding: 25px;
+}
