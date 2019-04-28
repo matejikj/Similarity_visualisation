@@ -191,7 +191,7 @@ svg.append("svg:defs").append("svg:marker")
     .attr('refX', 20)//so that it comes towards the center.
     .attr("markerWidth", 6)
     .attr("markerHeight", 4)
-    .attr("orient", "auto-start-reverse")
+    .attr("orient", "auto")
     .append("svg:path")
     .attr("d", "M0,-5L10,0L0,5");
 
@@ -200,7 +200,7 @@ var link = container.append("g").attr("class", "links")
     .data(links)
     .enter()
     .append("line")
-    .attr('marker-start', (d) => "url(#arrow)")
+    .attr('marker-end', (d) => "url(#arrow)")
     .attr("stroke", "#aaa")
     .attr("stroke-width", "1px");
 
