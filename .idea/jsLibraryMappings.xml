@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{bootstrap, d3-ForceEdgeBundling, jquery, jquery-3.3.1.slim, popper, slider}" />
+    <file url="PROJECT" libraries="{bootstrap, d3-ForceEdgeBundling, d3-legend, jquery, jquery-3.3.1.slim, popper, slider}" />
   </component>
 </project>

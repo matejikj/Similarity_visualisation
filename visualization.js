@@ -125,13 +125,17 @@ convert(nodes,links);
 
 console.log(nodes);
 console.log(links);
-
 var myColor = d3.scaleSequential().domain([1,maxLevel])
     .interpolator(d3.interpolateRdYlBu);
 
+
+//part for legend
+
+
+//end legend
+
 var width = 960;
 var height = 700;
-var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 var label = {
     'nodes': [],
@@ -146,10 +150,6 @@ nodes.forEach(function(d, i) {
         target: i * 2 + 1
     });
 });
-
-var labelLayout = d3.forceSimulation(label.nodes)
-    .force("charge", d3.forceManyBody().strength(-10))
-    .force("link", d3.forceLink(label.links).distance(0).strength(2));
 
 var graphLayout = d3.forceSimulation(nodes)
     .force("charge", d3.forceManyBody().strength(-400))
@@ -216,8 +216,6 @@ var node = container.append("g").attr("class", "nodes")
         else{
             return 5;
         }
-
-
     })
     .attr("fill", function(d) {
         if (d.level === 1){
@@ -225,11 +223,8 @@ var node = container.append("g").attr("class", "nodes")
         }
         else{
             return myColor(d.level)
-
         }
-
-
-    })
+    });
 
 
 node.on("mouseover", focus).on("mouseout", unfocus);
@@ -241,15 +236,9 @@ node.call(
         .on("end", dragended)
 );
 
-
-
-node.on("mouseover", focus).on("mouseout", unfocus);
-
 function ticked() {
-
     node.call(updateNode);
     link.call(updateLink);
-
 }
 
 function fixna(x) {
@@ -258,10 +247,12 @@ function fixna(x) {
 }
 
 function focus(d) {
-    d3.select(this).enter().append("div")
-        .text(function(d) {return d.id;})
-        .attr("x", function(d) {return x(d.x);})
-        .attr("y", function (d) {return y(d.y);});
+    tooltip.transition()
+        .duration(300)
+        .style("opacity", .8);
+    tooltip.html("Name:" + d.id + "<p/>level:" + d.level)
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY + 10) + "px");
 
     var index = d3.select(d3.event.target).datum().index;
     node.style("opacity", function(o) {
@@ -275,6 +266,9 @@ function focus(d) {
 }
 
 function unfocus() {
+    tooltip.transition()
+        .duration(100)
+        .style("opacity", 0);
     node.style("opacity", 1);
     link.style("opacity", 1);
 }

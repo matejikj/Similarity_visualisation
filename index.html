@@ -23,7 +23,7 @@
     <script src="https://d3js.org/d3.v3.js"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
+    <script src="https://cdnjs.com/libraries/d3-legend/1.13.0"></script>
 
 </head>
 
@@ -44,14 +44,16 @@
             <svg id="mojesvg"></svg>
         </div>
         <div class="col-sm-2" id="slider-container">
+            <h3>Zoom it</h3>
             <div class="slider-wrapper">
                 <input type="range" class="custom-range" id="customRange1" min="0" max="5" value="0" step="1">
             </div>
-            <div class="legend">
-                <div class="legend-node">
+            <br>
+            <h3>Legend</h3>
+            <svg id="legend">
 
-                </div>
-            </div>
+
+            </svg>
 
 
         </div>

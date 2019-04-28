@@ -14,5 +14,6 @@
     <orderEntry type="library" name="d3-ForceEdgeBundling" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="slider" level="application" />
+    <orderEntry type="library" name="d3-legend" level="application" />
   </component>
 </module>

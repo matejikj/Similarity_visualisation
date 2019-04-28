@@ -5,6 +5,7 @@ var myJson = JSON.parse(request.responseText);
 
 
 
+
 var rangeZoom = d3.select("#customRange1")
     .on("change", rangeZoomChange);
 
@@ -15,6 +16,7 @@ function rangeZoomChange(){
     console.log(zoomIndex);
 
 }
+
 
 entityArray = [];
 
