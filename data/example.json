@@ -1,0 +1,339 @@
+{
+  "metadata": {},
+  "data": {
+    "entities": [
+      {
+        "mapping": [
+          {
+            "from": [
+              "prvni"
+            ],
+            "to": [
+              "21",
+              "28"
+            ],
+            "by": [
+              "aa"
+            ]
+          },
+          {
+            "from": [
+              "prvni"
+            ],
+            "to": [
+              "23"
+            ],
+            "by": [
+              "ab"
+            ]
+          },
+          {
+            "from": [
+              "prvni"
+            ],
+            "to": [
+              "10"
+            ],
+            "by": [
+              "ac"
+            ]
+          }
+        ]
+      },
+      {
+        "mapping": [
+          {
+            "from": [
+              "druhy"
+            ],
+            "to": [
+              "38",
+              "33"
+            ],
+            "by": [
+              "ba"
+            ]
+          },
+          {
+            "from": [
+              "druhy"
+            ],
+            "to": [
+              "28"
+            ],
+            "by": [
+              "bb"
+            ]
+          },
+          {
+            "from": [
+              "druhy"
+            ],
+            "to": [
+              "23"
+            ],
+            "by": [
+              "bc"
+            ]
+          },
+          {
+            "from": [
+              "druhy"
+            ],
+            "to": [
+              "23"
+            ],
+            "by": [
+              "bd"
+            ]
+          }
+        ]
+      }
+    ],
+    "paths" : [
+      {
+        "from" : [
+          "aa"
+        ],
+        "to" : [
+          "bd"
+        ],
+        "path" : [
+          "21",
+          "10",
+          "4",
+          "12",
+          "23"
+        ]
+      },
+      {
+        "from" : [
+          "ac"
+        ],
+        "to" : [
+          "bc"
+        ],
+        "path" : [
+          "10",
+          "4",
+          "12",
+          "23"
+        ]
+      },
+      {
+        "from" : [
+          "ab"
+        ],
+        "to" : [
+          "bb"
+        ],
+        "path" : [
+          "23",
+          "12",
+          "4",
+          "2",
+          "5",
+          "14",
+          "28"
+        ]
+      }
+    ],
+    "hierarchy": [
+      [
+        "2",
+        "subClassOf",
+        "1"
+      ],
+      [
+        "3",
+        "subClassOf",
+        "1"
+      ],
+      [
+        "4",
+        "subClassOf",
+        "2"
+      ],
+      [
+        "5",
+        "subClassOf",
+        "2"
+      ],
+      [
+        "6",
+        "subClassOf",
+        "2"
+      ],
+      [
+        "7",
+        "subClassOf",
+        "3"
+      ],
+      [
+        "8",
+        "subClassOf",
+        "3"
+      ],
+      [
+        "9",
+        "subClassOf",
+        "3"
+      ],
+      [
+        "10",
+        "subClassOf",
+        "4"
+      ],
+      [
+        "11",
+        "subClassOf",
+        "4"
+      ],
+      [
+        "12",
+        "subClassOf",
+        "4"
+      ],
+      [
+        "13",
+        "subClassOf",
+        "5"
+      ],
+      [
+        "14",
+        "subClassOf",
+        "5"
+      ],
+      [
+        "15",
+        "subClassOf",
+        "6"
+      ],
+      [
+        "16",
+        "subClassOf",
+        "7"
+      ],
+      [
+        "17",
+        "subClassOf",
+        "7"
+      ],
+      [
+        "18",
+        "subClassOf",
+        "8"
+      ],
+      [
+        "19",
+        "subClassOf",
+        "9"
+      ],
+      [
+        "20",
+        "subClassOf",
+        "10"
+      ],
+      [
+        "21",
+        "subClassOf",
+        "10"
+      ],
+      [
+        "22",
+        "subClassOf",
+        "11"
+      ],
+      [
+        "23",
+        "subClassOf",
+        "12"
+      ],
+      [
+        "24",
+        "subClassOf",
+        "12"
+      ],
+      [
+        "25",
+        "subClassOf",
+        "12"
+      ],
+      [
+        "26",
+        "subClassOf",
+        "13"
+      ],
+      [
+        "27",
+        "subClassOf",
+        "13"
+      ],
+      [
+        "28",
+        "subClassOf",
+        "14"
+      ],
+      [
+        "29",
+        "subClassOf",
+        "15"
+      ],
+      [
+        "30",
+        "subClassOf",
+        "15"
+      ],
+      [
+        "31",
+        "subClassOf",
+        "16"
+      ],
+      [
+        "32",
+        "subClassOf",
+        "16"
+      ],
+      [
+        "33",
+        "subClassOf",
+        "16"
+      ],
+      [
+        "34",
+        "subClassOf",
+        "17"
+      ],
+      [
+        "35",
+        "subClassOf",
+        "18"
+      ],
+      [
+        "36",
+        "subClassOf",
+        "18"
+      ],
+      [
+        "37",
+        "subClassOf",
+        "19"
+      ],
+      [
+        "38",
+        "subClassOf",
+        "19"
+      ],
+      [
+        "39",
+        "subClassOf",
+        "19"
+      ],
+      [
+        "40",
+        "subClassOf",
+        "19"
+      ]
+    ]
+  }
+}

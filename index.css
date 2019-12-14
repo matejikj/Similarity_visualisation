@@ -1,66 +1,76 @@
-#mojesvg{
-    width: 100%;
-    height: 700px;
-    border : 2px solid darkgrey;
-    border-radius: 25px;
+.node {
+    cursor: pointer;
 }
 
-.node {
-    stroke: #fff;
+.hint-node {
+    cursor: pointer;
+}
+
+#paths {
+    display: none;
+}
+
+.node:hover {
+    stroke: #000;
     stroke-width: 1.5px;
 }
 
-.link {
+#btn-undo {
+    cursor: pointer;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+#hint-node {
+    cursor: pointer;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.node--leaf {
+    fill: black;
+}
+
+.node--root {
+    pointer-events: none;
+
+}
+
+.circle circle {
+}
+
+.circle text {
+}
+
+.label{
+    display: none;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.hint-label{
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.label--leaf{
+    display: inline;
+}
+
+.circle {
     fill: none;
-    stroke: #bbb;
+    stroke: steelblue;
 }
 
-#searchButton{
-    color: white;
-    border : 1px solid white;
-}
-
-#slider-container{
-    border : 2px solid darkgrey;
-    border-radius: 25px;
+.center-content-container{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-}
-
-#slider8 {
-    height: 250px;
 }
 
 .slider-wrapper {
-
-    width: 30px;
-    height: 250px;
-    padding: 0;
 }
 .slider-wrapper input {
-    width: 250px;
-    height: 30px;
     margin: 0;
-    transform-origin: 125px 125px;
-    transform: rotate(-90deg);
-}
-
-.entity-option-column{
-    padding: 25px;
-}
-
-div.tooltip {
-    position: absolute;
-    background-color: lightgrey;
-    height: auto;
-    padding: 1px;
-    border-style: solid;
-    border-radius: 5px;
-    border-width: 1px;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, .5);
-    pointer-events: none;
-    font-size : larger;
 }

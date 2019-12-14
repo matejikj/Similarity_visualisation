@@ -1,135 +1,104 @@
 <!DOCTYPE html>
-
 <html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Similarity visualisation</title>
 
-    <title>Data vis</title>
+        <!-- CSSs -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css">
+        <link rel="stylesheet" href="index.css">
 
-    <!-- Bootstrap JavaScripts -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <!-- d3 javascripts -->
+        <script src="https://d3js.org/d3.v5.min.js"></script>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="https://github.com/bobhaslett/d3-v4-sliders/blob/master/sliders.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <!-- d3 javascripts -->
-    <script src="https://d3js.org/d3.v4.js"></script>
-    <script src="https://d3js.org/d3.v3.js"></script>
-    <script src="https://d3js.org/d3.v5.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="https://cdnjs.com/libraries/d3-legend/1.13.0"></script>
+        <script src="https://d3js.org/d3-color.v1.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-</head>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row center-content-container">
+                <h1>Similarity visualization</h1>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 center-content-container">
+                    <h3>View mode</h3>
+                    <div class="slider-wrapper">
+                        <input type="range" class="custom-range" id="modeRange" min="1" max="2" value="0" step="1">
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div id="treeLeft"></div>
+                </div>
+                <div class="col-sm-8 center-content-container">
+                    <svg id="visualisation"/>
+                </div>
+                <div class="col-sm-2">
+                    <div id="treeRight"></div>
+                </div>
 
-<body>
-<nav class="navbar navbar-dark bg-primary">
-    <form class="form-inline">
-        <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" id="searchButton" type="submit">Reload Page</button>
-    </form>
-</nav>
-
-<br>
-
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-sm-10">
-            <svg id="mojesvg"></svg>
-        </div>
-        <div class="col-sm-2" id="slider-container">
-            <h3>Zoom it</h3>
-            <div class="slider-wrapper">
-                <input type="range" class="custom-range" id="customRange1" min="0" max="5" value="0" step="1">
             </div>
             <br>
-            <h3>Legend</h3>
-            <svg id="legend">
-
-
-            </svg>
-
-
-        </div>
-    <hr>
-    </div>
-</div>
-<br>
-
-
-<div class="container text-center">
-    <h3>Entities</h3>
-
-    <div class="row">
-        <div class="col-sm-6 entity-option-column">
-            <p>Entity1</p>
-            <br>
-            <div class="row" id="entitySelectrow1">
-                <p>select entity</p>
-                <select class="custom-select"  id="entitySelect1">
-                </select>
-                <p id="selected-dropdown"></p>
-            </div>
             <div class="row">
-                <p>map by</p>
-                <select class="custom-select" id="selectBy1">
-                    <option>You must select entity</option>
-                </select>
-            </div>
-            <div class="row">
-                <p>map to</p>
-                <select class="custom-select" id="mapTo1">
-                    <option>You must select entity and by</option>
+                <div class="col-sm-4 center-content-container">
+                </div>
+                <div class="col-sm-4 center-content-container">
+                    <div class="row">
+                        <div class="col-sm-3 center-content-container">
+                            <h3>Undo</h3>
+                            <div class="slider-wrapper center-content-container">
+                                <img id="btn-undo" src="res/back.png" alt="back-icon" >
+                            </div>
+                        </div>
+                        <div class="col-sm-9 center-content-container">
+                            <h3>Zoom</h3>
+                            <div class="slider-wrapper">
+                                <input type="range" class="custom-range" id="zoomRange" min="1" max="100" value="0" step="1">
+                            </div>
+                        </div>
 
-                </select>
+                    </div>
 
+                </div>
+                <div class="col-sm-4 center-content-container">
+
+                </div>
             </div>
-        </div>
-        <div class="col-sm-6 entity-option-column">
-            <p>Entity2</p>
             <br>
             <div class="row">
-                <p>select entity</p>
-                <select class="custom-select" id="entitySelect2">
-                </select>
-
+                <div class="col-sm-5 center-content-container">
+                </div>
+                <div class="col-sm-2 center-content-container">
+                    <select class="custom-select" id="paths">
+                    </select>
+                    <br>
+                </div>
+                <div class="col-sm-5 center-content-container">
+                </div>
             </div>
             <div class="row">
-                <p>map by</p>
-                <select class="custom-select" id="selectBy2">
-                    <option>You must select entity</option>
-                </select>
-
-            </div>
-            <div class="row">
-                <p>map to</p>
-                <select class="custom-select" id="mapTo2">
-                    <option>You must select entity and by</option>
-                </select>
+                <div class="col-sm-2 center-content-container">
+                </div>
+                <div class="col-sm-8 center-content-container">
+                    <svg id="selectedPath"></svg>
+                </div>
+                <div class="col-sm-2 center-content-container">
+                </div>
             </div>
         </div>
-    </div>
-    <hr>
-
-</div>
-
-<br>
-
-<footer class="container-fluid text-center">
-    <p>MFF UK</p>
-</footer>
-
-</body>
-
+    </body>
 </html>
 
+<script src="src/tree.js"></script>
+<script src="src/visualisation.js"></script>
 <script src="index.js"></script>
-<script src="visualization.js"></script>
-
-
