@@ -4,8 +4,6 @@ dataset2 = getDatasetTree(1, jsonSource);
 var activeMode = 1;
 var activeDepth = 1;
 var activeRootId = 0;
-var activeRootPath = [];
-activeRootPath.push(0);
 var activePath = undefined;
 
 var leftMapNodes = [];
@@ -13,47 +11,13 @@ var rightMapNodes = [];
 
 console.log(window.location.href);
 
-//paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
-
-paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
+paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 initTreeMaps();
-
-var btnUndo = d3.select("#btn-undo")
-    .on("click", undo);
-
-var modeSlider = d3.select("#modeRange")
-    .on("change", function () {
-        let n = d3.select('#treeRight')
-            .call(checkboxValues);
-
-        activeMode = parseInt(d3.select(this).property('value'));
-        leftMapNodes = [];
-        rightMapNodes = [];
-        let hidePaths = d3.select("#paths");
-        let hideSelectedPath = d3.select("#selectedPath");
-        switch (activeMode) {
-            case 1:
-                activePath = undefined;
-                hidePaths.attr("style", "display: none;");
-                hideSelectedPath.attr("style", "display: none;");
-                break;
-
-            case 2:
-                hidePaths.attr("style", "display: inline;").property("selectedIndex", 0);
-                hideSelectedPath.attr("style", "display: inline;");
-                break;
-        }
-        initTreeMaps();
-        paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
-        initTreeMaps();
-        //chci odstranit linky
-        //chci vykreslit zakldni pohled na root, dokud si nevyberu cestu/cesty, ktere chci zobrazit
-    });
 
 var zoomSlider = d3.select("#zoomRange")
     .on("change", function () {
         activeDepth = parseInt(d3.select(this).property('value'));
-        paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
+        paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
         //chci prekreslit strom, porad stejny root, jenom jina hloubka zobrazeni
         //spolu s tim i prekreslit linky do nodeu
         //budu posilat i to v jakem jsem modu a budu se rozhodovat az v printtree
@@ -86,22 +50,12 @@ function pathsDropdownChange() {
     } else {
         activePath = undefined;
     }
-    paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
+    paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 };
 
 /*
 get data functions
  */
-
-
-function getDatasets(data) {
-    arr = [];
-    arr.push("Open this select menu");
-    for(let i = 0 ; i < data.data.entities.length; i++ ){
-        arr.push(data.data.entities[i].mapping[0].from[0])
-    }
-    return arr;
-};
 
 function getDatasetTree(id, data){
 
@@ -129,35 +83,6 @@ function getDatasetTree(id, data){
     }
     return array;
 }
-
-/*
-function createMapBy(indexFrom,data){
-    arr = [];
-    if (indexFrom < 0){
-        arr.push("You must select entity");
-    }
-    else{
-        arr.push("Open this select menu");
-        for(let i = 0 ; i < data.data.entities[indexFrom].mapping.length; i++ ){
-            arr.push(data.data.entities[indexFrom].mapping[i].by[0])
-        }
-    }
-    return arr;
-}
-
-function createMapTo(indexFrom,indexBy,data){
-    arr = [];
-    if (data.data.entities[indexFrom].mapping[indexBy].to.length === 0){
-        arr.push("none mapping to");
-    } else {
-        arr.push("Open this select menu");
-        for(let i = 0 ; i < data.data.entities[indexFrom].mapping[indexBy].to.length; i++ ){
-            arr.push(data.data.entities[indexFrom].mapping[indexBy].to[i])
-        }
-    }
-    return arr;
-}
-*/
 
 // Node content
 function renderNode(selection, rcd, treeId) {
@@ -190,7 +115,7 @@ function renderNode(selection, rcd, treeId) {
 
                     }
                 }
-                paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
+                paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
             });
     }
     selection.append('span')

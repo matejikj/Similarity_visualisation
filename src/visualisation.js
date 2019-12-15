@@ -16,6 +16,8 @@ function getUrlParam(parameter, defaultvalue){
 
 var mytext = getUrlParam('dataset','data/matejik.json');
 
+console.log(mytext);
+
 const request = new XMLHttpRequest();
 request.open("GET", mytext, false);
 request.send(null);
@@ -52,7 +54,7 @@ var screenRightLinks;
 var circlesPath;
 var arrowsPath;
 
-function paintTree(focusNode, depth, mode, leftLinks, rightLinks ){
+function paintTree(focusNode, depth, leftLinks, rightLinks ){
     margin = 0;
 
     root = buildTree(focusNode, depth);
@@ -249,19 +251,9 @@ function paintTree(focusNode, depth, mode, leftLinks, rightLinks ){
     }
 }
 
-function undo() {
-    console.log(activeRootPath);
-    if (activeRootPath.length != 0){
-        activeRootId = activeRootPath.pop();
-    }
-    paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
-}
-
-
 function clickFunction(d){
     console.log(d);
     if (d.data.id != undefined){
-        activeRootPath.push(activeRootId);
         activeRootId = d.data.id;
     }
     zoom(d);
@@ -274,21 +266,17 @@ function hintCircleFunction(d){
 }
 
 function focusHintNode(d) {
-    activeRootPath.push(activeRootId);
     activeRootId = parseInt(d.text);
-    paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
+    paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 }
 
 function zoom(d) {
     if (d === 0) {
-        activeRootPath = [];
-        activeRootPath.push(0);
         activeRootId = 0;
     } else {
         activeRootId = d.data.id;
     }
-    console.log(activeRootPath);
-    paintTree(activeRootId, activeDepth, activeMode, leftMapNodes, rightMapNodes);
+    paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 }
 
 function zoomTo(v) {

@@ -6,10 +6,6 @@
     cursor: pointer;
 }
 
-#paths {
-    display: none;
-}
-
 .node:hover {
     stroke: #000;
     stroke-width: 1.5px;
