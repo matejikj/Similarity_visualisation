@@ -15,7 +15,8 @@ function getUrlParam(parameter, defaultvalue){
 }
 
 var mytext = getUrlParam('dataset','data/example.json');
-
+var mydepth = getUrlParam('maxdepth','10');
+maxActiveDepth = parseInt(mydepth);
 console.log(mytext);
 
 const request = new XMLHttpRequest();

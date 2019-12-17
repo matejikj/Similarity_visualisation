@@ -2,7 +2,7 @@ dataset1 = getDatasetTree(0, jsonSource);
 dataset2 = getDatasetTree(1, jsonSource);
 
 var activeDepth = 1;
-var maxActiveDepth = 10;
+var maxActiveDepth = parseInt(mydepth);
 var activeRootLevel = 0;
 var activeRootId = 0;
 var activeRootPath = [];
