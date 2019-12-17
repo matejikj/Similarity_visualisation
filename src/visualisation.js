@@ -14,7 +14,7 @@ function getUrlParam(parameter, defaultvalue){
     return urlparameter;
 }
 
-var mytext = getUrlParam('dataset','data/matejik.json');
+var mytext = getUrlParam('dataset','data/example.json');
 
 console.log(mytext);
 
@@ -27,10 +27,25 @@ const width = 840;
 const height = 720;
 const pathsHeight = 60;
 let svg = d3.select("#visualisation").attr("width", width).attr("height", height);
+var slider = d3.select("#zoomRange");
+
 let circlesSvg = d3.select("#selectedPath").attr("width", width);
 var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 var h = circlesSvg.append("g");
 var f = circlesSvg.append("svg");
+
+var tip = d3.tip().attr('class', 'd3-tip').direction('e').offset([0,5])
+    .html(function(d) {
+        var content =`
+                    <table style="margin-top: 2.5px;">
+                            <tr><td>Url: </td><td style="text-align: right">` + (d.data.url) + `</td></tr>
+                            <tr><td>Id: </td><td style="text-align: right">` + (d.data.id) + `</td></tr>
+                    </table>
+                    `;
+        return content;
+    });
+svg.call(tip);
+
 
 var links = createLinks(jsonSource);
 var nodesArray = createNodes(links);
@@ -57,13 +72,30 @@ var arrowsPath;
 function paintTree(focusNode, depth, leftLinks, rightLinks ){
     margin = 0;
 
+
+    root = buildTree(focusNode, maxActiveDepth);
+
+    var maximalLevelOfZoom = maxDepth;
+
+    console.log("\n");
+
+    console.log("max: ");
+    console.log((maximalLevelOfZoom + activeRootLevel).toString());
+    console.log("\n");
+
+    console.log("value: ");
+    console.log((activeRootLevel + activeDepth).toString());
+    console.log("\n");
+
+    //slider.attr('max', (maximalLevelOfZoom + activeRootLevel).toString() ).attr('value', (activeRootLevel + activeDepth).toString());
+    document.getElementById("zoomRange").value = activeRootLevel + activeDepth;
+    document.getElementById("zoomRange").max = maximalLevelOfZoom + activeRootLevel;
+
     root = buildTree(focusNode, depth);
 
+    slider.attr('max', (maximalLevelOfZoom + activeRootLevel) ).attr('value', (activeRootLevel + activeDepth));
+
     if (activePath != undefined){
-
-        //d3.select("#selectedPath").text(activePath.string);
-
-        //printBubblesPath();
 
         let pathColor = d3.scaleLinear()
             .domain([0, activePath.height])
@@ -132,13 +164,14 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
         let space = r / 2;
         arrowsPath = [];
         circlesPath = [];
+        var selectedPathHeight = 200;
 
         for ( let i = 0 ; i < activePath.vertices.length; i++){
             let node = {};
             node.x = i * r + i * space + r/2;
-            node.y = r / 2;
+            node.y = selectedPathHeight / 2;
             node.color = activePath.colours[i];
-            node.r = space;
+            node.r = 25;
             node.text = activePath.vertices[i];
             circlesPath.push(node);
         }
@@ -149,12 +182,12 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
             } else {
                 arrow.text = "↓";
             }
-            arrow.y = r / 2;
+            arrow.y = selectedPathHeight / 2;
             arrow.x = (i + 1) * r + i * space + space /2 ;
             arrowsPath.push(arrow);
         }
 
-        circlesSvg = d3.select("#selectedPath").attr("height", r);
+        circlesSvg = d3.select("#selectedPath").attr("height", selectedPathHeight);
 
         h.remove();
         f.remove();
@@ -207,7 +240,6 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
             .descendants(),
         view;
 
-    console.log(root);
 
     let color = d3.scaleLinear()
         .domain([0, depth])
@@ -217,12 +249,15 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
     g.remove();
     g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+
     circle = g.selectAll("circle")
         .data(nodes)
         .enter().append("circle")
         .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
         .style("fill", function(d) { return d.data.color ? d.data.color : color(d.depth) })
-        .on("click", clickFunction);
+        .on("click", clickFunction)
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
 
     text = g.selectAll("text")
         .data(nodes)
@@ -230,15 +265,28 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
         .append("text")
         .attr("class", function(d) { return d.parent ? d.children ? "label" : "label label--leaf" : "label label--root"; })
         .style("fill", "white")
-        .style("font-size", function(d) { return Math.min(d.r, (2 * d.r - 16) / this.getComputedTextLength() * 48) + "px"; })
+        .style("font-size", function(d) { return Math.min(d.r/3, ( d.r - 16) / this.getComputedTextLength() * 5) + "px"; })
         .attr("dy", ".35em")
-        .text(function(d) { return d.data.id; });
+        .text(function(d) {
+            if ( d.data.url.startsWith("https://www.wikidata.org/wiki") ) {
+                return d.data.url.split('/')[4].substring(0,4)+"...";
+            } else {
+                if ( d.data.url.length < 4 ) {
+                    return d.data.url;
+                } else {
+                    return d.data.url.substring(0,4)+"...";
+                }
+            }
+        });
 
     node = g.selectAll("circle,text");
 
     svg
         .style("background", "white")
         .on("click", function () {
+            activeRootLevel = 0;
+            activeDepth = 1;
+            activeRootPath = [];
             zoom(0);
         });
 
@@ -253,10 +301,38 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
 
 function clickFunction(d){
     console.log(d);
-    if (d.data.id != undefined){
-        activeRootId = d.data.id;
+
+    activeDepth = 1;
+
+    var nodeInArray = nodesArray.filter( p => p.url === d.data.url)[0];
+    if ( nodeInArray.children.length !== 0 ) {
+        var tmpRoot = d;
+
+        var tmpArr = [];
+
+        var heightBeforeActiveRoot = 0;
+
+        while ( tmpRoot.parent != null ) {
+            heightBeforeActiveRoot += 1;
+            tmpRoot = tmpRoot.parent;
+            tmpArr.push(tmpRoot);
+
+        }
+
+        while ( tmpArr.length != 0  ){
+            var item = tmpArr.pop();
+            activeRootPath.push(item.data.id);
+        }
+
+        activeRootLevel += heightBeforeActiveRoot;
+
+        console.log(activeRootLevel);
+
+        if (d.data.id != undefined){
+            activeRootId = d.data.id;
+        }
+        zoom(d);
     }
-    zoom(d);
     d3.event.stopPropagation();
 }
 

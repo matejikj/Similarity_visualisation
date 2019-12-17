@@ -12,8 +12,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css">
         <link rel="stylesheet" href="index.css">
 
+
         <!-- d3 javascripts -->
+
         <script src="https://d3js.org/d3.v5.min.js"></script>
+
+        <script src="d3-tip.js"></script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -21,8 +25,10 @@
         <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
         <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
+
     </head>
     <body>
+        <div id="tooltip" style="display:none;position:absolute;z-index:1001;background-color:gray"></div>
         <div class="container-fluid">
             <div class="row center-content-container">
                 <h1>Similarity visualization</h1>
@@ -45,7 +51,7 @@
                 <div class="col-sm-4 center-content-container">
                     <h3>Zoom</h3>
                     <div class="slider-wrapper">
-                        <input type="range" class="custom-range" id="zoomRange" min="1" max="100" value="0" step="1">
+                        <input type="range" class="custom-range" id="zoomRange" min="1" max="20">
                     </div>
                 </div>
                 <div class="col-sm-4 center-content-container">

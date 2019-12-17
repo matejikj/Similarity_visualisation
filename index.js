@@ -1,9 +1,11 @@
 dataset1 = getDatasetTree(0, jsonSource);
 dataset2 = getDatasetTree(1, jsonSource);
 
-var activeMode = 1;
 var activeDepth = 1;
+var maxActiveDepth = 10;
+var activeRootLevel = 0;
 var activeRootId = 0;
+var activeRootPath = [];
 var activePath = undefined;
 
 var leftMapNodes = [];
@@ -14,14 +16,33 @@ console.log(window.location.href);
 paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 initTreeMaps();
 
-var zoomSlider = d3.select("#zoomRange")
-    .on("change", function () {
-        activeDepth = parseInt(d3.select(this).property('value'));
-        paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
-        //chci prekreslit strom, porad stejny root, jenom jina hloubka zobrazeni
-        //spolu s tim i prekreslit linky do nodeu
-        //budu posilat i to v jakem jsem modu a budu se rozhodovat az v printtree
 
+var zoomSlider = d3.select("#zoomRange")
+    .on("input", function () {
+
+        let depth = parseInt(d3.select(this).property('value'));
+        console.log( depth );
+
+
+        if ( depth < activeDepth + activeRootLevel ) {
+            if ( activeDepth > 1 ){
+                activeDepth--;
+            } else {
+                let n = activeDepth + activeRootLevel - depth;
+                while ( n != 0 ) {
+                    let item = activeRootPath.pop();
+                    activeRootId = item;
+                    activeRootLevel--;
+                    n--;
+                }
+                activeDepth = 1;
+            }
+        } else {
+            activeDepth = depth;
+        }
+
+
+        paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
     });
 
 var pathsDropdown = d3.select("#paths")
@@ -44,10 +65,15 @@ function pathsDropdownChange() {
     rightMapNodes = [];
     if (id != 0){
         activePath = paths[id];
+        activeRootLevel = 0;
+        activeDepth = 1;
+        activeRootId = parseInt(activePath.vertices[activePath.up]);
+        activeRootPath = [];
         leftMapNodes.push(activePath.vertices[0]);
         rightMapNodes.push(activePath.vertices[activePath.vertices.length-1]);
 
     } else {
+        initTreeMaps();
         activePath = undefined;
     }
     paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);

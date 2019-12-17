@@ -185,6 +185,8 @@ function buildTree(id, depth){
     //    treeArray[i].depth = null;
     //}
 
+    maxDepth = 0;
+
     nodesArray = createNodes(links);
     let origin = copyObj(nodesArray.filter(node => node.id === id)[0]);
     origin.depth = 0;
