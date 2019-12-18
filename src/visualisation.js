@@ -81,20 +81,20 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
     console.log("\n");
 
     console.log("max: ");
-    console.log((maximalLevelOfZoom + activeRootLevel).toString());
+    console.log((maximalLevelOfZoom ).toString());
     console.log("\n");
 
     console.log("value: ");
-    console.log((activeRootLevel + activeDepth).toString());
+    console.log(( activeDepth).toString());
     console.log("\n");
 
-    //slider.attr('max', (maximalLevelOfZoom + activeRootLevel).toString() ).attr('value', (activeRootLevel + activeDepth).toString());
-    document.getElementById("zoomRange").value = activeRootLevel + activeDepth;
-    document.getElementById("zoomRange").max = maximalLevelOfZoom + activeRootLevel;
+    //slider.attr('max', (maximalLevelOfZoom ).toString() ).attr('value', ( activeDepth).toString());
+    document.getElementById("zoomRange").value = activeDepth;
+    document.getElementById("zoomRange").max = maximalLevelOfZoom ;
 
     root = buildTree(focusNode, depth);
 
-    slider.attr('max', (maximalLevelOfZoom + activeRootLevel) ).attr('value', (activeRootLevel + activeDepth));
+    slider.attr('max', (maximalLevelOfZoom ) ).attr('value', (activeDepth));
 
     if (activePath != undefined){
 
@@ -266,7 +266,9 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
         .append("text")
         .attr("class", function(d) { return d.parent ? d.children ? "label" : "label label--leaf" : "label label--root"; })
         .style("fill", "white")
-        .style("font-size", function(d) { return Math.min(d.r/3, ( d.r - 16) / this.getComputedTextLength() * 5) + "px"; })
+        .style("font-size", function(d) {
+            return d.r / 2;
+        })
         .attr("dy", ".35em")
         .text(function(d) {
             if ( d.data.url.startsWith("https://www.wikidata.org/wiki") ) {
@@ -282,14 +284,8 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
 
     node = g.selectAll("circle,text");
 
-    svg
-        .style("background", "white")
-        .on("click", function () {
-            activeRootLevel = 0;
-            activeDepth = 1;
-            activeRootPath = [];
-            zoom(0);
-        });
+    svg.style("background", "white");
+
 
     zoomTo([root.x, root.y, root.r * 2 + margin]);
     //bude rozbocovac podle toho v jakem jsem modu
@@ -334,10 +330,6 @@ function clickFunction(d){
                 var item = tmpArr.pop();
                 activeRootPath.push(item.data.id);
             }
-    
-            activeRootLevel += heightBeforeActiveRoot;
-    
-            console.log(activeRootLevel);
     
             if (d.data.id != undefined){
                 activeRootId = d.data.id;
