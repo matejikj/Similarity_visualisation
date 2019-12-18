@@ -17,7 +17,6 @@ function getUrlParam(parameter, defaultvalue){
 var mytext = getUrlParam('dataset','data/example.json');
 var mydepth = getUrlParam('maxdepth','10');
 maxActiveDepth = parseInt(mydepth);
-console.log(mytext);
 
 const request = new XMLHttpRequest();
 request.open("GET", mytext, false);
@@ -77,16 +76,6 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
     root = buildTree(focusNode, maxActiveDepth);
 
     var maximalLevelOfZoom = maxDepth;
-
-    console.log("\n");
-
-    console.log("max: ");
-    console.log((maximalLevelOfZoom ).toString());
-    console.log("\n");
-
-    console.log("value: ");
-    console.log(( activeDepth).toString());
-    console.log("\n");
 
     //slider.attr('max', (maximalLevelOfZoom ).toString() ).attr('value', ( activeDepth).toString());
     document.getElementById("zoomRange").value = activeDepth;
@@ -307,8 +296,6 @@ function clickFunction(d){
         openInNewTab(d.data.url);
 
     } else {
-        console.log(d);
-
         activeDepth = 1;
     
         var nodeInArray = nodesArray.filter( p => p.url === d.data.url)[0];
@@ -401,7 +388,7 @@ function createLayer(urls){
                 continue;
             }
             cycleArray.push(parent.id);
-            if ( parent.depth != activeDepth ){
+            if ( parent.depth == null ){
                 if (parent.parents != null){
                     for (let j = 0 ; j < parent.parents.length; j++){
                         stack.push(parent.parents[j]);
@@ -427,13 +414,10 @@ function createNewLinks(lefts, rights){
 
     while (queue.length != 0){
         let vertex = queue.shift();
-        if (vertex.depth === activeDepth){
-            screenLevel.push(vertex);
-        } else {
-            if (vertex.children != undefined && vertex.children != null){
-                for ( let i = 0 ; i < vertex.children.length; i++){
-                    queue.push(vertex.children[i]);
-                }
+        screenLevel.push(vertex);
+        if (vertex.children != undefined && vertex.children != null){
+            for ( let i = 0 ; i < vertex.children.length; i++){
+                queue.push(vertex.children[i]);
             }
         }
     }
@@ -507,7 +491,7 @@ function paintLinks(){
         .style('stroke-width', 2)
         .attr("x1", function(d) { return d.from.x; })
         .attr("y1", function(d) { return d.from.y; })
-        .attr("x2", function(d) { return (d.to.x - d.to.r / 5 * 2); })
+        .attr("x2", function(d) { return (d.to.x - d.to.r); })
         .attr("y2", function(d) { return d.to.y; })
         .attr('marker-end', (d) => "url(#arrow)");
 
@@ -519,7 +503,7 @@ function paintLinks(){
         .style('stroke-width', 2)
         .attr("x1", function(d) { return d.from.x; })
         .attr("y1", function(d) { return d.from.y; })
-        .attr("x2", function(d) { return (d.to.x + d.to.r / 5 * 2); })
+        .attr("x2", function(d) { return (d.to.x + d.to.r); })
         .attr("y2", function(d) { return d.to.y; })
         .attr('marker-end', (d) => "url(#arrow)");
 }

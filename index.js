@@ -3,7 +3,6 @@ dataset2 = getDatasetTree(1, jsonSource);
 
 var activeDepth = 1;
 var maxActiveDepth = parseInt(mydepth);
-var activeRootLevel = 0;
 var activeRootId = 0;
 var activeRootPath = [];
 var activePath = undefined;
@@ -19,34 +18,12 @@ initTreeMaps();
 
 var zoomSlider = d3.select("#zoomRange")
     .on("input", function () {
-
-        let depth = parseInt(d3.select(this).property('value'));
-        console.log( depth );
-
-
-        if ( depth < activeDepth + activeRootLevel ) {
-            if ( activeDepth > 1 ){
-                activeDepth--;
-            } else {
-                let n = activeDepth + activeRootLevel - depth;
-                while ( n != 0 ) {
-                    let item = activeRootPath.pop();
-                    activeRootId = item;
-                    activeRootLevel--;
-                    n--;
-                }
-                activeDepth = 1;
-            }
-        } else {
-            activeDepth = depth;
-        }
-
-
+        activeDepth = parseInt(d3.select(this).property('value'));
         paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
     });
 
 var pathsDropdown = d3.select("#paths")
-    .on("change", pathsDropdownChange);
+    .on("input", pathsDropdownChange);
 
 pathsDropdown
     .selectAll("option")
@@ -65,7 +42,6 @@ function pathsDropdownChange() {
     rightMapNodes = [];
     if (id != 0){
         activePath = paths[id];
-        activeRootLevel = 0;
         activeDepth = 1;
         activeRootId = parseInt(activePath.vertices[activePath.up]);
         activeRootPath = [];
