@@ -300,40 +300,53 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
     }
 }
 
+function openInNewTab(url) {
+    var win = window.open(url, '_blank');
+    win.focus();
+}
+
+
 function clickFunction(d){
-    console.log(d);
+    if ( d3.event.ctrlKey ) {
+        openInNewTab(d.data.url);
 
-    activeDepth = 1;
+    } else {
+        console.log(d);
 
-    var nodeInArray = nodesArray.filter( p => p.url === d.data.url)[0];
-    if ( nodeInArray.children.length !== 0 ) {
-        var tmpRoot = d;
-
-        var tmpArr = [];
-
-        var heightBeforeActiveRoot = 0;
-
-        while ( tmpRoot.parent != null ) {
-            heightBeforeActiveRoot += 1;
-            tmpRoot = tmpRoot.parent;
-            tmpArr.push(tmpRoot);
-
+        activeDepth = 1;
+    
+        var nodeInArray = nodesArray.filter( p => p.url === d.data.url)[0];
+        if ( nodeInArray.children.length !== 0 ) {
+            var tmpRoot = d;
+    
+            var tmpArr = [];
+    
+            var heightBeforeActiveRoot = 0;
+    
+            while ( tmpRoot.parent != null ) {
+                heightBeforeActiveRoot += 1;
+                tmpRoot = tmpRoot.parent;
+                tmpArr.push(tmpRoot);
+    
+            }
+    
+            while ( tmpArr.length != 0  ){
+                var item = tmpArr.pop();
+                activeRootPath.push(item.data.id);
+            }
+    
+            activeRootLevel += heightBeforeActiveRoot;
+    
+            console.log(activeRootLevel);
+    
+            if (d.data.id != undefined){
+                activeRootId = d.data.id;
+            }
+            zoom(d);
         }
-
-        while ( tmpArr.length != 0  ){
-            var item = tmpArr.pop();
-            activeRootPath.push(item.data.id);
-        }
-
-        activeRootLevel += heightBeforeActiveRoot;
-
-        console.log(activeRootLevel);
-
-        if (d.data.id != undefined){
-            activeRootId = d.data.id;
-        }
-        zoom(d);
     }
+
+    
     d3.event.stopPropagation();
 }
 
