@@ -348,8 +348,8 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
         }
 
         let canvasHeight = actualRow * 2 * circleRadius + 2 * circleMargin + circleRadius + circleRadius;
+        pathCanvas.attr("height", canvasHeight).attr("width", canvasWidth);
         gcanvas.remove();
-        pathCanvas = d3.select("#actual-path").attr("height", canvasHeight).attr("width", canvasWidth);
         gcanvas = pathCanvas.append("g").attr("height", canvasHeight).attr("width", canvasWidth);
 
         pathCircle = gcanvas.selectAll("circle")
@@ -376,7 +376,7 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
 
     } else {
         pathCanvas = d3.select("#actual-path").attr("height", 0).attr("width", width);
-
+        gcanvas.remove();
         gcanvas = pathCanvas.append("g").attr("height", 0).attr("width", width);
     }
 }
