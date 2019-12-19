@@ -49,8 +49,11 @@ function pathsDropdownChange() {
         rightMapNodes.push(activePath.vertices[activePath.vertices.length-1]);
 
     } else {
-        initTreeMaps();
+        activeRootId = 0;
+        activeRootPath = [];
+        activeDepth = 1;
         activePath = undefined;
+        initTreeMaps();
     }
     paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 };

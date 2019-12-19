@@ -34,6 +34,9 @@ var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + heigh
 var h = circlesSvg.append("g");
 var f = circlesSvg.append("svg");
 
+var pathCanvas = d3.select("#actual-path").attr("height", 0).attr("width", width);
+var gcanvas = pathCanvas.append("g").attr("height", 0).attr("width", width);
+
 var tip = d3.tip().attr('class', 'd3-tip').direction('e').offset([0,5])
     .html(function(d) {
         var content =`
@@ -95,7 +98,6 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
         let queue = [];
 
         queue.push(root);
-
 
         let visualArray = [];
 
@@ -261,12 +263,12 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
         .attr("dy", ".35em")
         .text(function(d) {
             if ( d.data.url.startsWith("https://www.wikidata.org/wiki") ) {
-                return d.data.url.split('/')[4].substring(0,4)+"...";
+                return d.data.url.split('/')[4].substring(0,5);
             } else {
                 if ( d.data.url.length < 4 ) {
                     return d.data.url;
                 } else {
-                    return d.data.url.substring(0,4)+"...";
+                    return d.data.url.substring(0,5);
                 }
             }
         });
@@ -283,13 +285,118 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
         createNewLinks(leftLinks, rightLinks);
         paintLinks();
     }
+
+    //nakreslit cestu
+
+    if ( activeRootPath.length != 0 ) {
+        let canvasWidth = width;
+
+        var pathCircleArray = [];
+        var rowCount = 10;
+        var actualRow = 0;
+        var circleMargin = 8;
+        var circleRadius = Math.floor((canvasWidth - (rowCount - 1) * 2 * circleMargin) / rowCount / 2 );
+
+        var pathRows = Math.floor(activeRootPath.length / rowCount);
+        var pathMod = activeRootPath.length % rowCount;
+
+
+
+        for ( let i = 0; i < pathRows; i++ ) {
+            for ( let j = 0 ; j < rowCount; j++ ) {
+                let circ = {};
+                circ.x = j * 2* circleMargin + j * 2 * circleRadius + circleRadius;
+                circ.y = i * 2 * circleRadius + i * 2 * circleMargin + circleRadius;
+                circ.r = circleRadius;
+                circ.id = activeRootPath[i*rowCount + j];
+                let text = nodesArray.filter( p => p.id == circ.id )[0].url;
+
+                if ( text.startsWith("https://www.wikidata.org/wiki") ) {
+                    text = text.split('/')[4].substring(0,4)+"...";
+                } else {
+                    if ( text.length < 4 ) {
+                    } else {
+                        text = text.substring(0,4)+"...";
+                    }
+                }
+                circ.text = text;
+                pathCircleArray.push(circ);
+            }
+            actualRow += 1;
+        }
+
+        for ( let i = 0 ; i < pathMod ; i++ ) {
+            let circl = {};
+            circl.x = i * 2 * circleMargin + i * 2 * circleRadius + circleRadius;
+            circl.y = actualRow * 2 * circleRadius + 2 * actualRow * circleMargin + circleRadius;
+            circl.id = activeRootPath[actualRow*rowCount + i];
+            let textik = nodesArray.filter( p => p.id == circl.id )[0].url;
+
+            if ( textik.startsWith("https://www.wikidata.org/wiki") ) {
+                textik = textik.split('/')[4].substring(0,4)+"...";
+            } else {
+                if ( textik.length < 4 ) {
+                } else {
+                    textik = textik.substring(0,4)+"...";
+                }
+            }
+
+            circl.text = textik;
+            circl.r = circleRadius;
+
+            pathCircleArray.push(circl);
+        }
+
+        let canvasHeight = actualRow * 2 * circleRadius + 2 * circleMargin + circleRadius + circleRadius;
+        gcanvas.remove();
+        pathCanvas = d3.select("#actual-path").attr("height", canvasHeight).attr("width", canvasWidth);
+        gcanvas = pathCanvas.append("g").attr("height", canvasHeight).attr("width", canvasWidth);
+
+        pathCircle = gcanvas.selectAll("circle")
+            .data(pathCircleArray)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) {return d.x;})
+            .attr("cy", function (d) {return d.y;})
+            .attr("fill", "gray")
+            .attr("class", "hint-node")
+            .attr("r", function (d) {return d.r;})
+            .on("click", clickPathNode);
+
+        pathCircleText = gcanvas.selectAll("text")
+            .data(pathCircleArray)
+            .enter()
+            .append("text")
+            .attr("x", function (d) {return d.x;})
+            .attr("y", function (d) {return d.y;})
+            .attr("class", "hint-label")
+            .attr("font-size", "20px")
+            .text(function(d) { return d.text; });
+
+
+    } else {
+        pathCanvas = d3.select("#actual-path").attr("height", 0).attr("width", width);
+
+        gcanvas = pathCanvas.append("g").attr("height", 0).attr("width", width);
+    }
+}
+
+function clickPathNode(d) {
+
+    let index = activeRootPath.indexOf(d.id);
+
+    activeDepth = 1;
+    activeRootPath = activeRootPath.slice( 0, index );
+    var nodeInArray = nodesArray.filter( p => p.url === d.text)[0];
+    activeRootId = d.id;
+
+    paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 }
 
 function openInNewTab(url) {
     var win = window.open(url, '_blank');
     win.focus();
 }
-
 
 function clickFunction(d){
     if ( d3.event.ctrlKey ) {
@@ -301,16 +408,14 @@ function clickFunction(d){
         var nodeInArray = nodesArray.filter( p => p.url === d.data.url)[0];
         if ( nodeInArray.children.length !== 0 ) {
             var tmpRoot = d;
-    
+
+
             var tmpArr = [];
-    
-            var heightBeforeActiveRoot = 0;
-    
+
             while ( tmpRoot.parent != null ) {
-                heightBeforeActiveRoot += 1;
                 tmpRoot = tmpRoot.parent;
                 tmpArr.push(tmpRoot);
-    
+
             }
     
             while ( tmpArr.length != 0  ){
@@ -321,10 +426,10 @@ function clickFunction(d){
             if (d.data.id != undefined){
                 activeRootId = d.data.id;
             }
+
             zoom(d);
         }
     }
-
     
     d3.event.stopPropagation();
 }
