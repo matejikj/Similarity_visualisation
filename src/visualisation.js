@@ -1,30 +1,28 @@
-function getUrlVars() {
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-    return vars;
+import { buildTree, maxDepth, links, nodesArray, maxActiveDepth } from "./tree";
+
+export var activeRootId = 0;
+export function setactiveRootId(a){
+    activeRootId = a;
 }
 
-function getUrlParam(parameter, defaultvalue){
-    var urlparameter = defaultvalue;
-    if(window.location.href.indexOf(parameter) > -1){
-        urlparameter = getUrlVars()[parameter];
-    }
-    return urlparameter;
+export var activePath = undefined;
+
+export function setActivePath(a){
+    activePath = a;
 }
 
-var mytext = getUrlParam('dataset','data/example.json');
-var mydepth = getUrlParam('maxdepth','10');
-maxActiveDepth = parseInt(mydepth);
+export var leftMapNodes = [];
+export var rightMapNodes = [];
 
-const request = new XMLHttpRequest();
-request.open("GET", mytext, false);
-request.send(null);
-const jsonSource = JSON.parse(request.responseText);
+export function setLeftMapNodes(a){
+    leftMapNodes = a;
+}
+export function setRightMapNodes(a){
+    rightMapNodes = a;
+}
 
 const width = 840;
-const height = 720;
+export const height = 720;
 const pathsHeight = 60;
 let svg = d3.select("#visualisation").attr("width", width).attr("height", height);
 var slider = d3.select("#zoomRange");
@@ -49,10 +47,10 @@ var tip = d3.tip().attr('class', 'd3-tip').direction('e').offset([0,5])
     });
 svg.call(tip);
 
-
-var links = createLinks(jsonSource);
-var nodesArray = createNodes(links);
-var paths = createPaths(jsonSource, links);
+export var activeDepth = 1;
+export function setActiveDepth(a){
+    activeDepth = a;
+}
 
 var root;
 var focus;
@@ -72,11 +70,18 @@ var screenRightLinks;
 var circlesPath;
 var arrowsPath;
 
-function paintTree(focusNode, depth, leftLinks, rightLinks ){
-    margin = 0;
+export var activeRootPath = [];
+
+export function setActiveRootPath(a){
+    activeRootPath = a;
+}
 
 
-    root = buildTree(focusNode, maxActiveDepth);
+export function paintTree(focusNode, depth, leftLinks, rightLinks ){
+    var margin = 0;
+
+
+    root = buildTree(focusNode, maxActiveDepth, links, nodesArray);
 
     var maximalLevelOfZoom = maxDepth;
 
@@ -84,7 +89,7 @@ function paintTree(focusNode, depth, leftLinks, rightLinks ){
     document.getElementById("zoomRange").value = activeDepth;
     document.getElementById("zoomRange").max = maximalLevelOfZoom ;
 
-    root = buildTree(focusNode, depth);
+    root = buildTree(focusNode, depth, links, nodesArray);
 
     slider.attr('max', (maximalLevelOfZoom ) ).attr('value', (activeDepth));
 
@@ -464,21 +469,26 @@ function createLayer(urls){
 
     for (let i = 0 ; i < urls.length; i++){
         let n = nodesArray.filter( y => y.url === urls[i])[0];
-
+        console.log(n);
+        console.log("parent");
         if ( n === undefined){
             continue;
         }
 
-        let stack = [];
+        var stack = [];
 
         stack.push(n);
 
+
+
         let j = 0;
 
-        cycleArray = [];
+        let cycleArray = [];
 
         while (stack.length != 0 ){
             let parent = stack.pop();
+            console.log(parent);
+
             j++;
             if (parent === undefined){
             }

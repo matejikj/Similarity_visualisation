@@ -1,50 +1,64 @@
-function createLinks(source) {
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+function getUrlParam(parameter, defaultvalue){
+    var urlparameter = defaultvalue;
+    if(window.location.href.indexOf(parameter) > -1){
+        urlparameter = getUrlVars()[parameter];
+    }
+    return urlparameter;
+}
+
+var mytext = getUrlParam('dataset','http://visualisation.jmatejik.eu/data/example2.json');
+var mydepth = getUrlParam('maxdepth','10');
+export var maxActiveDepth = parseInt(mydepth);
+
+const request = new XMLHttpRequest();
+request.open("GET", mytext, false);
+request.send(null);
+export var jsonSource = JSON.parse(request.responseText);
+
+export var links = createLinks(jsonSource);
+export var nodesArray = createNodes(links);
+export var paths = createPaths(jsonSource, links);
+
+export function createLinks(source) {
     let linkArray = [];
 
-    for (let i = 0; i < source.data.hierarchy.length; i++){
+    for (let i = 0; i < source.hierarchy.length; i++){
         let link = {};
         link.id = i;
-        link.source = source.data.hierarchy[i][2];
-        link.target = source.data.hierarchy[i][0];
+        link.source = source.hierarchy[i][2];
+        link.target = source.hierarchy[i][0];
         linkArray.push(link);
     }
 
     return linkArray;
 }
 
-jQuery.extend({
-    getValues: function(id) {
-        var result = null;
-        var url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + id + "&languages=en&props=labels&format=json";
-        $.ajax({
-            url: url,
-            type: 'get',
-            dataType: 'json',
-            async: false,
-            success: function(data) {
-                for (var i in data.entities) {
-                    if (data.entities.hasOwnProperty(i)) {
-                        result = data.entities[i].labels.en.value ;
-                    }
-                }
-            }
-        });
-        return result;
-    }
-});
-
-function createPaths(source, l) {
+export function createPaths(source, l) {
     let pathArray = [];
     pathArray.push({ from: "Select", to: "path..."});
     let array = createNodes(l);
 
-    for (let i = 0; i < source.data.paths.length; i++){
+    console.log(source);
+
+    if ( source.paths == undefined ){
+        return undefined;
+    }
+
+    for (let i = 0; i < source.paths.length; i++){
         let path = {};
-        path.from = source.data.paths[i].from[0];
-        path.to = source.data.paths[i].to[0];
+        path.from = source.paths[i].from[0];
+        path.to = source.paths[i].to[0];
         path.vertices = [];
-        for ( let j = 0 ; j < source.data.paths[i].path.length ; j++ ){
-            path.vertices.push(source.data.paths[i].path[j]);
+        for ( let j = 0 ; j < source.paths[i].path.length ; j++ ){
+            path.vertices.push(source.paths[i].path[j]);
         }
         path.directions = [];
         for (let j = 0 ; j < (path.vertices.length - 1) ;j++ ){
@@ -138,7 +152,7 @@ function initializeNodes(links) {
     return nArray;
 }
 
-function createNodes(links){
+export function createNodes(links){
 
     let counter = 0;
 
@@ -177,9 +191,9 @@ function createNodes(links){
     return nodes;
 }
 
-var maxDepth = 0 ;
+export var maxDepth = 0 ;
 
-function buildTree(id, depth){
+export function buildTree(id, depth){
 
     //for (let i = 0 ; i < treeArray.length; i++){
     //    treeArray[i].depth = null;
@@ -215,6 +229,8 @@ function buildTree(id, depth){
                 node.children[i] = children;
                 children.depth = node.depth + 1;
 
+                console.log(children.depth);
+
                 if (maxDepth < node.depth + 1){
                     maxDepth = node.depth + 1;
                 }
@@ -235,17 +251,31 @@ function buildTree(id, depth){
             node.value = 1;
         }
     }
-
     //origin.color = 'white';
-
     return origin;
-}
-
-function markPaths(){
-
 }
 
 function copyObj(src) {
     return Object.assign({}, src);
-
 }
+
+// jQuery.extend({
+//     getValues: function(id) {
+//         var result = null;
+//         var url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + id + "&languages=en&props=labels&format=json";
+//         $.ajax({
+//             url: url,
+//             type: 'get',
+//             dataType: 'json',
+//             async: false,
+//             success: function(data) {
+//                 for (var i in data.entities) {
+//                     if (data.entities.hasOwnProperty(i)) {
+//                         result = data.entities[i].labels.en.value ;
+//                     }
+//                 }
+//             }
+//         });
+//         return result;
+//     }
+// });

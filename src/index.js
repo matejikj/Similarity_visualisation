@@ -1,24 +1,17 @@
-dataset1 = getDatasetTree(0, jsonSource);
-dataset2 = getDatasetTree(1, jsonSource);
+import { paintTree, activeRootId, activePath, activeDepth, height, leftMapNodes, rightMapNodes, setLeftMapNodes, setRightMapNodes, setActivePath, setActiveRootPath, setActiveDepth, setactiveRootId } from "./visualisation.js";
+import { jsonSource, paths } from "./tree";
 
-var activeDepth = 1;
-var maxActiveDepth = parseInt(mydepth);
-var activeRootId = 0;
-var activeRootPath = [];
-var activePath = undefined;
-
-var leftMapNodes = [];
-var rightMapNodes = [];
+var dataset1 = getDatasetTree(0, jsonSource.mappings[0]);
+var dataset2 = getDatasetTree(1, jsonSource.mappings[1]);
 
 console.log(window.location.href);
 
 paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
 initTreeMaps();
 
-
 var zoomSlider = d3.select("#zoomRange")
     .on("input", function () {
-        activeDepth = parseInt(d3.select(this).property('value'));
+        setActiveDepth(parseInt(d3.select(this).property('value')));
         paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
     });
 
@@ -37,22 +30,22 @@ pathsDropdown
     });
 
 function pathsDropdownChange() {
-    id = parseInt(d3.select(this).property('value'));
-    leftMapNodes = [];
-    rightMapNodes = [];
+    var id = parseInt(d3.select(this).property('value'));
+    setLeftMapNodes([]);
+    setRightMapNodes([]);
     if (id != 0){
-        activePath = paths[id];
-        activeDepth = 1;
-        activeRootId = parseInt(activePath.vertices[activePath.up]);
-        activeRootPath = [];
+        setActivePath(paths[id]);
+        setActiveDepth(1);
+        setactiveRootId(parseInt(activePath.vertices[activePath.up]));
+        setActiveRootPath([]);
         leftMapNodes.push(activePath.vertices[0]);
         rightMapNodes.push(activePath.vertices[activePath.vertices.length-1]);
 
     } else {
-        activeRootId = 0;
-        activeRootPath = [];
-        activeDepth = 1;
-        activePath = undefined;
+        setactiveRootId(0);
+        setActiveRootPath([]);
+        setActiveDepth(1);
+        setActivePath(undefined);
         initTreeMaps();
     }
     paintTree(activeRootId, activeDepth, leftMapNodes, rightMapNodes);
@@ -67,25 +60,41 @@ function getDatasetTree(id, data){
     let array = [];
     let root = {};
 
+    let tmpArray = [];
+
+    for ( let i = 0 ; i < data.data.length; i++ ) {
+        let node = {};
+        node.id = data.data[i].id;
+        node.by = data.data[i].metadata.group;
+        if ( tmpArray[data.data[i].metadata.group] == undefined ){
+            tmpArray[data.data[i].metadata.group] = [];
+        }
+        tmpArray[data.data[i].metadata.group].push(node);
+
+    }
+
     root.url = "root";
 
     array.push(root);
 
-    for (let i = 0 ; i < data.data.entities[id].mapping.length; i++ ){
-
+    for ( var key in tmpArray ) {
         let parent = {};
-        parent.url = data.data.entities[id].mapping[i].by[0];
+        parent.url = key;
         parent.parent = root.url;
 
         array.push(parent);
 
-        for ( let j = 0 ; j < data.data.entities[id].mapping[i].to.length ; j++ ){
+        for ( let i = 0 ; i < tmpArray[key].length; i++ ) {
             let child = {};
-            child.url = data.data.entities[id].mapping[i].to[j];
+            child.url = tmpArray[key][i].id;
             child.parent = parent.url;
             array.push(child);
         }
     }
+
+    console.log("tree");
+
+    console.log(array);
     return array;
 }
 
