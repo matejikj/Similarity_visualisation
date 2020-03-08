@@ -1,24 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { MappingNode } from '@/models/types'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    leftDatasetUrl: '',
-    rightDatasetUrl: ''
+    leftDataset: Array<MappingNode>(),
+    rightDataset: Array<MappingNode>()
   },
   mutations: {
-    changeLeftDatasetUrl (state, value) {
-      state.leftDatasetUrl = value
+    changeLeftDataset (state, value: Array<MappingNode>) {
+      state.leftDataset = value
     },
-    changeRightDatasetUrl (state, value) {
-      state.rightDatasetUrl = value
+    changeRightDataset (state, value: Array<MappingNode>) {
+      state.rightDataset = value
     }
   },
   getters: {
-    leftDatasetUrl: state => state.leftDatasetUrl,
-    rightDatasetUrl: state => state.rightDatasetUrl
+    getLeftDataset: state => state.leftDataset,
+    getRightDataset: state => state.rightDataset
   },
   actions: {
   },

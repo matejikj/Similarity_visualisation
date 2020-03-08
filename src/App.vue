@@ -14,7 +14,6 @@
           transition="scale-transition"
           width="40"
         />
-
         <v-img
           alt="Vuetify Name"
           class="shrink mt-1 hidden-sm-and-down"
@@ -25,19 +24,28 @@
         />
       </div>
     </v-app-bar>
-
     <v-content>
       <v-row class="text-center">
         <v-col cols="3">
           <sidebar sidebarPosition="left"></sidebar>
         </v-col>
-        <v-col background-color="red" cols="6">
-          <p>AAAA</p>
+        <v-col cols="6">
+          <visualisation></visualisation>
         </v-col>
         <v-col cols="3">
           <sidebar sidebarPosition="right"></sidebar>
         </v-col>
       </v-row>
+      <v-row class="text-center">
+        <v-col cols="3">
+        </v-col>
+        <v-col cols="6">
+          <sliderBar></sliderBar>
+        </v-col>
+        <v-col cols="3">
+        </v-col>
+      </v-row>
+
     </v-content>
   </v-app>
 </template>
@@ -45,11 +53,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import Sidebar from './components/Sidebar.vue'
+import SliderBar from './components/SliderBar.vue'
+import Visualisation from './components/Visualisation.vue'
 
 export default Vue.extend({
   name: 'App',
   components: {
-    Sidebar
+    SliderBar,
+    Sidebar,
+    Visualisation
   },
   data: () => ({
   })

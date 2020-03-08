@@ -1,7 +1,13 @@
 // Model
-export interface MappingNode {
+export interface MappingData {
     id: string;
-    parent: string;
-    to: string;
-    by: string;
+    group: string;
+    shared: number;
+    size: number;
+}
+
+export interface MappingNode {
+    id: number;
+    name: string;
+    children?: MappingNode[];
 }
