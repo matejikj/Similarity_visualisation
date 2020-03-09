@@ -17,7 +17,7 @@ export default new Vuex.Store({
     activeViewDepth: 1,
     maximalViewDepth: 10,
     nodes: Array<Node>(),
-    activeId: String()
+    activeId: 'root'
   },
   mutations: {
     changeLeftDataset (state, value: object) {
@@ -40,6 +40,9 @@ export default new Vuex.Store({
     },
     changeActiveViewDepth (state, value: number) {
       state.activeViewDepth = value
+    },
+    changeActiveId (state, value: string) {
+      state.activeId = value
     },
     changeMaximalViewDepth (state, value: number) {
       state.activeViewDepth = value

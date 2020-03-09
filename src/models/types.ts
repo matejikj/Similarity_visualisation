@@ -43,12 +43,13 @@ export class Link {
 }
 
 export class Node {
-    color: string | undefined;
-    depth: number | undefined;
     label: string;
     parents: Array<Node>;
     children: Array<Node>;
     id: string;
+    color: string | undefined;
+    depth: number | undefined;
+    value: number | undefined;
 
     constructor (label: string, parents: Array<Node>, children: Array<Node>, id: string, depth: number | undefined, color: string | undefined) {
       this.color = color
@@ -57,5 +58,6 @@ export class Node {
       this.parents = parents
       this.children = children
       this.id = id
+      this.value = undefined
     }
 }

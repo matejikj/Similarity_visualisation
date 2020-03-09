@@ -26,13 +26,13 @@
     </v-app-bar>
     <v-content>
       <v-row class="text-center">
-        <v-col cols="3">
+        <v-col cols="2">
           <sidebar sidebarPosition="left"></sidebar>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="8">
           <visualisation></visualisation>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="2">
           <sidebar sidebarPosition="right"></sidebar>
         </v-col>
       </v-row>

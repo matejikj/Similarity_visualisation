@@ -1,5 +1,8 @@
 <template>
-    <p></p>
+    <svg id="svg" width="100%" height="80vh">
+      <g transform="translate(50,50)">
+      </g>
+    </svg>
 </template>
 
 <script lang="ts">
@@ -18,24 +21,25 @@ export default Vue.extend({
     this.$store.subscribe((mutation) => {
       switch (mutation.type) {
         case 'changeLabels':
-          this.initializeNodes()
-          console.log('LEFT')
+          this.initializeNodes(store.state.hierarchy, store.state.labels)
+          this.$store.commit('changeActiveViewDepth', 4)
+          this.$store.commit('changeActiveId', 'root')
+          this.visualise(store.state.activeId, store.state.activeViewDepth)
+          console.log('changeLabels')
           break
         case 'changeActiveViewDepth':
-          // ahoj
-          // visualise();
+          this.visualise(store.state.activeId, store.state.activeViewDepth)
+          console.log('Zoom')
           break
       }
     })
   },
   methods: {
-    initializeNodes: function (): Array<Node> {
+    initializeNodes: function (links: Array<Link>, labels: Array<Label>): void {
       const array = new Array<Node>()
       const visitedNodesArray = new Array<string>()
       const root = new Node('ROOT', new Array<Node>(), new Array<Node>(), 'root', undefined, undefined)
       array.push(root)
-      const links = store.state.hierarchy
-      const labels = store.state.labels
       if (links !== undefined) {
         for (let i = 0; i < links.length; i++) {
           if (!visitedNodesArray.includes(links[i].target)) {
@@ -72,21 +76,56 @@ export default Vue.extend({
           root.children.push(rootsArray[i])
         }
       }
-
-      return array
+      this.$store.commit('changeNodes', array)
     },
     buildTree: function (id: string, depth: number): Node {
-      const nodesArray = this.initializeNodes()
-
-      const root = Object.assign(Node, store.state.nodes.filter(x => x.id === id)[0])
-      const maxDepth = 0
+      const nodesArray = store.state.nodes
+      nodesArray.forEach(element => {
+        element.depth = undefined
+      })
+      const tmpRoot = nodesArray.filter(x => x.id === id)[0]
+      const root = new Node(tmpRoot.label, tmpRoot.parents, tmpRoot.children, tmpRoot.id, tmpRoot.depth, tmpRoot.color)
+      let maxDepth = 0
       root.depth = 0
-
+      const queue = Array<Node>()
+      queue.push(root)
+      while (queue.length !== 0) {
+        const node = queue.shift()
+        if (node !== undefined && node.children !== undefined) {
+          if (node.children.length !== 0) {
+            for (let i = 0; i < node.children.length; i++) {
+              const tmpChildren = nodesArray.filter(x => x.id === node.children[i].id)[0]
+              const children = new Node(tmpChildren.label, tmpChildren.parents, tmpChildren.children, tmpChildren.id, tmpChildren.depth, tmpChildren.color)
+              node.children[i] = children
+              if (node.depth !== undefined) {
+                const newLevelDepth = node.depth + 1
+                children.depth = newLevelDepth
+                if (maxDepth < newLevelDepth) {
+                  maxDepth = newLevelDepth
+                }
+                if (newLevelDepth < depth) {
+                  queue.push(node.children[i])
+                  console.log('PRIDANO')
+                } else {
+                  if (newLevelDepth === depth) {
+                    children.children = []
+                    children.value = 1
+                  }
+                }
+              }
+            }
+          } else {
+            node.children = []
+            node.value = 1
+          }
+        }
+      }
       return root
     },
     // eslint-disable-next-line
-    visualise: function (leftDataset: any, rightDataset: any, hierarchy: any, labels: any, depth: number, id: string) {
+    visualise: function (id: string, depth: number) {
       const treeRoot = this.buildTree(id, depth)
+      console.log(treeRoot)
     }
   }
 })

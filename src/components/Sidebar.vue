@@ -33,7 +33,7 @@ export default Vue.extend({
     treeItems: Array<MappingNode>(),
     selectedTreeItems: [],
     comboboxItems: Array<ComboboxItem>(),
-    datasetUrl: 'example1.json',
+    datasetUrl: 'example.json',
     error: Error()
   }),
   methods: {
@@ -71,15 +71,12 @@ export default Vue.extend({
         this.$store.commit('changeRightMapping', mappingArray)
       }
       this.treeItems = this.createTree(mappingArray)
-      console.log('changeLeftMapping')
 
       // create hierarchy
       const hierarchyArray = this.createHierarchy()
-      console.log('HIERARCHY')
       this.$store.commit('changeHierarchy', hierarchyArray)
 
       const labelsArray = this.createLabels()
-      console.log('LABELS')
       this.$store.commit('changeLabels', labelsArray)
     },
     createLabels: function (): Array<Label> {

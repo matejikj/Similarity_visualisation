@@ -1,17 +1,28 @@
-{
+  {
     "metadata": {
       
     },
     "mappings": [
       {
         "@id": "v1",
+        "metadata": {
+          "from": "title",
+          "title": "Wikidata v1",
+          "input": [
+              [
+                  "aa",
+                  "ab",
+                  "ac"
+              ]
+          ]
+        },
         "data": [
           {
             "id": "21",
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "aa"
+              "group": ["aa"]
             }
           },
           {
@@ -19,7 +30,7 @@
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "aa"
+              "group": ["aa"]
             }
           },
           {
@@ -27,7 +38,7 @@
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "ab"
+              "group": ["ab"]
             }
           },
           {
@@ -35,36 +46,32 @@
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "ac"
-            }
-          },
-          {
-            "id": "Q23855230",
-            "metadata": {
-              "shared": 1,
-              "size": 1,
-              "group": "aa"
-            }
-          },
-          {
-            "id": "Q23855230",
-            "metadata": {
-              "shared": 1,
-              "size": 1,
-              "group": "aa"
+              "group": ["ac"]
             }
           }
         ]
       },
       {
         "@id": "v2",
+        "metadata": {
+          "from": "title",
+          "title": "Wikidata v1",
+          "input": [
+              [
+                  "ba",
+                  "bb",
+                  "bc",
+                  "bd"
+              ]
+          ]
+        },
         "data": [
           {
             "id": "38",
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "ba"
+              "group": ["ba"]
             }
           },
           {
@@ -72,7 +79,7 @@
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "ba"
+              "group": ["ba"]
             }
           },
           {
@@ -80,7 +87,7 @@
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "bb"
+              "group": ["bb"]
             }
           },
           {
@@ -88,7 +95,7 @@
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "bc"
+              "group": ["bc"]
             }
           },
           {
@@ -96,7 +103,7 @@
             "metadata": {
               "shared": 1,
               "size": 1,
-              "group": "bd"
+              "group": ["bd"]
             }
           }
         ]
@@ -346,5 +353,47 @@
         "subClassOf",
         "19"
       ]
-    ]
+    ],
+    "labels": {
+      "1": "a",
+      "2": "b",
+      "3": "c",
+      "4": "d",
+      "5": "e",
+      "6": "f",
+      "7": "g",
+      "8": "h",
+      "9": "i",
+      "10": "j",
+      "11": "k",
+      "12": "l",
+      "13": "m",
+      "14": "n",
+      "15": "o",
+      "16": "p",
+      "17": "q",
+      "18": "r",
+      "19": "s",
+      "20": "t",
+      "21": "u",
+      "22": "v",
+      "23": "w",
+      "24": "x",
+      "25": "y",
+      "26": "z",
+      "27": "aa",
+      "28": "ab",
+      "29": "ac",
+      "30": "ad",
+      "31": "ae",
+      "32": "af",
+      "33": "ag",
+      "34": "ah",
+      "35": "ai",
+      "36": "aj",
+      "37": "ak",
+      "38": "al",
+      "39": "am",
+      "40": "an"
+    }
   }
