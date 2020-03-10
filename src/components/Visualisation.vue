@@ -1,6 +1,15 @@
 <template>
-    <svg id="svg" width="100%" height="80vh">
-      <g transform="translate(50,50)">
+    <svg id="svg" ref="svg" width="100%" height="80vh">
+      <g>
+        <circle
+          v-for="c in output"
+          :key="c.id"
+          :r="c.r"
+          :cx="c.x"
+          :cy="c.y"
+          :stroke="c.stroke"
+        >
+        </circle>
       </g>
     </svg>
 </template>
@@ -9,20 +18,21 @@
 import Vue from 'vue'
 import { Node, Label, Link } from '../models/types'
 import store from '../store'
-// import * as d3 from 'd3'
-// import store from '../store'
+import * as d3 from 'd3'
 
 export default Vue.extend({
   name: 'Visualisation',
-
   data: () => ({
+    height: 0,
+    width: 0,
+    output: Object()
   }),
   mounted () {
     this.$store.subscribe((mutation) => {
       switch (mutation.type) {
         case 'changeLabels':
           this.initializeNodes(store.state.hierarchy, store.state.labels)
-          this.$store.commit('changeActiveViewDepth', 4)
+          this.$store.commit('changeActiveViewDepth', 10)
           this.$store.commit('changeActiveId', 'root')
           this.visualise(store.state.activeId, store.state.activeViewDepth)
           console.log('changeLabels')
@@ -38,18 +48,18 @@ export default Vue.extend({
     initializeNodes: function (links: Array<Link>, labels: Array<Label>): void {
       const array = new Array<Node>()
       const visitedNodesArray = new Array<string>()
-      const root = new Node('ROOT', new Array<Node>(), new Array<Node>(), 'root', undefined, undefined)
+      const root = new Node('ROOT', new Array<Node>(), new Array<Node>(), 'root', null, null)
       array.push(root)
       if (links !== undefined) {
         for (let i = 0; i < links.length; i++) {
           if (!visitedNodesArray.includes(links[i].target)) {
             visitedNodesArray.push(links[i].target)
-            const node = new Node(labels.filter(x => x.id === links[i].target)[0].label, new Array<Node>(), new Array<Node>(), links[i].target, undefined, undefined)
+            const node = new Node(labels.filter(x => x.id === links[i].target)[0].label, new Array<Node>(), new Array<Node>(), links[i].target, null, null)
             array.push(node)
           }
           if (!visitedNodesArray.includes(links[i].source)) {
             visitedNodesArray.push(links[i].source)
-            const node = new Node(labels.filter(x => x.id === links[i].source)[0].label, new Array<Node>(), new Array<Node>(), links[i].source, undefined, undefined)
+            const node = new Node(labels.filter(x => x.id === links[i].source)[0].label, new Array<Node>(), new Array<Node>(), links[i].source, null, null)
             array.push(node)
           }
         }
@@ -81,7 +91,7 @@ export default Vue.extend({
     buildTree: function (id: string, depth: number): Node {
       const nodesArray = store.state.nodes
       nodesArray.forEach(element => {
-        element.depth = undefined
+        element.depth = null
       })
       const tmpRoot = nodesArray.filter(x => x.id === id)[0]
       const root = new Node(tmpRoot.label, tmpRoot.parents, tmpRoot.children, tmpRoot.id, tmpRoot.depth, tmpRoot.color)
@@ -97,7 +107,7 @@ export default Vue.extend({
               const tmpChildren = nodesArray.filter(x => x.id === node.children[i].id)[0]
               const children = new Node(tmpChildren.label, tmpChildren.parents, tmpChildren.children, tmpChildren.id, tmpChildren.depth, tmpChildren.color)
               node.children[i] = children
-              if (node.depth !== undefined) {
+              if (node.depth !== null) {
                 const newLevelDepth = node.depth + 1
                 children.depth = newLevelDepth
                 if (maxDepth < newLevelDepth) {
@@ -122,10 +132,36 @@ export default Vue.extend({
       }
       return root
     },
+    packCircles: function (root: Node) {
+      const margin = 10
+      // @ts-ignore
+      console.log(this.$refs.svg.clientWidth)
+      // @ts-ignore
+      console.log(this.$refs.svg.clientHeight)
+
+      const packChart = d3.pack()
+      // @ts-ignore
+      packChart.size([this.$refs.svg.clientWidth - margin, this.$refs.svg.clientHeight - margin])
+      packChart.padding(10)
+      const treeRoot = d3.hierarchy(root)
+        .sum(d => Math.sqrt(d.value))
+
+      const output = packChart(treeRoot).descendants()
+      return output.map((d, i) => {
+        return {
+          id: i + 1,
+          r: d.r,
+          x: d.x,
+          y: d.y,
+          stroke: 'grey'
+        }
+      })
+    },
     // eslint-disable-next-line
     visualise: function (id: string, depth: number) {
       const treeRoot = this.buildTree(id, depth)
       console.log(treeRoot)
+      this.output = this.packCircles(treeRoot)
     }
   }
 })

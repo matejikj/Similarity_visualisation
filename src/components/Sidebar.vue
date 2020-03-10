@@ -53,7 +53,6 @@ export default Vue.extend({
             }
             array.push(node)
           }
-          console.log(array)
           this.comboboxItems = array
         },
         error => {
