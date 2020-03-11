@@ -11,7 +11,12 @@
       @change="changeMapping"
       >
     </v-select>
-    <v-treeview selectable :items="this.treeItems" v-model="selectedTreeItems" />
+    <v-treeview
+      v-model="selectedTreeItems"
+      :items="this.treeItems"
+      selectable
+      @input="selectedTreeItemsHandle"
+      />
   </v-container>
 </template>
 
@@ -31,12 +36,24 @@ export default Vue.extend({
   },
   data: () => ({
     treeItems: Array<MappingNode>(),
+    treeItemsArray: Array<MappingNode>(),
     selectedTreeItems: [],
     comboboxItems: Array<ComboboxItem>(),
     datasetUrl: 'example.json',
     error: Error()
   }),
   methods: {
+    selectedTreeItemsHandle: function (data: any) {
+      const array = Array<string>()
+      data.forEach(element => {
+        array.push(this.treeItemsArray.filter(x => x.id === element)[0].name)
+      })
+      if (this.$props.sidebarPosition === 'left') {
+        this.$store.commit('changeLeftArrowsId', array)
+      } else {
+        this.$store.commit('changeRightArrowsId', array)
+      }
+    },
     addDataset: function () {
       axios.get(this.datasetUrl).then(
         response => {
@@ -69,6 +86,8 @@ export default Vue.extend({
       } else {
         this.$store.commit('changeRightMapping', mappingArray)
       }
+      this.selectedTreeItems = []
+      this.treeItemsArray = Array<MappingNode>()
       this.treeItems = this.createTree(mappingArray)
 
       // create hierarchy
@@ -154,6 +173,8 @@ export default Vue.extend({
             children: [newChildren]
           }
           counter++
+          this.treeItemsArray.push(newChildren)
+          this.treeItemsArray.push(newNode)
           array.push(newNode)
         } else {
           const node = array.filter(x => x.name === element.group[0])[0]
@@ -162,6 +183,7 @@ export default Vue.extend({
             name: element.id
           }
           counter++
+          this.treeItemsArray.push(newChildren)
           if (node.children !== undefined) {
             node.children.push(newChildren)
           }

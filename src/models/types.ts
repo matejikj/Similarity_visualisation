@@ -50,6 +50,7 @@ export class Node {
     color: string | null;
     depth: number | null;
     value?: number;
+    isLeaf: boolean;
 
     constructor (label: string, parents: Array<Node>, children: Array<Node>, id: string, depth: number | null, color: string | null) {
       this.color = color
@@ -58,5 +59,17 @@ export class Node {
       this.parents = parents
       this.children = children
       this.id = id
+      this.isLeaf = false
     }
+}
+
+export interface Arrow {
+  id: number;
+  color: string;
+  strokeWidth: number;
+  lx: number;
+  ly: number;
+  rx: number;
+  ry: number;
+  r: number;
 }

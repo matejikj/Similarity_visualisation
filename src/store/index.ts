@@ -14,8 +14,10 @@ export default new Vuex.Store({
     labels: Array<Label>(),
     leftMappingChoice: Number(),
     rightMappingChoice: Number(),
-    activeViewDepth: 1,
-    maximalViewDepth: 10,
+    leftArrowsId: Array<string>(),
+    rightArrowsId: Array<string>(),
+    activeViewDepth: 0,
+    maximalViewDepth: 0,
     nodes: Array<Node>(),
     activeId: 'root'
   },
@@ -45,7 +47,7 @@ export default new Vuex.Store({
       state.activeId = value
     },
     changeMaximalViewDepth (state, value: number) {
-      state.activeViewDepth = value
+      state.maximalViewDepth = value
     },
     changeHierarchy (state, value: Array<Link>) {
       state.hierarchy = value
@@ -55,6 +57,12 @@ export default new Vuex.Store({
     },
     changeNodes (state, value: Array<Node>) {
       state.nodes = value
+    },
+    changeLeftArrowsId (state, value: Array<string>) {
+      state.leftArrowsId = value
+    },
+    changeRightArrowsId (state, value: Array<string>) {
+      state.rightArrowsId = value
     }
   },
   actions: {

@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-slider min="1" v-bind:max="maximum" @change="addDataset"></v-slider>
+        <v-slider v-bind:max="maximum" @change="addDataset"></v-slider>
     </v-container>
 </template>
 
@@ -14,17 +14,20 @@ export default Vue.extend({
   name: 'SliderBar',
 
   data: () => ({
-    maximum: 10
+    maximum: Number()
   }),
-  computed: mapState(['maximalViewDepth']),
-  watch: {
-    maximalViewDepth (newValue, oldValue) {
-      this.maximum = newValue
-    }
+  mounted () {
+    this.$store.subscribe((mutation) => {
+      switch (mutation.type) {
+        case 'changeMaximalViewDepth':
+          this.maximum = store.state.maximalViewDepth
+          break
+      }
+    })
   },
   methods: {
     addDataset: function (data: any) {
-      this.$store.commit('changeActiveViewDepth', data)
+      this.$store.commit('changeActiveViewDepth', data + 1)
     }
   }
 })
