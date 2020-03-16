@@ -1,9 +1,12 @@
-// Model
 export interface MappingData {
     id: string;
     group: string;
     shared: number;
     size: number;
+}
+
+export enum Position {
+  Left, Right
 }
 
 export interface MappingNode {
@@ -22,54 +25,6 @@ export class ComboboxItem {
     }
 }
 
-export class Label {
-    id: string;
-    label: string;
-
-    constructor (id: string, label: string) {
-      this.id = id
-      this.label = label
-    }
-}
-
-export class Link {
-    source: string;
-    target: string;
-
-    constructor (source: string, target: string) {
-      this.source = source
-      this.target = target
-    }
-}
-
-export class Node {
-    label: string;
-    parents: Array<Node>;
-    children: Array<Node>;
-    id: string;
-    color: string | null;
-    depth: number | null;
-    value?: number;
-    isLeaf: boolean;
-
-    constructor (label: string, parents: Array<Node>, children: Array<Node>, id: string, depth: number | null, color: string | null) {
-      this.color = color
-      this.depth = depth
-      this.label = label
-      this.parents = parents
-      this.children = children
-      this.id = id
-      this.isLeaf = false
-    }
-}
-
-export interface Arrow {
-  id: number;
-  color: string;
-  strokeWidth: number;
-  lx: number;
-  ly: number;
-  rx: number;
-  ry: number;
-  r: number;
-}
+export const MAX_DEPTH = 8
+export const ROOT_LABEL = 'root'
+export const ROOT_ID = 'root'

@@ -1,7 +1,6 @@
 <template>
   <v-container>
-    <v-text-field v-model="datasetUrl"></v-text-field>
-    <v-btn color="red" @click="addDataset">Confirm</v-btn>
+    <v-text-field v-model="datasetUrl" @keyup.enter="addDataset" @blur="addDataset"></v-text-field>
     <v-select
       :items="comboboxItems"
       item-text="name"
@@ -22,7 +21,9 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import { MappingData, MappingNode, ComboboxItem, Link, Label } from '../models/types'
+import { MappingData, MappingNode, ComboboxItem, Position } from '../models/types'
+import { Link } from '../models/Link'
+import { Label } from '../models/Label'
 import axios from 'axios'
 import store from '../store'
 
@@ -31,7 +32,6 @@ export default Vue.extend({
 
   props: {
     sidebarPosition: {
-      type: String
     }
   },
   data: () => ({
@@ -48,18 +48,20 @@ export default Vue.extend({
       data.forEach(element => {
         array.push(this.treeItemsArray.filter(x => x.id === element)[0].name)
       })
-      if (this.$props.sidebarPosition === 'left') {
+      if (this.$props.sidebarPosition === Position.Left) {
         this.$store.commit('changeLeftArrowsId', array)
-      } else {
+      }
+      if (this.$props.sidebarPosition === Position.Right) {
         this.$store.commit('changeRightArrowsId', array)
       }
     },
     addDataset: function () {
       axios.get(this.datasetUrl).then(
         response => {
-          if (this.$props.sidebarPosition === 'left') {
+          if (this.$props.sidebarPosition === Position.Left) {
             this.$store.commit('changeLeftDataset', response.data)
-          } else {
+          }
+          if (this.$props.sidebarPosition === Position.Right) {
             this.$store.commit('changeRightDataset', response.data)
           }
           const array = Array<ComboboxItem>()
@@ -71,6 +73,16 @@ export default Vue.extend({
             array.push(node)
           }
           this.comboboxItems = array
+          console.log('RRRRRRRRRRRRRRRRRRRRRR')
+          // create hierarchy
+          this.$store.dispatch('createHierarchy')
+          console.log('AAAAAAAAAAAAAAAAAAAAAAA')
+          this.$store.dispatch('createLabels')
+          console.log('BBBBBBBBBBBBBBBBBBBBBBB')
+          this.$store.dispatch('initializeNodes')
+          console.log('RRRRRRRRRRRRRRRRRRRRRRRRRRT')
+          this.$store.dispatch('paintCircles')
+          console.log('CCCCCCCCCCCCCCCCCCCCCCCC')
         },
         error => {
           this.error = error
@@ -80,116 +92,19 @@ export default Vue.extend({
     // eslint-disable-next-line
     changeMapping: function (data: ComboboxItem) {
       // create structure for mapping
-      const mappingArray = this.createMappingArray(data.id)
-      if (this.$props.sidebarPosition === 'left') {
-        this.$store.commit('changeLeftMapping', mappingArray)
-      } else {
-        this.$store.commit('changeRightMapping', mappingArray)
-      }
-      this.selectedTreeItems = []
-      this.treeItemsArray = Array<MappingNode>()
-      this.treeItems = this.createTree(mappingArray)
 
-      // create hierarchy
-      const hierarchyArray = this.createHierarchy()
-      this.$store.commit('changeHierarchy', hierarchyArray)
+      const mappingArray = store.dispatch('createMappingArray', this.$props.sidebarPosition)
+      // if (this.$props.sidebarPosition === 'left') {
+      //   this.$store.commit('changeLeftMapping', mappingArray)
+      // } else {
+      //   this.$store.commit('changeRightMapping', mappingArray)
+      // }
 
-      const labelsArray = this.createLabels()
-      this.$store.commit('changeLabels', labelsArray)
-    },
-    createLabels: function (): Array<Label> {
-      const leftDataset = store.state.leftDataset
-      const rightDataset = store.state.rightDataset
-      const array = Array<Label>()
-      if (leftDataset.labels !== undefined) {
-        for (const key in leftDataset.labels) {
-          const value = leftDataset.labels[key]
-          const newLabel = new Label(key, leftDataset.labels[key])
-          array.push(newLabel)
-        }
-      }
-      if (rightDataset.labels !== undefined) {
-        for (const key in rightDataset.labels) {
-          const newLabel = new Label(key, rightDataset.labels[key])
-          if (array.filter(x => x.id === newLabel.id && x.label === newLabel.label).length === 0) {
-            array.push(newLabel)
-          }
-        }
-      }
-      return array
-    },
-    createHierarchy: function (): Array<Link> {
-      const leftDataset = store.state.leftDataset
-      const rightDataset = store.state.rightDataset
-      const array = Array<Link>()
-      if (leftDataset.hierarchy !== undefined) {
-        for (let i = 0; i < leftDataset.hierarchy.length; i++) {
-          const newLink = new Link(leftDataset.hierarchy[i][2], leftDataset.hierarchy[i][0])
-          array.push(newLink)
-        }
-      }
-      if (rightDataset.hierarchy !== undefined) {
-        for (let i = 0; i < rightDataset.hierarchy.length; i++) {
-          const newLink = new Link(rightDataset.hierarchy[i][2], rightDataset.hierarchy[i][0])
-          if (array.filter(x => x.source === newLink.source && x.target === newLink.target).length === 0) {
-            array.push(newLink)
-          }
-        }
-      }
-      return array
-    },
-    createMappingArray: function (id: number): Array<MappingData> {
-      let mapping = Object()
-      if (this.$props.sidebarPosition === 'left') {
-        mapping = store.state.leftDataset
-      } else {
-        mapping = store.state.rightDataset
-      }
-      const array = Array<MappingData>()
-      for (let i = 0; i < mapping.mappings[id].data.length; i++) {
-        const newNode: MappingData = {
-          id: mapping.mappings[id].data[i].id,
-          group: mapping.mappings[id].data[i].metadata.group,
-          size: mapping.mappings[id].data[i].metadata.target_size,
-          shared: mapping.mappings[id].data[i].metadata.shared_size
-        }
-        array.push(newNode)
-      }
-      return array
-    },
-    createTree: function (List: Array<MappingData>): Array<MappingNode> {
-      const array: Array<MappingNode> = Array<MappingNode>()
-      let counter = 1
-      List.forEach(element => {
-        if (array.filter(x => x.name === element.group[0]).length === 0) {
-          const newChildren: MappingNode = {
-            id: counter,
-            name: element.id
-          }
-          counter++
-          const newNode: MappingNode = {
-            id: counter,
-            name: element.group[0],
-            children: [newChildren]
-          }
-          counter++
-          this.treeItemsArray.push(newChildren)
-          this.treeItemsArray.push(newNode)
-          array.push(newNode)
-        } else {
-          const node = array.filter(x => x.name === element.group[0])[0]
-          const newChildren: MappingNode = {
-            id: counter,
-            name: element.id
-          }
-          counter++
-          this.treeItemsArray.push(newChildren)
-          if (node.children !== undefined) {
-            node.children.push(newChildren)
-          }
-        }
-      })
-      return array
+      // this.createMappingArray(data.id)
+
+      // this.selectedTreeItems = []
+      // this.treeItemsArray = Array<MappingNode>()
+      // this.treeItems = this.createTree(mappingArray)
     }
   }
 })

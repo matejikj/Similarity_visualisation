@@ -14,13 +14,17 @@ export default Vue.extend({
   name: 'SliderBar',
 
   data: () => ({
-    maximum: Number()
   }),
+  computed: {
+    maximum () {
+      return store.getters.getMaxDepth
+    }
+  },
   mounted () {
     this.$store.subscribe((mutation) => {
       switch (mutation.type) {
         case 'changeMaximalViewDepth':
-          this.maximum = store.state.maximalViewDepth
+          this.maximum = store.getters.getMaxDepth
           break
       }
     })
