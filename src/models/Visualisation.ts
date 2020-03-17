@@ -1,6 +1,7 @@
 import store from '../store'
 import { Arrow } from './Arrow'
 import { Node } from './Node'
+import { Circle } from './Circle'
 import * as d3 from 'd3'
 import { ROOT_ID, MAX_DEPTH, ROOT_LABEL } from './types'
 
@@ -8,7 +9,7 @@ export class Visualisation {
     leftArrows: Array<Arrow> = []
     rightArrows: Array<Arrow> = []
     // eslint-disable-next-line
-    circles: Array<any> = []
+    circles: Array<Circle> = []
     rootID: string = ROOT_ID
     root: Node = new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, null, null)
     activeDepth = 1
@@ -33,8 +34,8 @@ export class Visualisation {
       } else {
         this.root = this.buildTree(nodes, this.activeDepth)
       }
-      this.maxDepth = maxDepth - 1
-      this.circles = this.packCircles(this.root)
+      this.maxDepth = maxDepth
+      this.packCircles(this.root)
     }
 
     public createLayer (urls: Array<string>): Array<string> {
@@ -190,7 +191,7 @@ export class Visualisation {
     }
 
     // eslint-disable-next-line
-    public packCircles (root: Node): any {
+    public packCircles (root: Node): void {
       const margin = 10
       const packChart = d3.pack()
       packChart.size([this.width - margin, this.height - margin])
@@ -199,23 +200,23 @@ export class Visualisation {
         .sum(d => Math.sqrt(d.value))
 
       const output = packChart(treeRoot).descendants()
-      const length = output.length
       const interpolate = d3.interpolateRgb('steelblue', 'brown')
-      return output.map((d, i) => {
-        const color = interpolate(d.data.depth / this.maxDepth)
-        return {
+
+      this.circles = new Array<Circle>()
+      for (let i = 0; i < output.length; i++) {
+        const color = interpolate(output[i].data.depth / this.maxDepth)
+        const n: Circle = {
           fill: color,
-          id: d.data.id,
-          label: d.data.label,
-          key1: (i + 1),
-          key2: length + (i + 1),
-          isLeaf: d.data.isLeaf,
-          depth: d.data.depth,
-          r: d.r,
-          x: d.x,
-          y: d.y,
-          stroke: 'blue'
+          id: output[i].data.id,
+          label: output[i].data.label,
+          isLeaf: output[i].data.isLeaf,
+          x: output[i].x,
+          y: output[i].y,
+          r: output[i].r,
+          depth: output[i].data.depth,
+          stroke: 'black'
         }
-      })
+        this.circles.push(n)
+      }
     }
 }

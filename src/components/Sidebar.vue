@@ -11,8 +11,8 @@
       >
     </v-select>
     <v-treeview
-      v-model="selectedTreeItems"
-      :items="this.treeItems"
+      v-model="selectedMappingItems"
+      :items="this.mappingItems"
       selectable
       @input="selectedTreeItemsHandle"
       />
@@ -21,9 +21,7 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import { MappingData, MappingNode, ComboboxItem, Position } from '../models/types'
-import { Link } from '../models/Link'
-import { Label } from '../models/Label'
+import { ComboboxItem, Position } from '../models/types'
 import axios from 'axios'
 import store from '../store'
 
@@ -35,23 +33,34 @@ export default Vue.extend({
     }
   },
   data: () => ({
-    treeItems: Array<MappingNode>(),
-    treeItemsArray: Array<MappingNode>(),
-    selectedTreeItems: [],
+    selectedMappingItems: [],
     comboboxItems: Array<ComboboxItem>(),
     datasetUrl: 'example.json',
     error: Error()
   }),
+  computed: {
+    mappingItems () {
+      if (this.$props.sidebarPosition === Position.Left) {
+        return store.getters.getLeftMapping
+      } else {
+        return store.getters.getRightMapping
+      }
+    }
+  },
   methods: {
+    // eslint-disable-next-line
     selectedTreeItemsHandle: function (data: any) {
       const array = Array<string>()
-      data.forEach(element => {
-        array.push(this.treeItemsArray.filter(x => x.id === element)[0].name)
-      })
       if (this.$props.sidebarPosition === Position.Left) {
+        data.forEach(element => {
+          array.push(store.state.leftMapping.itemsList.filter(x => x.id === element)[0].name)
+        })
         this.$store.commit('changeLeftArrowsId', array)
       }
       if (this.$props.sidebarPosition === Position.Right) {
+        data.forEach(element => {
+          array.push(store.state.rightMapping.itemsList.filter(x => x.id === element)[0].name)
+        })
         this.$store.commit('changeRightArrowsId', array)
       }
     },
@@ -73,16 +82,10 @@ export default Vue.extend({
             array.push(node)
           }
           this.comboboxItems = array
-          console.log('RRRRRRRRRRRRRRRRRRRRRR')
-          // create hierarchy
           this.$store.dispatch('createHierarchy')
-          console.log('AAAAAAAAAAAAAAAAAAAAAAA')
           this.$store.dispatch('createLabels')
-          console.log('BBBBBBBBBBBBBBBBBBBBBBB')
           this.$store.dispatch('initializeNodes')
-          console.log('RRRRRRRRRRRRRRRRRRRRRRRRRRT')
           this.$store.dispatch('paintCircles')
-          console.log('CCCCCCCCCCCCCCCCCCCCCCCC')
         },
         error => {
           this.error = error
@@ -91,20 +94,15 @@ export default Vue.extend({
     },
     // eslint-disable-next-line
     changeMapping: function (data: ComboboxItem) {
-      // create structure for mapping
-
-      const mappingArray = store.dispatch('createMappingArray', this.$props.sidebarPosition)
-      // if (this.$props.sidebarPosition === 'left') {
-      //   this.$store.commit('changeLeftMapping', mappingArray)
-      // } else {
-      //   this.$store.commit('changeRightMapping', mappingArray)
-      // }
-
-      // this.createMappingArray(data.id)
-
-      // this.selectedTreeItems = []
-      // this.treeItemsArray = Array<MappingNode>()
-      // this.treeItems = this.createTree(mappingArray)
+      switch (this.$props.sidebarPosition) {
+        case Position.Left:
+          this.$store.commit('changeLeftSelectedMapping', data.id)
+          break
+        case Position.Right:
+          this.$store.commit('changeRightSelectedMapping', data.id)
+          break
+      }
+      store.dispatch('createMapping', this.$props.sidebarPosition)
     }
   }
 })

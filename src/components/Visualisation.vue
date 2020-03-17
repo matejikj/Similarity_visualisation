@@ -16,7 +16,7 @@
           </circle>
         </template>
         <template v-for="c in circles">
-          <text class="text"
+          <text class="labels"
             :key="c.key2"
             :x="c.x-12*(c.id.length)/3"
             v-if="c.isLeaf"
@@ -59,11 +59,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Node } from '../models/Node'
-import { Label } from '../models/Label'
-import { Link } from '../models/Link'
-import { Arrow } from '../models/Arrow'
-import { Visualisation } from '../models/Visualisation'
 import store from '../store'
 
 export default Vue.extend({
@@ -86,33 +81,28 @@ export default Vue.extend({
     this.$store.commit('changeVisHeight', this.$refs.svg.clientHeight)
     // @ts-ignore
     this.$store.commit('changeVisWidth', this.$refs.svg.clientWidth)
-    // store.subscribe((mutation) => {
-    //   switch (mutation.type) {
-    //     case 'changeActiveViewDepth':
-    //       // this.visualise(store.state.activeId, store.state.activeViewDepth)
-    //       // this.repaintArrows(store.state.leftArrowsId, store.state.rightArrowsId)
-    //       break
-    //     case 'changeLeftArrowsId':
-    //       // this.repaintArrows(store.state.leftArrowsId, store.state.rightArrowsId)
-    //       break
-    //     case 'changeRightArrowsId':
-    //       // this.repaintArrows(store.state.leftArrowsId, store.state.rightArrowsId)
-    //       break
-    //   }
-    // })
   },
   methods: {
+    // eslint-disable-next-line
     openWiki: function (data: any) {
       const win = window.open('https://www.wikidata.org/wiki/' + data.id, '_blank')
       if (win !== null) {
         win.focus()
       }
     },
+    // eslint-disable-next-line
     clickCircle: function (data: any) {
-      // this.$store.commit('changeActiveViewDepth', 0)
-      // this.$store.commit('changeActiveId', data.id)
-      // this.visualise(store.state.activeId, store.state.activeViewDepth)
+      this.$store.dispatch('circleClicked', data)
     }
   }
 })
 </script>
+
+<style>
+.circle {
+  cursor: pointer;
+}
+.labels {
+  cursor: pointer;
+}
+</style>

@@ -36,11 +36,23 @@ export default new Vuex.Store({
     changeNodes (state, value: Array<Node>) {
       state.nodes = value
     },
+    changeVisDepth (state, value: number) {
+      state.visualisation.activeDepth = value
+    },
+    changeVisRootId (state, value: string) {
+      state.visualisation.rootID = value
+    },
     changeVisHeight (state, value: number) {
       state.visualisation.height = value
     },
     changeVisWidth (state, value: number) {
       state.visualisation.width = value
+    },
+    changeLeftSelectedMapping (state, value: number) {
+      state.leftMapping.selectedMapping = value
+    },
+    changeRightSelectedMapping (state, value: number) {
+      state.rightMapping.selectedMapping = value
     }
   },
   getters: {
@@ -55,16 +67,35 @@ export default new Vuex.Store({
     },
     getRightArrows: (state) => {
       return state.visualisation.rightArrows
+    },
+    getLeftMapping: (state) => {
+      return state.leftMapping.items
+    },
+    getRightMapping: (state) => {
+      return state.rightMapping.items
     }
   },
   actions: {
+    circleClicked: function (context, data) {
+      this.commit('changeVisRootId', data)
+      this.commit('changeVisDepth', 1)
+      this.state.visualisation.createVisualisation(this.state.nodes)
+    },
+    changeViewDepth: function (context, data) {
+      this.commit('changeVisDepth', data)
+      this.state.visualisation.createVisualisation(this.state.nodes)
+    },
     paintCircles: function (): void {
       this.state.visualisation.createVisualisation(this.state.nodes)
     },
     createMapping: function (context, position: Position): void {
-      if (position === Position.Left) {
-      }
-      if (position === Position.Right) {
+      switch (position) {
+        case Position.Left:
+          this.state.leftMapping.createMapping(this.state.leftDataset)
+          break
+        case Position.Right:
+          this.state.leftMapping.createMapping(this.state.rightDataset)
+          break
       }
     },
     createHierarchy: function (): void {

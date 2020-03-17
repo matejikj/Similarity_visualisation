@@ -1,37 +1,28 @@
 <template>
     <v-container>
-        <v-slider v-bind:max="maximum" @change="addDataset"></v-slider>
+        <v-slider v-bind:min="minimum" v-bind:max="maximum" @change="changeDepth"></v-slider>
     </v-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import store from '../store'
-import { mapState } from 'vuex'
-// import store from '../store'
 
 export default Vue.extend({
   name: 'SliderBar',
 
   data: () => ({
+    minimum: 1
   }),
   computed: {
     maximum () {
       return store.getters.getMaxDepth
     }
   },
-  mounted () {
-    this.$store.subscribe((mutation) => {
-      switch (mutation.type) {
-        case 'changeMaximalViewDepth':
-          this.maximum = store.getters.getMaxDepth
-          break
-      }
-    })
-  },
   methods: {
-    addDataset: function (data: any) {
-      this.$store.commit('changeActiveViewDepth', data + 1)
+    // eslint-disable-next-line
+    changeDepth: function (data: any) {
+      this.$store.dispatch('changeViewDepth', data)
     }
   }
 })
