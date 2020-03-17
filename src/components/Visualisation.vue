@@ -94,7 +94,7 @@ export default Vue.extend({
     },
     // eslint-disable-next-line
     clickCircle: function (data: any) {
-      this.$store.dispatch('circleClicked', data.id)
+      this.$store.dispatch('circleClicked', data)
     }
   }
 })

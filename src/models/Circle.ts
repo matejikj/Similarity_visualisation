@@ -8,4 +8,5 @@ export interface Circle {
     y: number;
     r: number;
     stroke: string;
+    parent?: any;
   }

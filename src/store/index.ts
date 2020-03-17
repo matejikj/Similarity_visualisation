@@ -6,6 +6,8 @@ import { Label } from '@/models/Label'
 import { Node } from '@/models/Node'
 import { Mapping } from '@/models/Mapping'
 import { Visualisation } from '@/models/Visualisation'
+import { Path } from '@/models/Path'
+import { Circle } from '@/models/Circle'
 
 Vue.use(Vuex)
 
@@ -18,6 +20,7 @@ export default new Vuex.Store({
     labels: Array<Label>(),
     links: Array<Link>(),
     nodes: Array<Node>(),
+    path: new Path(),
     visualisation: new Visualisation(0, 0)
   },
   mutations: {
@@ -79,9 +82,15 @@ export default new Vuex.Store({
     },
     getRightMapping: (state) => {
       return state.rightMapping.items
+    },
+    getPath: (state) => {
+      return state.path.circles
     }
   },
   actions: {
+    resetRootId: function (): void {
+      this.state.visualisation.rootID = ROOT_ID
+    },
     repaintArrows: function (): void {
       this.state.visualisation.repaintArrows(Position.Left, this.state.leftMapping.selectedNodes)
       this.state.visualisation.repaintArrows(Position.Right, this.state.rightMapping.selectedNodes)
@@ -96,9 +105,11 @@ export default new Vuex.Store({
           break
       }
     },
-    circleClicked: function (context, data) {
-      this.commit('changeVisRootId', data)
+    circleClicked: function (context, data: Circle) {
+      this.commit('changeVisRootId', data.id)
       this.commit('changeVisDepth', 1)
+      this.state.path.refreshPath(data)
+      this.state.path.createCircles(this.state.nodes, this.state.visualisation.width)
       this.state.visualisation.createVisualisation(this.state.nodes)
     },
     changeViewDepth: function (context, data) {

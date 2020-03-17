@@ -83,6 +83,7 @@ export default Vue.extend({
             array.push(node)
           }
           this.comboboxItems = array
+          this.$store.dispatch('resetRootId')
           this.$store.dispatch('createHierarchy')
           this.$store.dispatch('createLabels')
           this.$store.dispatch('initializeNodes')

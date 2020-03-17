@@ -199,6 +199,7 @@ export class Visualisation {
         const color = interpolate(output[i].data.depth / this.maxDepth)
         const n: Circle = {
           fill: color,
+          parent: output[i].parent !== null ? output[i].parent : null,
           id: output[i].data.id,
           label: output[i].data.label,
           isLeaf: output[i].data.isLeaf,
