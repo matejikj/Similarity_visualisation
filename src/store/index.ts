@@ -48,6 +48,12 @@ export default new Vuex.Store({
     changeVisWidth (state, value: number) {
       state.visualisation.width = value
     },
+    changeLeftSelectedMappingNodes (state, value: Array<string>) {
+      state.leftMapping.selectedNodes = value
+    },
+    changeRightSelectedMappingNodes (state, value: Array<string>) {
+      state.rightMapping.selectedNodes = value
+    },
     changeLeftSelectedMapping (state, value: number) {
       state.leftMapping.selectedMapping = value
     },
@@ -76,6 +82,20 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    repaintArrows: function (): void {
+      this.state.visualisation.repaintArrows(Position.Left, this.state.leftMapping.selectedNodes)
+      this.state.visualisation.repaintArrows(Position.Right, this.state.rightMapping.selectedNodes)
+    },
+    paintArrows: function (context, position: Position): void {
+      switch (position) {
+        case Position.Left:
+          this.state.visualisation.repaintArrows(position, this.state.leftMapping.selectedNodes)
+          break
+        case Position.Right:
+          this.state.visualisation.repaintArrows(position, this.state.rightMapping.selectedNodes)
+          break
+      }
+    },
     circleClicked: function (context, data) {
       this.commit('changeVisRootId', data)
       this.commit('changeVisDepth', 1)
@@ -94,7 +114,7 @@ export default new Vuex.Store({
           this.state.leftMapping.createMapping(this.state.leftDataset)
           break
         case Position.Right:
-          this.state.leftMapping.createMapping(this.state.rightDataset)
+          this.state.rightMapping.createMapping(this.state.rightDataset)
           break
       }
     },

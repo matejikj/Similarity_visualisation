@@ -22,6 +22,8 @@
             v-if="c.isLeaf"
             :font-size="12"
             :y="c.y+6"
+            @click.exact="clickCircle(c)"
+            @click.ctrl="openWiki(c)"
           >{{c.id}}
           </text>
         </template>
@@ -92,7 +94,7 @@ export default Vue.extend({
     },
     // eslint-disable-next-line
     clickCircle: function (data: any) {
-      this.$store.dispatch('circleClicked', data)
+      this.$store.dispatch('circleClicked', data.id)
     }
   }
 })

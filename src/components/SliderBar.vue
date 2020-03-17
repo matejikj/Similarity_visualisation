@@ -23,6 +23,7 @@ export default Vue.extend({
     // eslint-disable-next-line
     changeDepth: function (data: any) {
       this.$store.dispatch('changeViewDepth', data)
+      this.$store.dispatch('repaintArrows')
     }
   }
 })

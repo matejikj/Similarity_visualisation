@@ -49,22 +49,23 @@ export default Vue.extend({
   },
   methods: {
     // eslint-disable-next-line
-    selectedTreeItemsHandle: function (data: any) {
+    selectedTreeItemsHandle: function (data: any): void {
       const array = Array<string>()
       if (this.$props.sidebarPosition === Position.Left) {
         data.forEach(element => {
           array.push(store.state.leftMapping.itemsList.filter(x => x.id === element)[0].name)
         })
-        this.$store.commit('changeLeftArrowsId', array)
+        this.$store.commit('changeLeftSelectedMappingNodes', array)
       }
       if (this.$props.sidebarPosition === Position.Right) {
         data.forEach(element => {
           array.push(store.state.rightMapping.itemsList.filter(x => x.id === element)[0].name)
         })
-        this.$store.commit('changeRightArrowsId', array)
+        this.$store.commit('changeRightSelectedMappingNodes', array)
       }
+      this.$store.dispatch('paintArrows', this.$props.sidebarPosition)
     },
-    addDataset: function () {
+    addDataset: function (): void {
       axios.get(this.datasetUrl).then(
         response => {
           if (this.$props.sidebarPosition === Position.Left) {
@@ -93,7 +94,7 @@ export default Vue.extend({
       )
     },
     // eslint-disable-next-line
-    changeMapping: function (data: ComboboxItem) {
+    changeMapping: function (data: ComboboxItem): void {
       switch (this.$props.sidebarPosition) {
         case Position.Left:
           this.$store.commit('changeLeftSelectedMapping', data.id)

@@ -3,7 +3,7 @@ import { Arrow } from './Arrow'
 import { Node } from './Node'
 import { Circle } from './Circle'
 import * as d3 from 'd3'
-import { ROOT_ID, MAX_DEPTH, ROOT_LABEL } from './types'
+import { ROOT_ID, MAX_DEPTH, ROOT_LABEL, Position } from './types'
 
 export class Visualisation {
     leftArrows: Array<Arrow> = []
@@ -14,7 +14,6 @@ export class Visualisation {
     root: Node = new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, null, null)
     activeDepth = 1
     maxDepth = MAX_DEPTH
-
     width: number
     height: number
 
@@ -85,10 +84,10 @@ export class Visualisation {
       return layerArray
     }
 
-    public repaintArrows (lefts: Array<string>, rights: Array<string>): void {
+    public repaintArrows (position: Position, ids: Array<string>): void {
       const queue = Array<Node>()
       const screenLevel = Array<Node>()
-      // queue.push(this.treeRoot)
+      queue.push(this.root)
       while (queue.length !== 0) {
         const vertex = queue.shift()
         if (vertex !== undefined) {
@@ -101,40 +100,33 @@ export class Visualisation {
         }
       }
       let counter = 0
-      if (lefts !== null && lefts !== undefined) {
-        const leftDepthLevel = this.createLayer(lefts)
-        for (let i = 0; i < leftDepthLevel.length; i++) {
-          const targetNode = this.circles.filter(x => x.id === leftDepthLevel[i])[0]
-          const n: Arrow = {
+
+      if (ids !== null && ids !== undefined) {
+        const viewDepthLevel = this.createLayer(ids)
+        const array = new Array<Arrow>()
+        for (let i = 0; i < viewDepthLevel.length; i++) {
+          const targetNode = this.circles.filter(x => x.id === viewDepthLevel[i])[0]
+          const arrow: Arrow = {
             color: 'red',
             strokeWidth: 2,
             id: counter,
-            lx: 0,
+            lx: position === Position.Left ? 0 : this.width,
             ly: this.height / 2,
             rx: targetNode.x,
             ry: targetNode.y,
             r: targetNode.r
           }
           counter++
-          this.leftArrows.push(n)
+          array.push(arrow)
         }
-      }
-      if (rights !== null && rights !== undefined) {
-        const rightDepthLevel = this.createLayer(rights)
-        for (let i = 0; i < rightDepthLevel.length; i++) {
-          const targetNode = this.circles.filter(x => x.id === rightDepthLevel[i])[0]
-          const n: Arrow = {
-            color: 'red',
-            strokeWidth: 2,
-            id: counter,
-            lx: this.width,
-            ly: this.height / 2,
-            rx: targetNode.x,
-            ry: targetNode.y,
-            r: targetNode.r
-          }
-          counter++
-          this.rightArrows.push(n)
+
+        switch (position) {
+          case Position.Left:
+            this.leftArrows = array
+            break
+          case Position.Right:
+            this.rightArrows = array
+            break
         }
       }
     }
