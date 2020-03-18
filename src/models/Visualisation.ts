@@ -80,7 +80,6 @@ export class Visualisation {
           }
         }
       }
-      console.log('STOP')
       return layerArray
     }
 
