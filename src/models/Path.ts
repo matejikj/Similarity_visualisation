@@ -3,6 +3,7 @@ import { Circle } from './Circle'
 import { Node } from './Node'
 
 export class Path {
+    canvasWidth = 0;
     pathIds: Array<string> = [ROOT_ID];
     circles: Array<Circle> = [];
 
@@ -22,15 +23,13 @@ export class Path {
           this.pathIds.push(element)
         }
       }
-      console.log(this.pathIds)
     }
 
-    public createCircles (nodes: Array<Node>, width: number): void {
-      const canvasWidth = width
-      const rowCount = 10
+    public createCircles (nodes: Array<Node>): void {
+      const rowCount = this.canvasWidth / 80
       let actualRow = 0
       const circleMargin = 8
-      const circleRadius = Math.floor((canvasWidth - (rowCount - 1) * 2 * circleMargin) / rowCount / 2)
+      const circleRadius = Math.floor((this.canvasWidth - (rowCount - 1) * 2 * circleMargin) / rowCount / 2)
       const pathRows = Math.floor(this.pathIds.length / rowCount)
       const pathMod = this.pathIds.length % rowCount
 

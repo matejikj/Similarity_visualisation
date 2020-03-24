@@ -40,6 +40,7 @@ export class Visualisation {
     public createLayer (urls: Array<string>): Array<string> {
       const layerArray = Array<string>()
       let j = 0
+
       for (let i = 0; i < urls.length; i++) {
         const n = store.state.nodes.filter(y => y.id === urls[i])[0]
         if (n === undefined) {
@@ -47,22 +48,18 @@ export class Visualisation {
         }
         const stack = Array<Node>()
         stack.push(n)
-        let cycleArray = Array<string>()
         const visitedArray = Array<string>()
         while (stack.length !== 0) {
           const parent = stack.pop()
           j++
           console.log(j)
           if (parent !== undefined) {
-            if (cycleArray.includes(parent.id)) {
-              cycleArray = new Array<string>()
+            if (parent.id === ROOT_ID) {
               continue
             }
             if (parent.parents === null) {
-              cycleArray = new Array<string>()
               continue
             }
-            cycleArray.push(parent.id)
             if (parent.depth == null) {
               if (parent.parents != null) {
                 for (let i = 0; i < parent.parents.length; i++) {
@@ -138,7 +135,7 @@ export class Visualisation {
         element.depth = null
       })
       const tmpRoot = nodes.filter(x => x.id === this.rootID)[0]
-      const root = new Node(tmpRoot.label, tmpRoot.parents, tmpRoot.children, tmpRoot.id, tmpRoot.depth, tmpRoot.color)
+      const root = new Node(tmpRoot.label, tmpRoot.parents, Array<Node>(), tmpRoot.id, tmpRoot.depth, tmpRoot.color)
       let maxDepth = 0
       root.depth = 0
       tmpRoot.depth = 0
@@ -146,16 +143,21 @@ export class Visualisation {
       queue.push(root)
       while (queue.length !== 0) {
         const node = queue.shift()
-        if (node !== undefined && node.children !== undefined) {
-          if (node.children.length !== 0) {
-            for (let i = 0; i < node.children.length; i++) {
-              const tmpChildren = nodes.filter(x => x.id === node.children[i].id)[0]
-              const children = new Node(tmpChildren.label, tmpChildren.parents, tmpChildren.children, tmpChildren.id, tmpChildren.depth, tmpChildren.color)
-              node.children[i] = children
+        const children = nodes.filter(x => x.id === node?.id)[0].children
+        if (node?.id === '2') {
+          console.log('2')
+        }
+        console.log(node?.label)
+        if (node !== undefined && children !== undefined) {
+          if (children.length !== 0) {
+            for (let i = 0; i < children.length; i++) {
+              const tmpChild = nodes.filter(x => x.id === children[i].id)[0]
+              const child = new Node(tmpChild.label, tmpChild.parents, Array<Node>(), tmpChild.id, tmpChild.depth, tmpChild.color)
+              node.children.push(child)
               if (node.depth !== null) {
                 const newLevelDepth = node.depth + 1
-                children.depth = newLevelDepth
-                tmpChildren.depth = newLevelDepth
+                child.depth = newLevelDepth
+                tmpChild.depth = newLevelDepth
                 if (maxDepth < newLevelDepth) {
                   maxDepth = newLevelDepth
                 }
@@ -163,9 +165,9 @@ export class Visualisation {
                   queue.push(node.children[i])
                 } else {
                   if (newLevelDepth === depth) {
-                    children.children = []
-                    children.value = 1
-                    children.isLeaf = true
+                    child.children = []
+                    child.value = 1
+                    child.isLeaf = true
                   }
                 }
               }

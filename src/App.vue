@@ -13,12 +13,8 @@
         </v-col>
       </v-row>
       <v-row class="text-center">
-        <v-col cols="3">
-        </v-col>
-        <v-col cols="6">
+        <v-col cols="12">
           <path-bar></path-bar>
-        </v-col>
-        <v-col cols="3">
         </v-col>
       </v-row>
       <v-row class="text-center">

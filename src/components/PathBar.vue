@@ -1,5 +1,5 @@
 <template>
-  <svg id="path-svg" ref="path-svg" >
+  <svg id="svg" ref="svg" width="100%">
     <g>
       <template v-for="c in circles">
         <circle class="circle"
@@ -44,7 +44,16 @@ export default Vue.extend({
       return store.getters.getPath
     }
   },
+  mounted () {
+    // @ts-ignore
+    this.$store.commit('changePathVisWidth', this.$refs.svg.clientWidth)
+  },
   methods: {
+    // eslint-disable-next-line
+    clickCircle: function (data: any) {
+      this.$store.dispatch('circleClicked', data)
+      this.$store.dispatch('repaintArrows')
+    }
   }
 })
 </script>

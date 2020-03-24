@@ -1,10 +1,17 @@
 import { MappingNode, MappingData } from '../models/types'
+import store from '@/store'
 
 export class Mapping {
     selectedMapping = 0;
     items: Array<MappingNode> = [];
     itemsList: Array<MappingNode> = [];
     selectedNodes = Array<string>();
+
+    public resetMapping (): void {
+      this.selectedNodes = Array<string>()
+      this.items = Array<MappingNode>()
+      this.itemsList = Array<MappingNode>()
+    }
 
     // eslint-disable-next-line
     public createMapping (mapping: any): void {
@@ -21,9 +28,12 @@ export class Mapping {
       let counter = 1
       mappingDataArray.forEach(element => {
         if (this.items.filter(x => x.name === element.group[0]).length === 0) {
+          const label = store.state.labels.filter(x => x.id === element.id)[0]
+          const name = label === undefined ? element.id : label.label
           const newChildren: MappingNode = {
             id: counter,
-            name: element.id
+            nodeID: element.id,
+            name: name
           }
           counter++
           const newNode: MappingNode = {
@@ -37,9 +47,12 @@ export class Mapping {
           this.items.push(newNode)
         } else {
           const node = this.items.filter(x => x.name === element.group[0])[0]
+          const label = store.state.labels.filter(x => x.id === element.id)[0]
+          const name = label === undefined ? element.id : label.label
           const newChildren: MappingNode = {
             id: counter,
-            name: element.id
+            nodeID: element.id,
+            name: name
           }
           counter++
           this.itemsList.push(newChildren)

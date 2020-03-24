@@ -51,6 +51,9 @@ export default new Vuex.Store({
     changeVisWidth (state, value: number) {
       state.visualisation.width = value
     },
+    changePathVisWidth (state, value: number) {
+      state.path.canvasWidth = value
+    },
     changeLeftSelectedMappingNodes (state, value: Array<string>) {
       state.leftMapping.selectedNodes = value
     },
@@ -62,11 +65,18 @@ export default new Vuex.Store({
     },
     changeRightSelectedMapping (state, value: number) {
       state.rightMapping.selectedMapping = value
+    },
+    changeActivePath (state, value: Array<string>) {
+      state.path.pathIds = value
     }
+
   },
   getters: {
     getMaxDepth: (state) => {
       return state.visualisation.maxDepth
+    },
+    getViewDepth: (state) => {
+      return state.visualisation.activeDepth
     },
     getCircles: (state) => {
       return state.visualisation.circles
@@ -88,6 +98,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    resetActivePath: function (): void {
+      this.state.path.pathIds = [ROOT_ID]
+    },
     resetRootId: function (): void {
       this.state.visualisation.rootID = ROOT_ID
     },
@@ -109,7 +122,7 @@ export default new Vuex.Store({
       this.commit('changeVisRootId', data.id)
       this.commit('changeVisDepth', 1)
       this.state.path.refreshPath(data)
-      this.state.path.createCircles(this.state.nodes, this.state.visualisation.width)
+      this.state.path.createCircles(this.state.nodes)
       this.state.visualisation.createVisualisation(this.state.nodes)
     },
     changeViewDepth: function (context, data) {
@@ -129,20 +142,30 @@ export default new Vuex.Store({
           break
       }
     },
+    resetMapping: function (context, position: Position): void {
+      switch (position) {
+        case Position.Left:
+          this.state.leftMapping.resetMapping()
+          break
+        case Position.Right:
+          this.state.rightMapping.resetMapping()
+          break
+      }
+    },
     createHierarchy: function (): void {
       const leftDataset = this.state.leftDataset
       const rightDataset = this.state.rightDataset
       const array = Array<Link>()
       if (leftDataset.hierarchy !== undefined) {
         for (let i = 0; i < leftDataset.hierarchy.length; i++) {
-          const newLink = new Link(leftDataset.hierarchy[i][2], leftDataset.hierarchy[i][0])
+          const newLink = new Link(leftDataset.hierarchy[i][2], leftDataset.hierarchy[i][0], leftDataset.hierarchy[i][1])
           array.push(newLink)
         }
       }
       if (rightDataset.hierarchy !== undefined) {
         for (let i = 0; i < rightDataset.hierarchy.length; i++) {
-          const newLink = new Link(rightDataset.hierarchy[i][2], rightDataset.hierarchy[i][0])
-          if (array.filter(x => x.source === newLink.source && x.target === newLink.target).length === 0) {
+          const newLink = new Link(rightDataset.hierarchy[i][2], rightDataset.hierarchy[i][0], rightDataset.hierarchy[i][1])
+          if (array.filter(x => x.parent === newLink.parent && x.child === newLink.child).length === 0) {
             array.push(newLink)
           }
         }
@@ -173,39 +196,45 @@ export default new Vuex.Store({
     initializeNodes: function (): void {
       const array = new Array<Node>()
       const visitedNodesArray = new Array<string>()
-      const root = new Node(ROOT_LABEL, new Array<Node>(), new Array<Node>(), ROOT_ID, null, null)
-      array.push(root)
       if (this.state.links !== undefined) {
         for (let i = 0; i < this.state.links.length; i++) {
-          if (!visitedNodesArray.includes(this.state.links[i].target)) {
-            visitedNodesArray.push(this.state.links[i].target)
-            const node = new Node(this.state.labels.filter(x => x.id === this.state.links[i].target)[0].label, new Array<Node>(), new Array<Node>(), this.state.links[i].target, null, null)
+          if (!visitedNodesArray.includes(this.state.links[i].child)) {
+            visitedNodesArray.push(this.state.links[i].child)
+            const node = new Node(this.state.labels.filter(x => x.id === this.state.links[i].child)[0].label, new Array<Node>(), new Array<Node>(), this.state.links[i].child, null, null)
             array.push(node)
           }
-          if (!visitedNodesArray.includes(this.state.links[i].source)) {
-            visitedNodesArray.push(this.state.links[i].source)
-            const node = new Node(this.state.labels.filter(x => x.id === this.state.links[i].source)[0].label, new Array<Node>(), new Array<Node>(), this.state.links[i].source, null, null)
+          if (!visitedNodesArray.includes(this.state.links[i].parent)) {
+            visitedNodesArray.push(this.state.links[i].parent)
+            const node = new Node(this.state.labels.filter(x => x.id === this.state.links[i].parent)[0].label, new Array<Node>(), new Array<Node>(), this.state.links[i].parent, null, null)
             array.push(node)
           }
         }
       }
+
       for (let i = 0; i < array.length; i++) {
         const id = array[i].id
 
         for (let j = 0; j < this.state.links.length; j++) {
-          if (this.state.links[j].target === id) {
-            array[i].parents.push(array.filter(x => x.id === this.state.links[j].source)[0])
+          if (this.state.links[j].child === id) {
+            array[i].parents.push(array.filter(x => x.id === this.state.links[j].parent)[0])
           }
-          if (this.state.links[j].source === id) {
-            array[i].children.push(array.filter(x => x.id === this.state.links[j].target)[0])
+          if (this.state.links[j].parent === id) {
+            array[i].children.push(array.filter(x => x.id === this.state.links[j].child)[0])
           }
         }
       }
-      const rootsArray = array.filter(x => x.parents.length === 0)
-      for (let i = 0; i < rootsArray.length; i++) {
-        if (rootsArray[i].id !== 'root') {
-          rootsArray[i].parents.push(root)
-          root.children.push(rootsArray[i])
+
+      let root = array.filter(x => x.id === ROOT_ID)[0]
+
+      if (root === undefined || root === null) {
+        root = new Node(ROOT_LABEL, new Array<Node>(), new Array<Node>(), ROOT_ID, null, null)
+        array.splice(0, 0, root)
+        const rootsArray = array.filter(x => x.parents.length === 0)
+        for (let i = 0; i < rootsArray.length; i++) {
+          if (rootsArray[i].id !== ROOT_ID) {
+            rootsArray[i].parents.push(root)
+            root.children.push(rootsArray[i])
+          }
         }
       }
       this.commit('changeNodes', array)

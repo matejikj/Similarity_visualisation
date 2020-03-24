@@ -1,9 +1,23 @@
-export class Link {
-    source: string;
-    target: string;
+import { Relation } from './types'
 
-    constructor (source: string, target: string) {
-      this.source = source
-      this.target = target
+export class Link {
+  parent: string;
+    relation: Relation;
+    child: string;
+
+    constructor (parent: string, child: string, relation: string) {
+      this.parent = parent
+      this.child = child
+      switch (relation) {
+        case 'subclass':
+          this.relation = Relation.Subclass
+          break
+        case 'instanceof':
+          this.relation = Relation.Instance
+          break
+        default:
+          this.relation = Relation.Instance
+          break
+      }
     }
 }

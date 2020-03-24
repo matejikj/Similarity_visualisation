@@ -9,8 +9,13 @@ export enum Position {
   Left, Right
 }
 
+export enum Relation {
+  Subclass, Instance
+}
+
 export interface MappingNode {
     id: number;
+    nodeID?: string;
     name: string;
     children?: MappingNode[];
 }
@@ -25,6 +30,6 @@ export class ComboboxItem {
     }
 }
 
-export const MAX_DEPTH = 8
-export const ROOT_LABEL = 'root'
-export const ROOT_ID = 'root'
+export const MAX_DEPTH = 6
+export const ROOT_LABEL = 'entity'
+export const ROOT_ID = 'Q35120'

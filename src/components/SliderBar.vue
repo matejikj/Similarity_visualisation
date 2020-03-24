@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-slider v-bind:min="minimum" v-bind:max="maximum" @change="changeDepth"></v-slider>
+        <v-slider v-bind:min="minimum" v-bind:value="activeDepth" v-bind:max="maximum" @change="changeDepth"></v-slider>
     </v-container>
 </template>
 
@@ -17,6 +17,9 @@ export default Vue.extend({
   computed: {
     maximum () {
       return store.getters.getMaxDepth
+    },
+    activeDepth () {
+      return store.getters.getViewDepth
     }
   },
   methods: {

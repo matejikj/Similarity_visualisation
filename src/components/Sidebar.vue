@@ -53,13 +53,19 @@ export default Vue.extend({
       const array = Array<string>()
       if (this.$props.sidebarPosition === Position.Left) {
         data.forEach(element => {
-          array.push(store.state.leftMapping.itemsList.filter(x => x.id === element)[0].name)
+          const nodeid = store.state.leftMapping.itemsList.filter(x => x.id === element)[0].nodeID
+          if (nodeid !== undefined) {
+            array.push(nodeid)
+          }
         })
         this.$store.commit('changeLeftSelectedMappingNodes', array)
       }
       if (this.$props.sidebarPosition === Position.Right) {
         data.forEach(element => {
-          array.push(store.state.rightMapping.itemsList.filter(x => x.id === element)[0].name)
+          const nodeid = store.state.rightMapping.itemsList.filter(x => x.id === element)[0].nodeID
+          if (nodeid !== undefined) {
+            array.push(nodeid)
+          }
         })
         this.$store.commit('changeRightSelectedMappingNodes', array)
       }
@@ -84,6 +90,8 @@ export default Vue.extend({
           }
           this.comboboxItems = array
           this.$store.dispatch('resetRootId')
+          this.$store.dispatch('resetActivePath')
+          store.dispatch('resetMapping', this.$props.sidebarPosition)
           this.$store.dispatch('createHierarchy')
           this.$store.dispatch('createLabels')
           this.$store.dispatch('initializeNodes')
@@ -104,6 +112,7 @@ export default Vue.extend({
           this.$store.commit('changeRightSelectedMapping', data.id)
           break
       }
+      store.dispatch('resetMapping', this.$props.sidebarPosition)
       store.dispatch('createMapping', this.$props.sidebarPosition)
     }
   }
