@@ -16,8 +16,20 @@ export enum Relation {
 export interface MappingNode {
     id: number;
     nodeID?: string;
+    mapBy?: string;
     name: string;
     children?: MappingNode[];
+}
+
+export interface ArrowData {
+  id: string;
+  label: string;
+  word?: string;
+}
+
+export interface PathNode {
+  id: number;
+  name: string;
 }
 
 export class ComboboxItem {

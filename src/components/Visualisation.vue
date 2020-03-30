@@ -1,5 +1,5 @@
 <template>
-    <svg id="svg" ref="svg" width="100%" height="80vh">
+    <svg id="svg" ref="svg" width="100%" height="70vh">
         <defs>
           <!-- arrowhead marker definition -->
           <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
@@ -32,6 +32,7 @@
         <template v-for="c in circles">
           <text class="labels"
             :key="c.key2"
+            :fill="c.textColor"
             :x="c.x"
             v-if="c.isLeaf && c.r > 12"
             :font-size="c.r / 2"
@@ -44,26 +45,38 @@
         </template>
         <template v-for="c in leftArrows">
           <line class="link"
+            v-bind:content="`
+              map by: ${c.word}</br>
+              map to: ${c.mapTo}</br>
+            `"
+            v-tippy='{interactive : true, animateFill: false, placement:"left", animation:"shift-toward", delay:20, arrow : true}'
             :key="c.id"
             :id="c.id"
             :x1="c.lx"
             :y1="c.ly"
             :x2="c.rx"
             :y2="c.ry"
-            :stroke="c.color"
+            stroke='black'
+            stroke-width='2'
             marker-end="url(#arrow)"
           >
           </line>
         </template>
         <template v-for="c in rightArrows">
           <line class="link"
+            v-bind:content="`
+              map by: ${c.word}</br>
+              map to: ${c.mapTo}</br>
+            `"
+            v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:20, arrow : true}'
             :key="c.id"
             :id="c.id"
             :x1="c.lx"
             :y1="c.ly"
             :x2="c.rx"
             :y2="c.ry"
-            :stroke="c.color"
+            stroke='black'
+            stroke-width='2'
             marker-end="url(#arrow)"
           >
           </line>
@@ -83,6 +96,10 @@ import store from '../store'
 export default Vue.extend({
   name: 'Visualisation',
   data: () => ({
+    window: {
+      width: 0,
+      height: 0
+    }
   }),
   computed: {
     circles () {
@@ -95,6 +112,12 @@ export default Vue.extend({
       return store.getters.getRightArrows
     }
   },
+  created () {
+    window.addEventListener('resize', this.handleResize)
+  },
+  destroyed () {
+    window.removeEventListener('resize', this.handleResize)
+  },
   mounted () {
     // @ts-ignore
     this.$store.commit('changeVisHeight', this.$refs.svg.clientHeight)
@@ -102,6 +125,13 @@ export default Vue.extend({
     this.$store.commit('changeVisWidth', this.$refs.svg.clientWidth)
   },
   methods: {
+    handleResize () {
+      // @ts-ignore
+      this.$store.commit('changeVisHeight', this.$refs.svg.clientHeight)
+      // @ts-ignore
+      this.$store.commit('changeVisWidth', this.$refs.svg.clientWidth)
+      this.$store.dispatch('repackCircles')
+    },
     // eslint-disable-next-line
     openWiki: function (data: any) {
       const win = window.open('https://www.wikidata.org/wiki/' + data.id, '_blank')

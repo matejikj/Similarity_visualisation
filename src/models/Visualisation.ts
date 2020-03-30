@@ -3,7 +3,7 @@ import { Arrow } from './Arrow'
 import { Node } from './Node'
 import { Circle } from './Circle'
 import * as d3 from 'd3'
-import { ROOT_ID, MAX_DEPTH, ROOT_LABEL, Position } from './types'
+import { ROOT_ID, MAX_DEPTH, ROOT_LABEL, Position, MappingNode, ArrowData } from './types'
 
 export class Visualisation {
     leftArrows: Array<Arrow> = []
@@ -16,6 +16,7 @@ export class Visualisation {
     maxDepth = MAX_DEPTH
     width: number
     height: number
+    viewDepthLevel: Array<ArrowData> = []
 
     constructor (height: number, width: number) {
       this.width = width
@@ -37,12 +38,10 @@ export class Visualisation {
       this.packCircles(this.root)
     }
 
-    public createLayer (urls: Array<string>): Array<string> {
-      const layerArray = Array<string>()
-      let j = 0
-
+    public createLayer (urls: Array<MappingNode>): Array<ArrowData> {
+      const layerArray = Array<ArrowData>()
       for (let i = 0; i < urls.length; i++) {
-        const n = store.state.nodes.filter(y => y.id === urls[i])[0]
+        const n = store.state.nodes.filter(y => y.id === urls[i].nodeID)[0]
         if (n === undefined) {
           continue
         }
@@ -51,8 +50,6 @@ export class Visualisation {
         const visitedArray = Array<string>()
         while (stack.length !== 0) {
           const parent = stack.pop()
-          j++
-          console.log(j)
           if (parent !== undefined) {
             if (parent.id === ROOT_ID) {
               continue
@@ -70,8 +67,13 @@ export class Visualisation {
                 }
               }
             } else {
-              if (!layerArray.includes(parent.id)) {
-                layerArray.push(parent.id)
+              if (layerArray.filter(p => p.id === parent.id).length === 0) {
+                const n: ArrowData = {
+                  id: parent.id,
+                  label: urls[i].name,
+                  word: urls[i].mapBy
+                }
+                layerArray.push(n)
               }
             }
           }
@@ -80,7 +82,7 @@ export class Visualisation {
       return layerArray
     }
 
-    public repaintArrows (position: Position, ids: Array<string>): void {
+    public repaintArrows (position: Position, ids: Array<MappingNode>): void {
       const queue = Array<Node>()
       const screenLevel = Array<Node>()
       queue.push(this.root)
@@ -95,35 +97,39 @@ export class Visualisation {
           }
         }
       }
-      let counter = 0
 
       if (ids !== null && ids !== undefined) {
-        const viewDepthLevel = this.createLayer(ids)
-        const array = new Array<Arrow>()
-        for (let i = 0; i < viewDepthLevel.length; i++) {
-          const targetNode = this.circles.filter(x => x.id === viewDepthLevel[i])[0]
-          const arrow: Arrow = {
-            color: 'red',
-            strokeWidth: 2,
-            id: counter,
-            lx: position === Position.Left ? 0 : this.width,
-            ly: this.height / 2,
-            rx: targetNode.x,
-            ry: targetNode.y,
-            r: targetNode.r
-          }
-          counter++
-          array.push(arrow)
-        }
+        this.viewDepthLevel = this.createLayer(ids)
+        this.packArrows(position)
+      }
+    }
 
-        switch (position) {
-          case Position.Left:
-            this.leftArrows = array
-            break
-          case Position.Right:
-            this.rightArrows = array
-            break
+    public packArrows (position: Position): void {
+      let counter = 0
+      const array = new Array<Arrow>()
+      for (let i = 0; i < this.viewDepthLevel.length; i++) {
+        const targetNode = this.circles.filter(x => x.id === this.viewDepthLevel[i].id)[0]
+        const arrow: Arrow = {
+          id: counter,
+          word: this.viewDepthLevel[i].word,
+          mapTo: this.viewDepthLevel[i].label,
+          lx: position === Position.Left ? 0 : this.width,
+          ly: this.height / 2,
+          rx: position === Position.Left ? targetNode.x - targetNode.r * 10 / 10 : targetNode.x + targetNode.r * 10 / 10,
+          ry: targetNode.y,
+          r: targetNode.r
         }
+        counter++
+        array.push(arrow)
+      }
+
+      switch (position) {
+        case Position.Left:
+          this.leftArrows = array
+          break
+        case Position.Right:
+          this.rightArrows = array
+          break
       }
     }
 
@@ -144,10 +150,6 @@ export class Visualisation {
       while (queue.length !== 0) {
         const node = queue.shift()
         const children = nodes.filter(x => x.id === node?.id)[0].children
-        if (node?.id === '2') {
-          console.log('2')
-        }
-        console.log(node?.label)
         if (node !== undefined && children !== undefined) {
           if (children.length !== 0) {
             for (let i = 0; i < children.length; i++) {
@@ -185,7 +187,7 @@ export class Visualisation {
 
     // eslint-disable-next-line
     public packCircles (root: Node): void {
-      const margin = 10
+      const margin = 0
       const packChart = d3.pack()
       packChart.size([this.width - margin, this.height - margin])
       packChart.padding(10)
@@ -193,7 +195,7 @@ export class Visualisation {
         .sum(d => Math.sqrt(d.value))
 
       const output = packChart(treeRoot).descendants()
-      const interpolate = d3.interpolateRgb('steelblue', 'brown')
+      const interpolate = d3.scaleSequential([1, 0], d3.interpolateMagma)
 
       this.circles = new Array<Circle>()
       for (let i = 0; i < output.length; i++) {
@@ -207,8 +209,7 @@ export class Visualisation {
           x: output[i].x,
           y: output[i].y,
           r: output[i].r,
-          depth: output[i].data.depth,
-          stroke: 'black'
+          depth: output[i].data.depth
         }
         this.circles.push(n)
       }

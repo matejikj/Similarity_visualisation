@@ -1,6 +1,15 @@
 <template>
     <v-container>
-        <v-slider v-bind:min="minimum" v-bind:value="activeDepth" v-bind:max="maximum" @change="changeDepth"></v-slider>
+        <v-slider
+          v-bind:min="minimum"
+          v-bind:value="activeDepth"
+          v-bind:max="maximum"
+          @change="changeDepth"
+          :thumb-size="24"
+          thumb-label="always"
+          :color=color
+          >
+          </v-slider>
     </v-container>
 </template>
 
@@ -12,7 +21,9 @@ export default Vue.extend({
   name: 'SliderBar',
 
   data: () => ({
-    minimum: 1
+    minimum: 1,
+    val: 25,
+    color: '#009DFF'
   }),
   computed: {
     maximum () {

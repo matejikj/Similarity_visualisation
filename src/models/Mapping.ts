@@ -5,10 +5,10 @@ export class Mapping {
     selectedMapping = 0;
     items: Array<MappingNode> = [];
     itemsList: Array<MappingNode> = [];
-    selectedNodes = Array<string>();
+    selectedNodes = Array<MappingNode>();
 
     public resetMapping (): void {
-      this.selectedNodes = Array<string>()
+      this.selectedNodes = Array<MappingNode>()
       this.items = Array<MappingNode>()
       this.itemsList = Array<MappingNode>()
     }
@@ -33,7 +33,8 @@ export class Mapping {
           const newChildren: MappingNode = {
             id: counter,
             nodeID: element.id,
-            name: name
+            name: name,
+            mapBy: element.group[0]
           }
           counter++
           const newNode: MappingNode = {
@@ -52,7 +53,8 @@ export class Mapping {
           const newChildren: MappingNode = {
             id: counter,
             nodeID: element.id,
-            name: name
+            name: name,
+            mapBy: element.group[0]
           }
           counter++
           this.itemsList.push(newChildren)

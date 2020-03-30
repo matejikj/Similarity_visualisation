@@ -1,7 +1,7 @@
 export interface Arrow {
     id: number;
-    color: string;
-    strokeWidth: number;
+    word?: string;
+    mapTo?: string;
     lx: number;
     ly: number;
     rx: number;

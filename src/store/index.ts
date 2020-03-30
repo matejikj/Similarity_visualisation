@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { Position, ROOT_LABEL, ROOT_ID } from '@/models/types'
+import { Position, ROOT_LABEL, ROOT_ID, MappingNode } from '@/models/types'
 import { Link } from '@/models/Link'
 import { Label } from '@/models/Label'
 import { Node } from '@/models/Node'
@@ -21,9 +21,13 @@ export default new Vuex.Store({
     links: Array<Link>(),
     nodes: Array<Node>(),
     path: new Path(),
-    visualisation: new Visualisation(0, 0)
+    visualisation: new Visualisation(0, 0),
+    dialog: false
   },
   mutations: {
+    changeDialog (state, value: boolean) {
+      state.dialog = value
+    },
     changeLeftDataset (state, value: object) {
       state.leftDataset = value
     },
@@ -54,10 +58,10 @@ export default new Vuex.Store({
     changePathVisWidth (state, value: number) {
       state.path.canvasWidth = value
     },
-    changeLeftSelectedMappingNodes (state, value: Array<string>) {
+    changeLeftSelectedMappingNodes (state, value: Array<MappingNode>) {
       state.leftMapping.selectedNodes = value
     },
-    changeRightSelectedMappingNodes (state, value: Array<string>) {
+    changeRightSelectedMappingNodes (state, value: Array<MappingNode>) {
       state.rightMapping.selectedNodes = value
     },
     changeLeftSelectedMapping (state, value: number) {
@@ -65,11 +69,7 @@ export default new Vuex.Store({
     },
     changeRightSelectedMapping (state, value: number) {
       state.rightMapping.selectedMapping = value
-    },
-    changeActivePath (state, value: Array<string>) {
-      state.path.pathIds = value
     }
-
   },
   getters: {
     getMaxDepth: (state) => {
@@ -77,6 +77,9 @@ export default new Vuex.Store({
     },
     getViewDepth: (state) => {
       return state.visualisation.activeDepth
+    },
+    getDialog: (state) => {
+      return state.dialog
     },
     getCircles: (state) => {
       return state.visualisation.circles
@@ -98,8 +101,21 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    repackCircles: function (): void {
+      this.state.visualisation.packCircles(this.state.visualisation.root)
+      this.state.visualisation.repaintArrows(Position.Left, this.state.leftMapping.selectedNodes)
+      this.state.visualisation.repaintArrows(Position.Right, this.state.rightMapping.selectedNodes)
+    },
+    toggleDialog: function (): void {
+      this.state.dialog = !this.state.dialog
+    },
+    cutPath: function (context, value: number): void {
+      this.state.path.pathIds = this.state.path.pathIds.slice(0, value + 1)
+      this.state.path.createCircles(this.state.nodes)
+    },
     resetActivePath: function (): void {
       this.state.path.pathIds = [ROOT_ID]
+      this.state.path.createCircles(this.state.nodes)
     },
     resetRootId: function (): void {
       this.state.visualisation.rootID = ROOT_ID
@@ -123,6 +139,11 @@ export default new Vuex.Store({
       this.commit('changeVisDepth', 1)
       this.state.path.refreshPath(data)
       this.state.path.createCircles(this.state.nodes)
+      this.state.visualisation.createVisualisation(this.state.nodes)
+    },
+    pathClicked: function (context, data: Circle) {
+      this.commit('changeVisRootId', data.id)
+      this.commit('changeVisDepth', 1)
       this.state.visualisation.createVisualisation(this.state.nodes)
     },
     changeViewDepth: function (context, data) {
@@ -224,10 +245,16 @@ export default new Vuex.Store({
         }
       }
 
+      const noParentsNodes = array.filter(x => x.parents.length === 0)
+
       let root = array.filter(x => x.id === ROOT_ID)[0]
 
       if (root === undefined || root === null) {
         root = new Node(ROOT_LABEL, new Array<Node>(), new Array<Node>(), ROOT_ID, null, null)
+        noParentsNodes.forEach(element => {
+          element.parents.push(root)
+          root.children.push(element)
+        })
         array.splice(0, 0, root)
         const rootsArray = array.filter(x => x.parents.length === 0)
         for (let i = 0; i < rootsArray.length; i++) {
@@ -236,6 +263,11 @@ export default new Vuex.Store({
             root.children.push(rootsArray[i])
           }
         }
+      } else {
+        noParentsNodes.forEach(element => {
+          element.parents.push(root)
+          root.children.push(element)
+        })
       }
       this.commit('changeNodes', array)
     }
