@@ -1,0 +1,404 @@
+  {
+    "metadata": {
+      
+    },
+    "mappings": [
+      {
+        "@id": "v1",
+        "metadata": {
+          "from": "title",
+          "title": "Wikidata v1",
+          "input": [
+              [
+                  "aa",
+                  "ab",
+                  "ac"
+              ]
+          ]
+        },
+        "data": [
+          {
+            "id": "21",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["aa"]
+            }
+          },
+          {
+            "id": "28",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["aa"]
+            }
+          },
+          {
+            "id": "23",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["ab"]
+            }
+          },
+          {
+            "id": "10",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["ac"]
+            }
+          }
+        ]
+      },
+      {
+        "@id": "v2",
+        "metadata": {
+          "from": "title",
+          "title": "Wikidata v1",
+          "input": [
+              [
+                  "ba",
+                  "bb",
+                  "bc",
+                  "bd"
+              ]
+          ]
+        },
+        "data": [
+          {
+            "id": "38",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["ba"]
+            }
+          },
+          {
+            "id": "33",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["ba"]
+            }
+          },
+          {
+            "id": "28",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["bb"]
+            }
+          },
+          {
+            "id": "23",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["bc"]
+            }
+          },
+          {
+            "id": "23",
+            "metadata": {
+              "shared": 1,
+              "size": 1,
+              "group": ["bd"]
+            }
+          }
+        ]
+      }
+    ],
+    "paths": [
+      {
+        "from": [
+          "aa"
+        ],
+        "to": [
+          "bd"
+        ],
+        "path": [
+          "21",
+          "10",
+          "4",
+          "12",
+          "23"
+        ]
+      },
+      {
+        "from": [
+          "ac"
+        ],
+        "to": [
+          "bc"
+        ],
+        "path": [
+          "10",
+          "4",
+          "12",
+          "23"
+        ]
+      },
+      {
+        "from": [
+          "ab"
+        ],
+        "to": [
+          "bb"
+        ],
+        "path": [
+          "23",
+          "12",
+          "4",
+          "2",
+          "5",
+          "14",
+          "28"
+        ]
+      }
+    ],
+    "hierarchy": [
+      [
+        "2",
+        "subClassOf",
+        "1"
+      ],
+      [
+        "3",
+        "subClassOf",
+        "1"
+      ],
+      [
+        "4",
+        "subClassOf",
+        "2"
+      ],
+      [
+        "2",
+        "subClassOf",
+        "10"
+      ],
+      [
+        "5",
+        "subClassOf",
+        "2"
+      ],
+      [
+        "6",
+        "subClassOf",
+        "2"
+      ],
+      [
+        "7",
+        "subClassOf",
+        "3"
+      ],
+      [
+        "8",
+        "subClassOf",
+        "3"
+      ],
+      [
+        "9",
+        "subClassOf",
+        "3"
+      ],
+      [
+        "10",
+        "subClassOf",
+        "4"
+      ],
+      [
+        "11",
+        "subClassOf",
+        "4"
+      ],
+      [
+        "12",
+        "subClassOf",
+        "4"
+      ],
+      [
+        "13",
+        "subClassOf",
+        "5"
+      ],
+      [
+        "14",
+        "subClassOf",
+        "5"
+      ],
+      [
+        "15",
+        "subClassOf",
+        "6"
+      ],
+      [
+        "16",
+        "subClassOf",
+        "7"
+      ],
+      [
+        "17",
+        "subClassOf",
+        "7"
+      ],
+      [
+        "18",
+        "subClassOf",
+        "8"
+      ],
+      [
+        "19",
+        "subClassOf",
+        "9"
+      ],
+      [
+        "20",
+        "subClassOf",
+        "10"
+      ],
+      [
+        "21",
+        "subClassOf",
+        "10"
+      ],
+      [
+        "22",
+        "subClassOf",
+        "11"
+      ],
+      [
+        "23",
+        "subClassOf",
+        "12"
+      ],
+      [
+        "24",
+        "subClassOf",
+        "12"
+      ],
+      [
+        "25",
+        "subClassOf",
+        "12"
+      ],
+      [
+        "26",
+        "subClassOf",
+        "13"
+      ],
+      [
+        "27",
+        "subClassOf",
+        "13"
+      ],
+      [
+        "28",
+        "subClassOf",
+        "14"
+      ],
+      [
+        "29",
+        "subClassOf",
+        "15"
+      ],
+      [
+        "30",
+        "subClassOf",
+        "15"
+      ],
+      [
+        "31",
+        "subClassOf",
+        "16"
+      ],
+      [
+        "32",
+        "subClassOf",
+        "16"
+      ],
+      [
+        "33",
+        "subClassOf",
+        "16"
+      ],
+      [
+        "34",
+        "subClassOf",
+        "17"
+      ],
+      [
+        "35",
+        "subClassOf",
+        "18"
+      ],
+      [
+        "36",
+        "subClassOf",
+        "18"
+      ],
+      [
+        "37",
+        "subClassOf",
+        "19"
+      ],
+      [
+        "38",
+        "subClassOf",
+        "19"
+      ],
+      [
+        "39",
+        "subClassOf",
+        "19"
+      ],
+      [
+        "40",
+        "subClassOf",
+        "19"
+      ]
+    ],
+    "labels": {
+      "1": "a",
+      "2": "b",
+      "3": "c",
+      "4": "d",
+      "5": "e",
+      "6": "f",
+      "7": "g",
+      "8": "h",
+      "9": "i",
+      "10": "j",
+      "11": "k",
+      "12": "l",
+      "13": "m",
+      "14": "n",
+      "15": "o",
+      "16": "p",
+      "17": "q",
+      "18": "r",
+      "19": "s",
+      "20": "t",
+      "21": "u",
+      "22": "v",
+      "23": "w",
+      "24": "x",
+      "25": "y",
+      "26": "z",
+      "27": "aa",
+      "28": "ab",
+      "29": "ac",
+      "30": "ad",
+      "31": "ae",
+      "32": "af",
+      "33": "ag",
+      "34": "ah",
+      "35": "ai",
+      "36": "aj",
+      "37": "ak",
+      "38": "al",
+      "39": "am",
+      "40": "an"
+    }
+  }
