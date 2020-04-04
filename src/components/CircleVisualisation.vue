@@ -94,7 +94,7 @@ import Vue from 'vue'
 import store from '../store'
 
 export default Vue.extend({
-  name: 'Visualisation',
+  name: 'CircleVisualisation',
   data: () => ({
     window: {
       width: 0,
