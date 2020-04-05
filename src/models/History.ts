@@ -1,8 +1,8 @@
-import { ROOT_ID } from '../models/types'
+import { ROOT_ID } from './types'
 import { Circle } from './Circle'
 import { Node } from './Node'
 
-export class Path {
+export class History {
     canvasWidth = 0;
     pathIds: Array<string> = [ROOT_ID];
     circles: Array<Circle> = [];

@@ -41,7 +41,7 @@ import store from '../store'
 import { Circle } from '../models/Circle'
 
 export default Vue.extend({
-  name: 'SliderBar',
+  name: 'HistoryBar',
 
   data: () => ({
   }),

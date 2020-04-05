@@ -15,7 +15,7 @@
         </v-row>
         <v-row class="text-center">
           <v-col cols="12">
-            <path-bar></path-bar>
+            <history-bar></history-bar>
           </v-col>
         </v-row>
         <v-row class="text-center">
@@ -37,17 +37,17 @@
 <script>
 import Sidebar from '@/components/Sidebar.vue'
 import SliderBar from '../components/SliderBar.vue'
-import PathBar from '../components/PathBar'
-import CircleVisualisation from '../components/CircleVisualisation.vue'
+import HistoryBar from '../components/HistoryBar'
+import CircleVisualisation from '../components/d3/CircleVisualisation.vue'
 import { Position } from '../models/types'
 
 export default {
-  name: 'Visualisation',
+  name: 'CircleVisualisationView',
   components: {
     SliderBar,
     Sidebar,
     CircleVisualisation,
-    PathBar
+    HistoryBar
   },
   data: () => ({
     left: Position.Left,

@@ -6,7 +6,7 @@ import { Label } from '@/models/Label'
 import { Node } from '@/models/Node'
 import { Mapping } from '@/models/Mapping'
 import { Visualisation } from '@/models/Visualisation'
-import { Path } from '@/models/Path'
+import { History } from '@/models/History'
 import { Circle } from '@/models/Circle'
 
 Vue.use(Vuex)
@@ -20,7 +20,7 @@ export default new Vuex.Store({
     labels: Array<Label>(),
     links: Array<Link>(),
     nodes: Array<Node>(),
-    path: new Path(),
+    path: new History(),
     visualisation: new Visualisation(0, 0),
     dialog: false
   },
