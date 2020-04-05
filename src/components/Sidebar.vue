@@ -1,52 +1,8 @@
 <template>
   <v-container>
-      <v-dialog v-model="dialog" persistent max-width="600px">
-        <template v-slot:activator="{ on }">
-          <v-btn v-if="display" color="primary" dark v-on="on">Add dataset</v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            <span class="headline">Add dataset</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-autocomplete
-                  :items=collectionItems
-                  label="Collection"
-                ></v-autocomplete>
-              </v-row>
-              <v-row>
-                <v-col cols="12" sm="8" md="12">
-                  <v-text-field v-model="datasetUrl" label="URL" hint="Url of dataset"></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-            <v-btn color="blue darken-1" text @click="addDataset">Add</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-select
-        :items="comboboxItems"
-        item-text="name"
-        label="add url"
-        single-line
-        return-object
-        @change="changeMapping"
-        >
-      </v-select>
-        <v-treeview
-        v-model="selectedMappingItems"
-        class="overflow-y-auto"
-        :items="this.mappingItems"
-        selectable
-        @input="selectedTreeItemsHandle"
-        />
+    <dataset-dialog></dataset-dialog>
+    <select-list></select-list>
+    <tree-view-list></tree-view-list>
   </v-container>
 </template>
 
@@ -55,10 +11,17 @@ import Vue from 'vue'
 import { ComboboxItem, Position, MappingNode } from '../models/types'
 import axios from 'axios'
 import store from '../store'
+import DatasetDialog from './DatasetDialog.vue'
+import SelectList from './base/SelectList.vue'
+import TreeViewList from './base/TreeViewList.vue'
 
 export default Vue.extend({
   name: 'Sidebar',
-
+  components: {
+    DatasetDialog,
+    SelectList,
+    TreeViewList
+  },
   props: {
     sidebarPosition: {
     }

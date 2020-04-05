@@ -9,92 +9,36 @@
           </marker>
         </defs>
       <g>
-        <template v-for="c in circles">
-          <circle
-            v-bind:content="`
-              label: ${c.label}</br>
-              id: ${c.id}
-            `"
-            v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
-            class="circle"
-            :key="c.key1"
-            :id="c.id"
-            :r="c.r"
-            :cx="c.x"
-            :cy="c.y"
-            :fill="c.fill"
-            :stroke="c.stroke"
-            @click.exact="clickCircle(c)"
-            @click.ctrl="openWiki(c)"
-          >
-          </circle>
+        <template v-for="(c, index) in circles">
+          <circle-node v-bind:key="index" v-bind:circleNode="c"></circle-node>
         </template>
-        <template v-for="c in circles">
-          <text class="labels"
-            :key="c.key2"
-            :fill="c.textColor"
-            :x="c.x"
-            v-if="c.isLeaf && c.r > 12"
-            :font-size="c.r / 2"
-            :y="c.y"
-            dy=".35em"
-            @click.exact="clickCircle(c)"
-            @click.ctrl="openWiki(c)"
-          >{{c.label.substring(0, 4)}}...
-          </text>
+        <template v-for="(c, index) in circles">
+          <circle-label v-bind:key="index" v-bind:circleLabel="c"></circle-label>
         </template>
-        <template v-for="c in leftArrows">
-          <line class="link"
-            v-bind:content="`
-              map by: ${c.word}</br>
-              map to: ${c.mapTo}</br>
-            `"
-            v-tippy='{interactive : true, animateFill: false, placement:"left", animation:"shift-toward", delay:20, arrow : true}'
-            :key="c.id"
-            :id="c.id"
-            :x1="c.lx"
-            :y1="c.ly"
-            :x2="c.rx"
-            :y2="c.ry"
-            stroke='black'
-            stroke-width='2'
-            marker-end="url(#arrow)"
-          >
-          </line>
+        <template v-for="(c, index) in leftArrows">
+          <circle-link v-bind:key="index" v-bind:circleLink="c"></circle-link>
         </template>
-        <template v-for="c in rightArrows">
-          <line class="link"
-            v-bind:content="`
-              map by: ${c.word}</br>
-              map to: ${c.mapTo}</br>
-            `"
-            v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:20, arrow : true}'
-            :key="c.id"
-            :id="c.id"
-            :x1="c.lx"
-            :y1="c.ly"
-            :x2="c.rx"
-            :y2="c.ry"
-            stroke='black'
-            stroke-width='2'
-            marker-end="url(#arrow)"
-          >
-          </line>
+        <template v-for="(c, index) in leftArrows">
+          <circle-link v-bind:key="index" v-bind:circleLink="c"></circle-link>
         </template>
       </g>
     </svg>
 </template>
 
-<style>
-.circle { text-decoration: underline; }
-</style>
-
 <script lang="ts">
 import Vue from 'vue'
 import store from '../../store'
+import CircleNode from './CircleNode.vue'
+import CircleLink from './CircleLink.vue'
+import CircleLabel from './CircleLabel.vue'
 
 export default Vue.extend({
   name: 'CircleVisualisation',
+  components: {
+    CircleNode,
+    CircleLink,
+    CircleLabel
+  },
   data: () => ({
     window: {
       width: 0,
@@ -133,13 +77,6 @@ export default Vue.extend({
       this.$store.dispatch('repackCircles')
     },
     // eslint-disable-next-line
-    openWiki: function (data: any) {
-      const win = window.open('https://www.wikidata.org/wiki/' + data.id, '_blank')
-      if (win !== null) {
-        win.focus()
-      }
-    },
-    // eslint-disable-next-line
     clickCircle: function (data: any) {
       this.$store.dispatch('circleClicked', data)
       this.$store.dispatch('repaintArrows')
@@ -151,6 +88,7 @@ export default Vue.extend({
 <style>
 .circle {
   cursor: pointer;
+  text-decoration: underline;
 }
 .labels {
   cursor: pointer;

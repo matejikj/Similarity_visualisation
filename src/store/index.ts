@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { Position, ROOT_LABEL, ROOT_ID, MappingNode } from '@/models/types'
+import { ROOT_LABEL, ROOT_ID } from '@/static/constants.ts'
+import { Position, MappingNode } from '@/models/types'
 import { Link } from '@/models/Link'
 import { Label } from '@/models/Label'
 import { Node } from '@/models/Node'

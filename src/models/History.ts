@@ -1,4 +1,4 @@
-import { ROOT_ID } from './types'
+import { ROOT_ID } from '@/static/constants'
 import { Circle } from './Circle'
 import { Node } from './Node'
 

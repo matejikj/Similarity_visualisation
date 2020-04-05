@@ -1,24 +1,24 @@
 <template>
-    <v-container>
-        <v-slider
-          v-bind:min="minimum"
-          v-bind:value="activeDepth"
-          v-bind:max="maximum"
-          @change="changeDepth"
-          :thumb-size="24"
-          thumb-label="always"
-          :color=color
-          >
-          </v-slider>
-    </v-container>
+  <v-container>
+    <v-slider
+      v-bind:min="minimum"
+      v-bind:value="activeDepth"
+      v-bind:max="maximum"
+      @change="changeDepth"
+      :thumb-size="24"
+      thumb-label="always"
+      :color=color
+    >
+    </v-slider>
+  </v-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import store from '../store'
+import store from '../../store'
 
 export default Vue.extend({
-  name: 'SliderBar',
+  name: 'ValueSlider',
 
   data: () => ({
     minimum: 1,

@@ -3,7 +3,8 @@ import { Arrow } from './Arrow'
 import { Node } from './Node'
 import { Circle } from './Circle'
 import * as d3 from 'd3'
-import { ROOT_ID, MAX_DEPTH, ROOT_LABEL, Position, MappingNode, ArrowData } from './types'
+import { Position, MappingNode, ArrowData } from './types'
+import { ROOT_ID, MAX_DEPTH, ROOT_LABEL } from '../static/constants'
 
 export class Visualisation {
     leftArrows: Array<Arrow> = []

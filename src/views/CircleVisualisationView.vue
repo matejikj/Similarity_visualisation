@@ -22,7 +22,7 @@
           <v-col cols="3">
           </v-col>
           <v-col cols="6">
-            <sliderBar></sliderBar>
+            <value-slider></value-slider>
           </v-col>
           <v-col cols="2">
           </v-col>
@@ -36,7 +36,7 @@
 
 <script>
 import Sidebar from '@/components/Sidebar.vue'
-import SliderBar from '../components/SliderBar.vue'
+import ValueSlider from '../components/base/ValueSlider.vue'
 import HistoryBar from '../components/HistoryBar'
 import CircleVisualisation from '../components/d3/CircleVisualisation.vue'
 import { Position } from '../models/types'
@@ -44,7 +44,7 @@ import { Position } from '../models/types'
 export default {
   name: 'CircleVisualisationView',
   components: {
-    SliderBar,
+    ValueSlider,
     Sidebar,
     CircleVisualisation,
     HistoryBar
