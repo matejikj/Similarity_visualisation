@@ -1,4 +1,4 @@
-export interface Arrow {
+export class Arrow {
     id: number;
     word?: string;
     mapTo?: string;
@@ -7,4 +7,13 @@ export interface Arrow {
     rx: number;
     ry: number;
     r: number;
-  }
+
+    constructor (id: number, lx: number, ly: number, rx: number, ry: number, r: number) {
+      this.id = id
+      this.lx = lx
+      this.ly = ly
+      this.rx = rx
+      this.ry = ry
+      this.r = r
+    }
+}

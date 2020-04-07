@@ -18,6 +18,16 @@
           <circle-label @circleClicked='zoomCircle' v-bind:key="index" v-bind:labelData="c"></circle-label>
         </template>
       </g>
+      <g>
+        <template v-for="(c, index) in leftArrows">
+          <circle-link v-bind:key="index" v-bind:linkData="c"></circle-link>
+        </template>
+      </g>
+      <g>
+        <template v-for="(c, index) in rightArrows">
+          <circle-link v-bind:key="index" v-bind:linkData="c"></circle-link>
+        </template>
+      </g>
     </svg>
 </template>
 
@@ -26,15 +36,18 @@ import Vue from 'vue'
 import store from '../../store'
 import CircleNode from './CircleNode.vue'
 import CircleLabel from './CircleLabel.vue'
-import { packCircles } from '../../utils/pack'
-import { createTree } from '@/utils/create'
+import CircleLink from './CircleLink.vue'
+import { packCircles, packArrows } from '../../utils/pack'
+import { createTree, createLayer } from '@/utils/create'
 import { Node } from '../../models/Node'
+import { Position, Circle } from '../../models'
 
 export default Vue.extend({
   name: 'CircleVisualisation',
   components: {
     CircleNode,
-    CircleLabel
+    CircleLabel,
+    CircleLink
   },
   data: () => ({
     width: 0,
@@ -42,18 +55,13 @@ export default Vue.extend({
   }),
   computed: {
     circles () {
-      const nodes: Array<Node> = store.getters.getNodes
-      if (nodes.length === 0) {
-        return undefined
-      }
-      // @ts-ignore
-      return packCircles(this.height, this.width, createTree(nodes, store.getters.getDepth))
+      return packCircles(this.height, this.width, store.getters.getRoot)
     },
     leftArrows () {
-      return undefined
+      return store.getters.getLeftMapping === undefined ? undefined : packArrows(this.height, this.width, packCircles(this.height, this.width, store.getters.getRoot), createLayer(store.getters.getLeftMapping), Position.Left)
     },
     rightArrows () {
-      return undefined
+      return store.getters.getRightMapping === undefined ? undefined : packArrows(this.height, this.width, packCircles(this.height, this.width, store.getters.getRoot), createLayer(store.getters.getRightMapping), Position.Right)
     }
   },
   created () {

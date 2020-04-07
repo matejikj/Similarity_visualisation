@@ -5,7 +5,6 @@
           map to: ${linkData.mapTo}</br>
           `"
         v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:20, arrow : true}'
-        :key="linkData.id"
         :id="linkData.id"
         :x1="linkData.lx"
         :y1="linkData.ly"

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { ROOT_LABEL, ROOT_ID, MAX_DEPTH } from '@/static/constants.ts'
 import { Link, MappingNode, Label, Node } from '@/models'
-import { createLabels, createLinks, createNodes } from '@/utils/create'
+import { createLabels, createLinks, createNodes, createTree } from '@/utils/create'
 
 Vue.use(Vuex)
 
@@ -51,6 +51,15 @@ export default new Vuex.Store({
     getDepth: (state) => {
       return state.depth
     },
+    getRoot: (state) => {
+      return state.root
+    },
+    getLeftDataset: (state) => {
+      return state.leftDataset
+    },
+    getRightDataset: (state) => {
+      return state.rightDataset
+    },
     getLeftMapping: (state) => {
       return state.leftMapping
     },
@@ -62,100 +71,24 @@ export default new Vuex.Store({
     },
     getNodes: (state) => {
       return state.nodes
+    },
+    getLabels: (state) => {
+      return state.labels
     }
   },
   actions: {
-    initialize: function (): void {
+    initialize: function () {
       this.state.labels = createLabels(this.state.leftDataset, this.state.rightDataset)
       this.state.links = createLinks(this.state.leftDataset, this.state.rightDataset)
       this.state.nodes = createNodes(this.state.links, this.state.labels)
+    },
+    buildTree: function () {
+      if (this.state.nodes.length === 0) {
+        return undefined
+      } else {
+        this.state.root = createTree(this.state.nodes, this.state.depth)
+      }
     }
-    // repackCircles: function (): void {
-    //   this.state.visualisation.packCircles(this.state.visualisation.root)
-    //   this.state.visualisation.repaintArrows(Position.Left, this.state.leftMapping.selectedNodes)
-    //   this.state.visualisation.repaintArrows(Position.Right, this.state.rightMapping.selectedNodes)
-    // },
-    // toggleDialog: function (): void {
-    //   this.state.dialog = !this.state.dialog
-    // },
-    // cutPath: function (context, value: number): void {
-    //   this.state.path.pathIds = this.state.path.pathIds.slice(0, value + 1)
-    //   this.state.path.createCircles(this.state.nodes)
-    // },
-    // resetActivePath: function (): void {
-    //   this.state.path.pathIds = [ROOT_ID]
-    //   this.state.path.createCircles(this.state.nodes)
-    // },
-    // resetRootId: function (): void {
-    //   this.state.visualisation.rootID = ROOT_ID
-    // },
-    // repaintArrows: function (): void {
-    //   this.state.visualisation.repaintArrows(Position.Left, this.state.leftMapping.selectedNodes)
-    //   this.state.visualisation.repaintArrows(Position.Right, this.state.rightMapping.selectedNodes)
-    // },
-    // paintArrows: function (context, position: Position): void {
-    //   switch (position) {
-    //     case Position.Left:
-    //       this.state.visualisation.repaintArrows(position, this.state.leftMapping.selectedNodes)
-    //       break
-    //     case Position.Right:
-    //       this.state.visualisation.repaintArrows(position, this.state.rightMapping.selectedNodes)
-    //       break
-    //   }
-    // },
-    // circleClicked: function (context, data: Circle) {
-    //   this.commit('changeVisRootId', data.id)
-    //   this.commit('changeVisDepth', 1)
-    //   this.state.path.refreshPath(data)
-    //   this.state.path.createCircles(this.state.nodes)
-    //   this.state.visualisation.createVisualisation(this.state.nodes)
-    // },
-    // pathClicked: function (context, data: Circle) {
-    //   this.commit('changeVisRootId', data.id)
-    //   this.commit('changeVisDepth', 1)
-    //   this.state.visualisation.createVisualisation(this.state.nodes)
-    // },
-    // changeViewDepth: function (context, data) {
-    //   this.commit('changeVisDepth', data)
-    //   this.state.visualisation.createVisualisation(this.state.nodes)
-    // },
-    // paintCircles: function (): void {
-    //   this.state.visualisation.createVisualisation(this.state.nodes)
-    // },
-    // createMapping: function (context, position: Position): void {
-    //   switch (position) {
-    //     case Position.Left:
-    //       this.state.leftMapping.createMapping(this.state.leftDataset)
-    //       break
-    //     case Position.Right:
-    //       this.state.rightMapping.createMapping(this.state.rightDataset)
-    //       break
-    //   }
-    // },
-    // resetMapping: function (context, position: Position): void {
-    //   switch (position) {
-    //     case Position.Left:
-    //       this.state.leftMapping.resetMapping()
-    //       break
-    //     case Position.Right:
-    //       this.state.rightMapping.resetMapping()
-    //       break
-    //   }
-    // }
-    // public createVisualisation (nodes: Array<Node>): void {
-    //   if (this.activeDepth === 0) {
-    //     this.activeDepth = 1
-    //   }
-    //   this.root = this.buildTree(nodes, MAX_DEPTH)
-    //   const maxDepth = this.maxDepth
-    //   if (maxDepth < this.activeDepth) {
-    //     this.root = this.buildTree(nodes, maxDepth)
-    //   } else {
-    //     this.root = this.buildTree(nodes, this.activeDepth)
-    //   }
-    //   this.maxDepth = maxDepth
-    //   this.packCircles(this.root)
-    // }
   },
   modules: {
   }

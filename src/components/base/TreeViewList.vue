@@ -2,7 +2,7 @@
   <v-treeview
     v-model="selectedItems"
     class="overflow-y-auto"
-    :items="value"
+    :items="items"
     selectable
     @input="selectedChanged"
   />
@@ -17,44 +17,32 @@ import { MappingNode } from '@/models/MappingNode'
 export default Vue.extend({
   name: 'TreeViewList',
 
-  props: {
-    value: {
-      type: Array
-    }
-  },
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
+  props: ['items'],
   data: () => ({
-    selectedItems: Array
+    selectedItems: Array<MappingNode>()
   }),
   computed: {
   },
   methods: {
     // eslint-disable-next-line
     selectedChanged: function (data: any): void {
-      console.log('BBB')
-      // const array = Array<MappingNode>()
-      // if (this.$props.sidebarPosition === Position.Left) {
-      //   data.forEach(element => {
-      //     const node = store.state.leftMapping.filter(x => x.id === element)[0]
-      //     if (node !== undefined) {
-      //       array.push(node)
-      //     }
-      //   })
-      //   // this.$store.commit('changeLeftSelectedMappingNodes', array)
-      // }
-      // if (this.$props.sidebarPosition === Position.Right) {
-      //   data.forEach(element => {
-      //     const node = store.state.rightMapping.filter(x => x.id === element)[0]
-      //     if (node !== undefined) {
-      //       array.push(node)
-      //     }
-      //   })
-      //   // this.$store.commit('changeRightSelectedMappingNodes', array)
-      // }
-      // // this.$store.dispatch('paintArrows', this.$props.sidebarPosition)
+      const array = Array<MappingNode>()
+      const tmpArray: Array<MappingNode> = this.items
+      tmpArray.forEach(element => {
+        if (element.children !== undefined) {
+          element.children.forEach(element => {
+            array.push(element)
+          })
+        }
+      })
+      const result = Array<MappingNode>()
+      data.forEach(element => {
+        const node = array.filter(x => x.id === element)[0]
+        if (node !== undefined) {
+          result.push(node)
+        }
+      })
+      this.$emit('selectedItems', result)
     }
   }
 })

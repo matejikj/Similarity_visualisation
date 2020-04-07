@@ -1,7 +1,15 @@
 <template>
   <v-container>
     <dataset-dialog @changeDataset="setDataset" ></dataset-dialog>
-    <select-list v-model="selectList" @change="changeMapping"></select-list>
+    <v-select
+      :items="selectList"
+      item-text="name"
+      label="Choose map by:"
+      return-object
+      @change="changeMapping"
+      >
+    </v-select>
+    <tree-view-list v-bind:items="mappingList" @selectedItems="selectedChanged" ></tree-view-list>
   </v-container>
 </template>
 
@@ -10,16 +18,17 @@ import Vue from 'vue'
 import axios from 'axios'
 import store from '../store'
 import DatasetDialog from './DatasetDialog.vue'
-import SelectList from './base/SelectList.vue'
+import TreeViewList from './base/TreeViewList.vue'
 import { ComboboxItem } from '@/models/ComboboxItem'
 import { Position } from '@/models/Position'
 import { MappingNode } from '@/models/MappingNode'
+import { createMapping } from '../utils/create'
 
 export default Vue.extend({
   name: 'SideBar',
   components: {
     DatasetDialog,
-    SelectList
+    TreeViewList
   },
   props: {
     sidebarPosition: {
@@ -34,10 +43,9 @@ export default Vue.extend({
   computed: {
   },
   methods: {
-    setDataset: function (url: string): void {
+    setDataset: function (url: string) {
       axios.get(url).then(
         response => {
-          console.log(this.$props.sidebarPosition)
           switch (this.$props.sidebarPosition) {
             case Position.Left:
               this.$store.commit('changeLeftDataset', response.data)
@@ -46,6 +54,7 @@ export default Vue.extend({
               this.$store.commit('changeRightDataset', response.data)
               break
           }
+          this.selectList = []
           for (let i = 0; i < response.data.mappings.length; i++) {
             const node: ComboboxItem = {
               id: i,
@@ -54,6 +63,7 @@ export default Vue.extend({
             this.selectList.push(node)
           }
           this.$store.dispatch('initialize')
+          this.$store.dispatch('buildTree')
         },
         error => {
           this.error = error
@@ -61,11 +71,24 @@ export default Vue.extend({
       )
     },
     // eslint-disable-next-line
-    changeMapping: function (data: ComboboxItem): void {
+    changeMapping: function (data: ComboboxItem) {
+      this.mappingList = []
       switch (this.$props.sidebarPosition) {
         case Position.Left:
+          this.mappingList = createMapping(store.getters.getLabels, store.getters.getLeftDataset, data.id)
           break
         case Position.Right:
+          this.mappingList = createMapping(store.getters.getLabels, store.getters.getRightDataset, data.id)
+          break
+      }
+    },
+    selectedChanged: function (array: Array<MappingNode>) {
+      switch (this.$props.sidebarPosition) {
+        case Position.Left:
+          store.commit('changeLeftMapping', array)
+          break
+        case Position.Right:
+          store.commit('changeRightMapping', array)
           break
       }
     }
