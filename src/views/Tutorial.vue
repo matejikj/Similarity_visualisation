@@ -131,14 +131,6 @@ export default Vue.extend({
     ]
   }),
   computed: {
-    dialog: {
-      get () {
-        return store.getters.getDialog
-      },
-      set (value) {
-        this.$store.dispatch('toggleDialog')
-      }
-    }
   },
   methods: {
   }

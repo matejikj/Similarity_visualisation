@@ -1,6 +1,6 @@
 <template>
     <v-select
-      :items="comboboxItems"
+      :items="value"
       item-text="name"
       label="add url"
       single-line
@@ -12,15 +12,28 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MappingNode, Link } from '../../models'
 
 export default Vue.extend({
   name: 'SelectList',
 
+  props: {
+    value: {
+      type: Array
+    }
+  },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   data: () => ({
   }),
   computed: {
   },
   methods: {
+    changeMapping: function (data: any): void {
+      console.log('aAA')
+    }
   }
 })
 </script>

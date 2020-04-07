@@ -6,7 +6,6 @@
         `"
         v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
         class="circle"
-        :key="nodeData.key1"
         :id="nodeData.id"
         :r="nodeData.r"
         :cx="nodeData.x"

@@ -4,13 +4,13 @@
       <v-container fluid fill-height>
         <v-row class="text-center">
           <v-col cols="2">
-            <sidebar v-bind:sidebarPosition="left"></sidebar>
+            <side-bar v-bind:sidebarPosition="left"></side-bar>
           </v-col>
           <v-col cols="8">
             <circle-visualisation></circle-visualisation>
           </v-col>
           <v-col cols="2">
-            <sidebar v-bind:sidebarPosition="right"></sidebar>
+            <side-bar v-bind:sidebarPosition="right"></side-bar>
           </v-col>
         </v-row>
         <v-row class="text-center">
@@ -35,28 +35,25 @@
 </template>
 
 <script>
-import Sidebar from '@/components/Sidebar.vue'
+import SideBar from '@/components/SideBar.vue'
 import ValueSlider from '../components/base/ValueSlider.vue'
 import HistoryBar from '../components/HistoryBar'
-import CircleVisualisation from '../components/d3/CircleVisualisation.vue'
-import { Position } from '../models/types'
+import CircleVisualisation from '@/components/d3/CircleVisualisation'
+import { Position } from '../models/Position'
 
 export default {
   name: 'CircleVisualisationView',
   components: {
     ValueSlider,
-    Sidebar,
-    CircleVisualisation,
-    HistoryBar
+    SideBar,
+    HistoryBar,
+    CircleVisualisation
   },
   data: () => ({
     left: Position.Left,
     right: Position.Right
   }),
   methods: {
-    ToggleHelp: function () {
-      this.$store.dispatch('toggleDialog')
-    }
   }
 }
 </script>

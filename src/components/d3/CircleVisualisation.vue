@@ -10,16 +10,12 @@
         </defs>
       <g>
         <template v-for="(c, index) in circles">
-          <circle-node v-bind:key="index" v-bind:circleNode="c"></circle-node>
+          <circle-node @circleClicked='zoomCircle' v-bind:key="index" v-bind:nodeData="c"></circle-node>
         </template>
+      </g>
+      <g>
         <template v-for="(c, index) in circles">
-          <circle-label v-bind:key="index" v-bind:circleLabel="c"></circle-label>
-        </template>
-        <template v-for="(c, index) in leftArrows">
-          <circle-link v-bind:key="index" v-bind:circleLink="c"></circle-link>
-        </template>
-        <template v-for="(c, index) in leftArrows">
-          <circle-link v-bind:key="index" v-bind:circleLink="c"></circle-link>
+          <circle-label @circleClicked='zoomCircle' v-bind:key="index" v-bind:labelData="c"></circle-label>
         </template>
       </g>
     </svg>
@@ -29,31 +25,35 @@
 import Vue from 'vue'
 import store from '../../store'
 import CircleNode from './CircleNode.vue'
-import CircleLink from './CircleLink.vue'
 import CircleLabel from './CircleLabel.vue'
+import { packCircles } from '../../utils/pack'
+import { createTree } from '@/utils/create'
+import { Node } from '../../models/Node'
 
 export default Vue.extend({
   name: 'CircleVisualisation',
   components: {
     CircleNode,
-    CircleLink,
     CircleLabel
   },
   data: () => ({
-    window: {
-      width: 0,
-      height: 0
-    }
+    width: 0,
+    height: 0
   }),
   computed: {
     circles () {
-      return store.getters.getCircles
+      const nodes: Array<Node> = store.getters.getNodes
+      if (nodes.length === 0) {
+        return undefined
+      }
+      // @ts-ignore
+      return packCircles(this.height, this.width, createTree(nodes, store.getters.getDepth))
     },
     leftArrows () {
-      return store.getters.getLeftArrows
+      return undefined
     },
     rightArrows () {
-      return store.getters.getRightArrows
+      return undefined
     }
   },
   created () {
@@ -64,22 +64,19 @@ export default Vue.extend({
   },
   mounted () {
     // @ts-ignore
-    this.$store.commit('changeVisHeight', this.$refs.svg.clientHeight)
+    this.height = this.$refs.svg.clientHeight
     // @ts-ignore
-    this.$store.commit('changeVisWidth', this.$refs.svg.clientWidth)
+    this.width = this.$refs.svg.clientWidth
   },
   methods: {
     handleResize () {
       // @ts-ignore
-      this.$store.commit('changeVisHeight', this.$refs.svg.clientHeight)
+      this.height = this.$refs.svg.clientHeight
       // @ts-ignore
-      this.$store.commit('changeVisWidth', this.$refs.svg.clientWidth)
-      this.$store.dispatch('repackCircles')
+      this.width = this.$refs.svg.clientWidth
     },
-    // eslint-disable-next-line
-    clickCircle: function (data: any) {
-      this.$store.dispatch('circleClicked', data)
-      this.$store.dispatch('repaintArrows')
+    zoomCircle () {
+      const a = 1
     }
   }
 })

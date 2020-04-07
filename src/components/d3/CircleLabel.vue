@@ -1,7 +1,6 @@
 <template>
     <text class="labels"
-        :key="labelData.key2"
-        :fill="labelData.textColor"
+        fill="white"
         :x="labelData.x"
         v-if="labelData.isLeaf && labelData.r > 12"
         :font-size="labelData.r / 2"
@@ -9,19 +8,19 @@
         dy=".35em"
         @click.exact="emit(labelData)"
         @click.ctrl="openWiki(labelData)"
-        >{{c.label.substring(0, 4)}}...
+        >{{labelData.label.substring(0, 4)}}...
      </text>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Circle } from '@/models'
 
 export default Vue.extend({
   name: 'CircleLabel',
   props: {
     labelData: {
-      type: Object,
-      required: true
+      type: Object
     }
   },
   data: () => ({

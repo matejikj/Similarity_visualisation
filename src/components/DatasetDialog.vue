@@ -25,7 +25,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="addDataset">Add</v-btn>
+        <v-btn color="blue darken-1" text @click="changeDataset">Add</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -48,6 +48,10 @@ export default Vue.extend({
   computed: {
   },
   methods: {
+    changeDataset: function (): void {
+      this.dialog = false
+      this.$emit('changeDataset', this.datasetUrl)
+    }
   }
 })
 </script>
