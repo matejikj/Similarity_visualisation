@@ -16,9 +16,10 @@ export default new Vuex.Store({
     labels: Array<Label>(),
     links: Array<Link>(),
     nodes: Array<Node>(),
-    root: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, null, null),
-    circlesPath: [ROOT_ID],
-    depth: 2,
+    rootId: ROOT_ID,
+    hierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, undefined, undefined),
+    circlesPath: Array<string>(),
+    depth: 1,
     maxDepth: MAX_DEPTH
   },
   mutations: {
@@ -34,14 +35,20 @@ export default new Vuex.Store({
     changeRightMapping (state, value: Array<MappingNode>) {
       state.rightMapping = value
     },
-    changeLinks (state, value: Array<Link>) {
-      state.links = value
+    changeDepth (state, value: number) {
+      state.depth = value
+    },
+    changeMaxDepth (state, value: number) {
+      state.maxDepth = value
     },
     changeLabels (state, value: Array<Label>) {
       state.labels = value
     },
     changeNodes (state, value: Array<Node>) {
       state.nodes = value
+    },
+    changeCirclesPath (state, value: Array<Label>) {
+      state.labels = value
     }
   },
   getters: {
@@ -51,8 +58,8 @@ export default new Vuex.Store({
     getDepth: (state) => {
       return state.depth
     },
-    getRoot: (state) => {
-      return state.root
+    getHierarchy: (state) => {
+      return state.hierarchy
     },
     getLeftDataset: (state) => {
       return state.leftDataset
@@ -74,10 +81,14 @@ export default new Vuex.Store({
     },
     getLabels: (state) => {
       return state.labels
+    },
+    getRootId: (state) => {
+      return state.rootId
     }
   },
   actions: {
     initialize: function () {
+      this.state.circlesPath = [ROOT_ID]
       this.state.labels = createLabels(this.state.leftDataset, this.state.rightDataset)
       this.state.links = createLinks(this.state.leftDataset, this.state.rightDataset)
       this.state.nodes = createNodes(this.state.links, this.state.labels)
@@ -86,7 +97,17 @@ export default new Vuex.Store({
       if (this.state.nodes.length === 0) {
         return undefined
       } else {
-        this.state.root = createTree(this.state.nodes, this.state.depth)
+        if (this.state.depth === 0) {
+          this.state.depth = 1
+        }
+        this.state.hierarchy = createTree(this.state.nodes, MAX_DEPTH)
+        const maxDepth = this.state.maxDepth
+        if (maxDepth < this.state.depth) {
+          this.state.hierarchy = createTree(this.state.nodes, maxDepth)
+        } else {
+          this.state.hierarchy = createTree(this.state.nodes, this.state.depth)
+        }
+        this.state.maxDepth = maxDepth
       }
     }
   },

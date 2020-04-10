@@ -1,5 +1,5 @@
 <template>
-    <svg id="svg" ref="svg" width="100%" height="70vh">
+    <svg id="svg" ref="svg" width="100%">
         <defs>
           <!-- arrowhead marker definition -->
           <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
@@ -50,18 +50,29 @@ export default Vue.extend({
     CircleLink
   },
   data: () => ({
-    width: 0,
-    height: 0
+    window: {
+      width: 0,
+      height: 0
+    }
   }),
   computed: {
     circles () {
-      return packCircles(this.height, this.width, store.getters.getRoot)
+      return packCircles(this.window.height, this.window.width, store.getters.getHierarchy)
     },
     leftArrows () {
-      return store.getters.getLeftMapping === undefined ? undefined : packArrows(this.height, this.width, packCircles(this.height, this.width, store.getters.getRoot), createLayer(store.getters.getLeftMapping), Position.Left)
+      return store.getters.getLeftMapping === undefined
+        ? undefined
+        : packArrows(this.window.height, this.window.width,
+          packCircles(this.window.height, this.window.width, store.getters.getHierarchy),
+          createLayer(store.getters.getLeftMapping), Position.Left
+        )
     },
     rightArrows () {
-      return store.getters.getRightMapping === undefined ? undefined : packArrows(this.height, this.width, packCircles(this.height, this.width, store.getters.getRoot), createLayer(store.getters.getRightMapping), Position.Right)
+      return store.getters.getRightMapping === undefined
+        ? undefined
+        : packArrows(this.window.height, this.window.width,
+          packCircles(this.window.height, this.window.width, store.getters.getHierarchy),
+          createLayer(store.getters.getRightMapping), Position.Right)
     }
   },
   created () {
@@ -72,19 +83,19 @@ export default Vue.extend({
   },
   mounted () {
     // @ts-ignore
-    this.height = this.$refs.svg.clientHeight
+    this.window.height = this.$refs.svg.clientHeight
     // @ts-ignore
-    this.width = this.$refs.svg.clientWidth
+    this.window.width = this.$refs.svg.clientWidth
   },
   methods: {
     handleResize () {
       // @ts-ignore
-      this.height = this.$refs.svg.clientHeight
+      this.window.height = this.$refs.svg.clientHeight
       // @ts-ignore
-      this.width = this.$refs.svg.clientWidth
+      this.window.width = this.$refs.svg.clientWidth
     },
     zoomCircle () {
-      const a = 1
+      const i = 1
     }
   }
 })

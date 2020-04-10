@@ -10,12 +10,12 @@ export function createNodes (links: Array<Link>, labels: Array<Label>): Array<No
     for (let i = 0; i < links.length; i++) {
       if (!visitedNodesArray.includes(links[i].child)) {
         visitedNodesArray.push(links[i].child)
-        const node = new Node(labels.filter(x => x.id === links[i].child)[0].label, new Array<Node>(), new Array<Node>(), links[i].child, null, null)
+        const node = new Node(labels.filter(x => x.id === links[i].child)[0].label, new Array<Node>(), new Array<Node>(), links[i].child, undefined, undefined)
         array.push(node)
       }
       if (!visitedNodesArray.includes(links[i].parent)) {
         visitedNodesArray.push(links[i].parent)
-        const node = new Node(labels.filter(x => x.id === links[i].parent)[0].label, new Array<Node>(), new Array<Node>(), links[i].parent, null, null)
+        const node = new Node(labels.filter(x => x.id === links[i].parent)[0].label, new Array<Node>(), new Array<Node>(), links[i].parent, undefined, undefined)
         array.push(node)
       }
     }
@@ -38,8 +38,8 @@ export function createNodes (links: Array<Link>, labels: Array<Label>): Array<No
 
   let root = array.filter(x => x.id === ROOT_ID)[0]
 
-  if (root === undefined || root === null) {
-    root = new Node(ROOT_LABEL, new Array<Node>(), new Array<Node>(), ROOT_ID, null, null)
+  if (root === undefined) {
+    root = new Node(ROOT_LABEL, new Array<Node>(), new Array<Node>(), ROOT_ID, undefined, undefined)
     noParentsNodes.forEach(element => {
       element.parents.push(root)
       root.children.push(element)
@@ -150,7 +150,7 @@ export function createArrows (position: Position, ids: Array<MappingNode>): void
   const queue = Array<Node>()
   let viewDepthLevel = Array<ArrowData>()
   const screenLevel = Array<Node>()
-  queue.push(store.state.root)
+  queue.push(store.state.hierarchy)
   while (queue.length !== 0) {
     const vertex = queue.shift()
     if (vertex !== undefined) {
@@ -171,9 +171,9 @@ export function createArrows (position: Position, ids: Array<MappingNode>): void
 
 export function createTree (nodes: Array<Node>, depth: number): Node {
   nodes.forEach(element => {
-    element.depth = null
+    element.depth = undefined
   })
-  const tmpRoot = nodes.filter(x => x.id === store.state.root.id)[0]
+  const tmpRoot = nodes.filter(x => x.id === store.getters.getRootId)[0]
   const root = new Node(tmpRoot.label, tmpRoot.parents, Array<Node>(), tmpRoot.id, tmpRoot.depth, tmpRoot.color)
   let maxDepth = 0
   root.depth = 0
@@ -189,7 +189,7 @@ export function createTree (nodes: Array<Node>, depth: number): Node {
           const tmpChild = nodes.filter(x => x.id === children[i].id)[0]
           const child = new Node(tmpChild.label, tmpChild.parents, Array<Node>(), tmpChild.id, tmpChild.depth, tmpChild.color)
           node.children.push(child)
-          if (node.depth !== null) {
+          if (node.depth !== undefined) {
             const newLevelDepth = node.depth + 1
             child.depth = newLevelDepth
             tmpChild.depth = newLevelDepth
@@ -214,7 +214,7 @@ export function createTree (nodes: Array<Node>, depth: number): Node {
       }
     }
   }
-  store.state.maxDepth = maxDepth
+  store.commit('changeMaxDepth', maxDepth)
   return root
 }
 
@@ -267,51 +267,6 @@ export function createMapping (labels: Array<Label>, mapping: any, mappingID: nu
     }
   })
   return array
-}
-
-export function createPathsCircles (width: number, nodes: Array<Node>): Array<Circle> {
-  const circles = Array<Circle>()
-  const rowCount = width / 100
-  let actualRow = 0
-  const circleMargin = 8
-  const circleRadius = Math.floor((width - (rowCount - 1) * 2 * circleMargin) / rowCount / 2)
-  const pathRows = Math.floor(store.state.circlesPath.length / rowCount)
-  const pathMod = store.state.circlesPath.length % rowCount
-  let counter = 0
-  for (let i = 0; i < pathRows; i++) {
-    for (let j = 0; j < rowCount; j++) {
-      const node = nodes.filter(p => p.id === store.state.circlesPath[i * rowCount + j])[0]
-      const circle: Circle = {
-        pathNr: counter,
-        x: j * 2 * circleMargin + j * 2 * circleRadius + circleRadius,
-        y: i * 2 * circleRadius + i * 2 * circleMargin + circleRadius,
-        r: circleRadius,
-        id: store.state.circlesPath[i * rowCount + j],
-        label: node.label,
-        depth: 0,
-        isLeaf: false
-      }
-      counter++
-      circles.push(circle)
-    }
-    actualRow += 1
-  }
-  for (let i = 0; i < pathMod; i++) {
-    const node = nodes.filter(p => p.id === store.state.circlesPath[actualRow * rowCount + i])[0]
-    const circle: Circle = {
-      pathNr: counter,
-      x: i * 2 * circleMargin + i * 2 * circleRadius + circleRadius,
-      y: actualRow * 2 * circleRadius + 2 * actualRow * circleMargin + circleRadius,
-      id: node.id,
-      r: circleRadius,
-      label: node.label,
-      depth: 0,
-      isLeaf: false
-    }
-    counter++
-    circles.push(circle)
-  }
-  return circles
 }
 
 export function refreshPath (leaf: Circle): void {

@@ -23,7 +23,6 @@ export function packArrows (height: number, width: number, circles: Array<Circle
   return array
 }
 
-// eslint-disable-next-line
 export function packCircles (height: number, width: number, root: Node): Array<Circle> {
   const circles = new Array<Circle>()
   const margin = 0
