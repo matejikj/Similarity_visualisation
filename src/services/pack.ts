@@ -1,6 +1,6 @@
 import { Circle, Position, Arrow, ArrowData } from '@/models'
 import * as d3 from 'd3'
-import store from '@/store'
+import store from '@/app/store'
 
 export function packArrows (height: number, width: number, circles: Array<Circle>, viewDepthLevel: Array<ArrowData>, position: Position): Array<Arrow> {
   let counter = 0

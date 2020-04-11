@@ -1,5 +1,5 @@
 <template>
-    <svg id="svg" ref="svg" width="100%">
+    <svg id="svg" ref="svg" width="100%" height="50vh">
         <defs>
           <!-- arrowhead marker definition -->
           <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
@@ -33,14 +33,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import store from '../../store'
-import CircleNode from './CircleNode.vue'
-import CircleLabel from './CircleLabel.vue'
-import CircleLink from './CircleLink.vue'
-import { packCircles, packArrows } from '../../utils/pack'
-import { createTree, createLayer } from '@/utils/create'
-import { Node } from '../../models/Node'
-import { Position, Circle } from '../../models'
+import store from '@/app/store'
+import CircleNode from '@/components/visualisation-parts/CircleNode.vue'
+import CircleLabel from '@/components/visualisation-parts/CircleLabel.vue'
+import CircleLink from '@/components/visualisation-parts/CircleLink.vue'
+import { packCircles, packArrows } from '@/services/pack'
+import { Position } from '@/models'
+import { createLayer } from '@/services/create'
 
 export default Vue.extend({
   name: 'CircleVisualisation',

@@ -1,6 +1,5 @@
-import store from '../store'
-import { ROOT_ID, ROOT_LABEL } from '@/static/constants'
-import { MappingNode, Node, ArrowData, Label, Link, Circle, Position, MappingData } from '@/models'
+import store from '../app/store'
+import { ROOT_ID, ROOT_LABEL, MappingNode, Node, ArrowData, Label, Link, Circle, Position, MappingData } from '@/models'
 import { packArrows } from './pack'
 
 export function createNodes (links: Array<Link>, labels: Array<Label>): Array<Node> {

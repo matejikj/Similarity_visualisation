@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <dataset-dialog @changeDataset="setDataset" ></dataset-dialog>
+    <add-dataset-dialog @changeDataset="setDataset" ></add-dataset-dialog>
     <v-select
       :items="selectList"
       item-text="name"
@@ -16,18 +16,18 @@
 <script lang='ts'>
 import Vue from 'vue'
 import axios from 'axios'
-import store from '../store'
-import DatasetDialog from './DatasetDialog.vue'
-import TreeViewList from './base/TreeViewList.vue'
+import store from '../app/store'
+import AddDatasetDialog from '@/components/ui/AddDatasetDialog.vue'
+import TreeViewList from '@/components/ui/TreeViewList.vue'
 import { ComboboxItem } from '@/models/ComboboxItem'
 import { Position } from '@/models/Position'
 import { MappingNode } from '@/models/MappingNode'
-import { createMapping } from '../utils/create'
+import { createMapping } from '../services/create'
 
 export default Vue.extend({
   name: 'SideBar',
   components: {
-    DatasetDialog,
+    AddDatasetDialog,
     TreeViewList
   },
   props: {

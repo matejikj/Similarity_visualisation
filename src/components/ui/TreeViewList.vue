@@ -11,7 +11,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Position } from '@/models'
-import store from '@/store'
+import store from '@/app/store'
 import { MappingNode } from '@/models/MappingNode'
 
 export default Vue.extend({

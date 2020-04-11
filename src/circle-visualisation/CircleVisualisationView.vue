@@ -7,7 +7,7 @@
             <side-bar v-bind:sidebarPosition="left"></side-bar>
           </v-col>
           <v-col cols="8">
-            <circle-visualisation></circle-visualisation>
+            <Canvas></Canvas>
           </v-col>
           <v-col cols="2">
             <side-bar v-bind:sidebarPosition="right"></side-bar>
@@ -15,7 +15,7 @@
         </v-row>
         <v-row class="text-center">
           <v-col cols="12">
-            <history-bar></history-bar>
+            <History-bar></History-bar>
           </v-col>
         </v-row>
         <v-row class="text-center">
@@ -35,10 +35,10 @@
 </template>
 
 <script>
-import SideBar from '@/components/SideBar.vue'
-import ValueSlider from '../components/base/ValueSlider.vue'
-import HistoryBar from '../components/HistoryBar'
-import CircleVisualisation from '@/components/d3/CircleVisualisation'
+import SideBar from './SideBar.vue'
+import ValueSlider from '../components/ui/ValueSlider.vue'
+import HistoryBar from './HistoryBar.vue'
+import Canvas from './Canvas.vue'
 import { Position } from '../models/Position'
 
 export default {
@@ -47,7 +47,7 @@ export default {
     ValueSlider,
     SideBar,
     HistoryBar,
-    CircleVisualisation
+    Canvas
   },
   data: () => ({
     left: Position.Left,

@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { ROOT_LABEL, ROOT_ID, MAX_DEPTH } from '@/static/constants.ts'
-import { Link, MappingNode, Label, Node } from '@/models'
-import { createLabels, createLinks, createNodes, createTree } from '@/utils/create'
+import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node } from '@/models'
+import { createLabels, createLinks, createNodes, createTree } from '@/services/create'
 
 Vue.use(Vuex)
 

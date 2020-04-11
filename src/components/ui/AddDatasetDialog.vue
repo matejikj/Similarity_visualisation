@@ -33,10 +33,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import store from '../store'
 
 export default Vue.extend({
-  name: 'DatasetDialog',
+  name: 'AddDatasetDialog',
 
   data: () => ({
     collectionItems: ['hierarchy.v1', 'hierarchy.v2', 'hierarchy.v3', 'hierarchy.v3.reduced'],
