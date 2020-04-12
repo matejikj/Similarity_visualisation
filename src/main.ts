@@ -3,13 +3,11 @@ import App from './app/App.vue'
 import router from './app/router'
 import store from './app/store'
 import VueTippy from 'vue-tippy'
-import Vuetify from 'vuetify'
+import Vuetify from 'vuetify/lib'
 
 Vue.config.productionTip = false
-
-Vue.use(Vuetify)
-
 Vue.use(VueTippy)
+Vue.use(Vuetify)
 
 new Vue({
   router,

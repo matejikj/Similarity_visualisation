@@ -1,9 +1,8 @@
 <template>
     <v-app-bar
       app
-      color="green"
+      color="blue"
       dense
-      flat
     >
       <v-btn to="/">Vizualizace</v-btn>
       <v-btn to="/tutorial">Tutorial</v-btn>

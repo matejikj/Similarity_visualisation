@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600px">
     <template v-slot:activator="{ on }">
-      <v-btn v-if="display" color="primary" dark v-on="on">Add dataset</v-btn>
+      <v-btn v-if="display" color="primary" v-on="on">Add dataset</v-btn>
     </template>
     <v-card>
       <v-card-title>
