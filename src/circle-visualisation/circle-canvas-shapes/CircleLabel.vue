@@ -30,7 +30,7 @@ export default Vue.extend({
   methods: {
     /** @param {MouseEvent} event */
     emit (event) {
-      this.$emit('circleNodeClicked', event.target.checked)
+      this.$emit('labelClicked', event)
     },
     // eslint-disable-next-line
     openWiki: function (data: any) {

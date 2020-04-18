@@ -1,6 +1,7 @@
 import store from '../app/store'
 import { ROOT_ID, ROOT_LABEL, MappingNode, Node, ArrowData, Label, Link, Circle, Position, MappingData } from '@/models'
 import { packArrows } from './pack'
+import { mapMutations } from 'vuex'
 
 export function createNodes (links: Array<Link>, labels: Array<Label>): Array<Node> {
   const array = new Array<Node>()
@@ -101,10 +102,10 @@ export function createLabels (leftDataset: any, rightDataset: any): Array<Label>
   return array
 }
 
-export function createLayer (urls: Array<MappingNode>): Array<ArrowData> {
+export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
   const layerArray = Array<ArrowData>()
   for (let i = 0; i < urls.length; i++) {
-    const n = store.state.nodes.filter(y => y.id === urls[i].nodeID)[0]
+    const n = nodes.filter(y => y.id === urls[i].nodeID)[0]
     if (n === undefined) {
       continue
     }
@@ -145,11 +146,11 @@ export function createLayer (urls: Array<MappingNode>): Array<ArrowData> {
   return layerArray
 }
 
-export function createArrows (position: Position, ids: Array<MappingNode>): void {
+export function createArrows (root: Node, position: Position, ids: Array<MappingNode>, nodes: Array<Node>): void {
   const queue = Array<Node>()
   let viewDepthLevel = Array<ArrowData>()
   const screenLevel = Array<Node>()
-  queue.push(store.state.hierarchy)
+  queue.push(root)
   while (queue.length !== 0) {
     const vertex = queue.shift()
     if (vertex !== undefined) {
@@ -163,16 +164,16 @@ export function createArrows (position: Position, ids: Array<MappingNode>): void
   }
 
   if (ids !== null && ids !== undefined) {
-    viewDepthLevel = createLayer(ids)
+    viewDepthLevel = createLayer(ids, nodes)
     packArrows(1000, 1000, Array<Circle>(), viewDepthLevel, position)
   }
 }
 
-export function createTree (nodes: Array<Node>, depth: number): Node {
+export function createTree (rootId: string, nodes: Array<Node>, depth: number): Node {
   nodes.forEach(element => {
     element.depth = undefined
   })
-  const tmpRoot = nodes.filter(x => x.id === store.getters.getRootId)[0]
+  const tmpRoot = nodes.filter(x => x.id === rootId)[0]
   const root = new Node(tmpRoot.label, tmpRoot.parents, Array<Node>(), tmpRoot.id, tmpRoot.depth, tmpRoot.color)
   let maxDepth = 0
   root.depth = 0
@@ -213,8 +214,55 @@ export function createTree (nodes: Array<Node>, depth: number): Node {
       }
     }
   }
-  store.commit('changeMaxDepth', maxDepth)
   return root
+}
+
+export function getMaxTreeDepth (rootId: string, nodes: Array<Node>, depth: number): number {
+  nodes.forEach(element => {
+    element.depth = undefined
+  })
+  const tmpRoot = nodes.filter(x => x.id === rootId)[0]
+  const root = new Node(tmpRoot.label, tmpRoot.parents, Array<Node>(), tmpRoot.id, tmpRoot.depth, tmpRoot.color)
+  let maxDepth = 0
+  root.depth = 0
+  tmpRoot.depth = 0
+  const queue = Array<Node>()
+  queue.push(root)
+  while (queue.length !== 0) {
+    const node = queue.shift()
+    const children = nodes.filter(x => x.id === node?.id)[0].children
+    if (node !== undefined && children !== undefined) {
+      if (children.length !== 0) {
+        for (let i = 0; i < children.length; i++) {
+          const tmpChild = nodes.filter(x => x.id === children[i].id)[0]
+          const child = new Node(tmpChild.label, tmpChild.parents, Array<Node>(), tmpChild.id, tmpChild.depth, tmpChild.color)
+          node.children.push(child)
+          if (node.depth !== undefined) {
+            const newLevelDepth = node.depth + 1
+            child.depth = newLevelDepth
+            tmpChild.depth = newLevelDepth
+            if (maxDepth < newLevelDepth) {
+              maxDepth = newLevelDepth
+            }
+            if (newLevelDepth < depth) {
+              queue.push(node.children[i])
+            } else {
+              if (newLevelDepth === depth) {
+                child.children = []
+                child.value = 1
+                child.isLeaf = true
+              }
+            }
+          }
+        }
+      } else {
+        node.children = []
+        node.value = 1
+        node.isLeaf = true
+      }
+    }
+  }
+  return maxDepth
 }
 
 // eslint-disable-next-line
@@ -266,22 +314,4 @@ export function createMapping (labels: Array<Label>, mapping: any, mappingID: nu
     }
   })
   return array
-}
-
-export function refreshPath (leaf: Circle): void {
-  const array = Array<string>()
-  array.push(leaf.id)
-  let parent = leaf.parent
-  while (parent !== null) {
-    if (parent.data.id !== ROOT_ID && parent.parent != null) {
-      array.push(parent.data.id)
-    }
-    parent = parent.parent
-  }
-  while (array.length !== 0) {
-    const element = array.pop()
-    if (element !== undefined) {
-      store.state.circlesPath.push(element)
-    }
-  }
 }

@@ -6,7 +6,7 @@
           <side-bar v-bind:sidebarPosition="left"></side-bar>
         </v-col>
         <v-col cols="8">
-          <Canvas></Canvas>
+          <circle-canvas></circle-canvas>
         </v-col>
         <v-col cols="2">
           <side-bar v-bind:sidebarPosition="right"></side-bar>
@@ -36,16 +36,16 @@
 import SideBar from './SideBar.vue'
 import ValueSlider from '../components/ui/ValueSlider.vue'
 import HistoryBar from './HistoryBar.vue'
-import Canvas from './Canvas.vue'
+import CircleCanvas from './CircleCanvas.vue'
 import { Position } from '../models/Position'
 
 export default {
-  name: 'CircleVisualisationView',
+  name: 'CircleVisualisation',
   components: {
     ValueSlider,
     SideBar,
     HistoryBar,
-    Canvas
+    CircleCanvas
   },
   data: () => ({
     left: Position.Left,

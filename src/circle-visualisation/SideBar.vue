@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <add-dataset-dialog @changeDataset="setDataset" ></add-dataset-dialog>
+    <add-dataset-dialog @changeDataset="changeDataset" ></add-dataset-dialog>
     <v-select
       :items="selectList"
       item-text="name"
@@ -23,6 +23,8 @@ import { ComboboxItem } from '@/models/ComboboxItem'
 import { Position } from '@/models/Position'
 import { MappingNode } from '@/models/MappingNode'
 import { createMapping } from '../services/create'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
+import { Actions, Mutations, Getters } from './CircleVisualisation.store'
 
 export default Vue.extend({
   name: 'SideBar',
@@ -35,7 +37,12 @@ export default Vue.extend({
     }
   },
   data: () => ({
-    collectionItems: ['hierarchy.v1', 'hierarchy.v2', 'hierarchy.v3', 'hierarchy.v3.reduced'],
+    collectionItems:
+      ['hierarchy.v1',
+        'hierarchy.v2',
+        'hierarchy.v3',
+        'hierarchy.v3.reduced'
+      ],
     mappingList: Array<MappingNode>(),
     selectList: Array<ComboboxItem>(),
     error: Error()
@@ -43,15 +50,31 @@ export default Vue.extend({
   computed: {
   },
   methods: {
-    setDataset: function (url: string) {
+    ...mapActions('circleVisualisation', {
+      initialize: Actions.INITIALIZE_NODES,
+      buildTree: Actions.BUILD_TREE,
+      updateCanvas: Actions.UPDATE_CANVAS
+    }),
+    ...mapMutations('circleVisualisation', {
+      changeLeftDataset: Mutations.CHANGE_LEFT_DATASET,
+      changeRightDataset: Mutations.CHANGE_RIGHT_DATASET,
+      changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
+    }),
+    ...mapGetters('circleVisualisation', {
+      getLeftDataset: Getters.GET_LEFT_DATASET,
+      getRightDataset: Getters.GET_RIGHT_DATASET,
+      getLabels: Getters.GET_LABELS
+    }),
+    changeDataset: function (url: string) {
       axios.get(url).then(
         response => {
           switch (this.$props.sidebarPosition) {
             case Position.Left:
-              this.$store.commit('changeLeftDataset', response.data)
+              this.changeLeftDataset(response.data)
               break
             case Position.Right:
-              this.$store.commit('changeRightDataset', response.data)
+              this.changeRightDataset(response.data)
               break
           }
           this.selectList = []
@@ -62,8 +85,8 @@ export default Vue.extend({
             }
             this.selectList.push(node)
           }
-          this.$store.dispatch('initialize')
-          this.$store.dispatch('buildTree')
+          this.initialize()
+          this.buildTree()
         },
         error => {
           this.error = error
@@ -75,22 +98,23 @@ export default Vue.extend({
       this.mappingList = []
       switch (this.$props.sidebarPosition) {
         case Position.Left:
-          this.mappingList = createMapping(store.getters.getLabels, store.getters.getLeftDataset, data.id)
+          this.mappingList = createMapping(this.getLabels(), this.getLeftDataset(), data.id)
           break
         case Position.Right:
-          this.mappingList = createMapping(store.getters.getLabels, store.getters.getRightDataset, data.id)
+          this.mappingList = createMapping(this.getLabels(), this.getRightDataset(), data.id)
           break
       }
     },
     selectedChanged: function (array: Array<MappingNode>) {
       switch (this.$props.sidebarPosition) {
         case Position.Left:
-          store.commit('changeLeftMapping', array)
+          this.changeLeftMapping(array)
           break
         case Position.Right:
-          store.commit('changeRightMapping', array)
+          this.changeRightMapping(array)
           break
       }
+      this.updateCanvas()
     }
   }
 })
