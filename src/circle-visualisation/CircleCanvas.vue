@@ -33,9 +33,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import CircleNode from './circle-canvas-shapes/CircleNode.vue'
-import CircleLabel from './circle-canvas-shapes/CircleLabel.vue'
-import CircleLink from './circle-canvas-shapes/CircleLink.vue'
+import CircleNode from './canvas-shapes/CircleNode.vue'
+import CircleLabel from './canvas-shapes/CircleLabel.vue'
+import CircleLink from './canvas-shapes/CircleLink.vue'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { Position, Circle } from '@/models'
 import store, { Getters, Actions, Mutations } from './CircleVisualisation.store'

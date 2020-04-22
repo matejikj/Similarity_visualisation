@@ -1,6 +1,7 @@
-import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node, Circle, Arrow, Position } from '@/models'
+import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node, Circle, Arrow, Position, Path } from '@/models'
 import { createLabels, createLinks, createNodes, createTree, createLayer, getMaxTreeDepth } from '@/services/create'
 import { packCircles, packArrows } from '@/services/pack'
+import axios from 'axios'
 
 export const STORE_NAME = 'circleVisualisation'
 
@@ -10,7 +11,8 @@ export const Actions = {
   ADD_NODE_TO_PATH: 'ADD_NODE_TO_PATH',
   UPDATE_CANVAS: 'UPDATE_CANVAS',
   RESIZE_CANVAS: 'RESIZE_CANVAS',
-  UPDATE_PATH: 'UPDATE_PATH'
+  UPDATE_PATH: 'UPDATE_PATH',
+  FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET'
 }
 
 export const Mutations = {
@@ -29,7 +31,9 @@ export const Mutations = {
   CHANGE_LEFT_ARROWS: 'CHANGE_LEFT_ARROWS',
   CHANGE_RIGHT_ARROWS: 'CHANGE_RIGHT_ARROWS',
   CHANGE_HIERARCHY: 'CHANGE_HIERARCHY',
-  CHANGE_ROOT_ID: 'CHANGE_ROOT_ID'
+  CHANGE_ROOT_ID: 'CHANGE_ROOT_ID',
+  CHANGE_PATHS_DATASET: 'CHANGE_PATHS_DATASET',
+  CHANGE_PATHS: 'CHANGE_PATHS'
 }
 
 export const Getters = {
@@ -55,12 +59,13 @@ export default {
   state: {
     leftDataset: Object(),
     rightDataset: Object(),
-    pathDataset: Object(),
+    pathsDataset: Object(),
     leftMapping: Array<MappingNode>(),
     rightMapping: Array<MappingNode>(),
     labels: Array<Label>(),
     links: Array<Link>(),
     nodes: Array<Node>(),
+    paths: Array<Path>(),
     circles: Array<Circle>(),
     leftArrows: Array<Arrow>(),
     rightArrows: Array<Arrow>(),
@@ -125,6 +130,9 @@ export default {
     [Mutations.CHANGE_RIGHT_DATASET] (state, value: any) {
       state.rightDataset = value
     },
+    [Mutations.CHANGE_PATHS_DATASET] (state, value: any) {
+      state.pathsDataset = value
+    },
     [Mutations.CHANGE_LEFT_MAPPING] (state, value: Array<MappingNode>) {
       state.leftMapping = value
     },
@@ -178,7 +186,9 @@ export default {
     [Actions.ADD_NODE_TO_PATH]: addNodeToPath,
     [Actions.RESIZE_CANVAS]: resizeCanvas,
     [Actions.UPDATE_CANVAS]: updateCanvas,
-    [Actions.UPDATE_PATH]: updatePath
+    [Actions.UPDATE_PATH]: updatePath,
+    [Actions.FETCH_PATHS_DATASET]: fetchPathsDataset
+
   }
 }
 
@@ -187,6 +197,59 @@ function updatePath (context, value: number) {
   context.commit(Mutations.CHANGE_CIRCLES_PATH, context.state.circlesPath.slice(0, value + 1))
   context.dispatch(Actions.BUILD_TREE)
   context.dispatch(Actions.UPDATE_CANVAS)
+}
+
+function fetchPathsDataset (context, url: string) {
+  console.log(url)
+  axios.get(url).then(
+    response => {
+      context.commit(Mutations.CHANGE_PATHS_DATASET, response.data.paths)
+      createPaths(context, response.data.paths)
+    },
+    error => {
+      console.log(error)
+    }
+  )
+}
+
+function createPaths (context, paths) {
+  const array = new Array<Path>()
+
+  for (let i = 0; i < paths.length; i++) {
+    const from = paths[i].from[0]
+    const to = paths[i].to[0]
+    const vertices = Array<string>()
+    for (let j = 0; j < paths[i].path.length; j++) {
+      vertices.push(paths[i].path[j])
+    }
+    const directions = Array<boolean>()
+    for (let j = 0; j < (vertices.length - 1); j++) {
+      const node = context.state.nodes.filter(x => x.id === vertices[j])[0]
+      const parent = node.parents.filter(x => x.id === vertices[j + 1])[0]
+      if (parent === undefined) {
+        directions.push(false)
+      } else {
+        directions.push(true)
+      }
+    }
+    let up = 0
+    let down = 0
+    for (let j = 0; j < directions.length; j++) {
+      if (directions[j]) {
+        up++
+      } else {
+        down++
+      }
+    }
+    let height = 0
+    if (up > down) {
+      height = up
+    } else {
+      height = down
+    }
+    array.push(new Path(from, to, vertices, directions, up, down, height))
+  }
+  context.commit(Mutations.CHANGE_PATHS, array)
 }
 
 function buildTree (context) {

@@ -28,16 +28,36 @@
         <v-col cols="1">
         </v-col>
       </v-row>
+      <v-speed-dial
+        v-model="fab"
+        absolute
+        right
+        bottom
+      >
+        <template v-slot:activator>
+          <v-btn
+            v-model="fab"
+            color="blue darken-2"
+            dark
+            fab
+          >
+            <v-icon v-if="fab">mdi-close</v-icon>
+            <v-icon v-else>mdi-account-circle</v-icon>
+          </v-btn>
+        </template>
+        <add-path-dialog></add-path-dialog>
+      </v-speed-dial>
     </v-container>
   </v-content>
 </template>
 
 <script>
 import SideBar from './SideBar.vue'
-import ValueSlider from '../components/ui/ValueSlider.vue'
+import ValueSlider from '@/common-components/ValueSlider.vue'
 import HistoryBar from './HistoryBar.vue'
 import CircleCanvas from './CircleCanvas.vue'
 import { Position } from '../models/Position'
+import AddPathDialog from '@/common-components/AddPathDialog.vue'
 
 export default {
   name: 'CircleVisualisation',
@@ -45,11 +65,13 @@ export default {
     ValueSlider,
     SideBar,
     HistoryBar,
-    CircleCanvas
+    CircleCanvas,
+    AddPathDialog
   },
   data: () => ({
     left: Position.Left,
-    right: Position.Right
+    right: Position.Right,
+    fab: false
   }),
   methods: {
   }
