@@ -12,7 +12,8 @@ export const Actions = {
   UPDATE_CANVAS: 'UPDATE_CANVAS',
   RESIZE_CANVAS: 'RESIZE_CANVAS',
   UPDATE_PATH: 'UPDATE_PATH',
-  FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET'
+  FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET',
+  SHOW_PATH: 'SHOW_PATH'
 }
 
 export const Mutations = {
@@ -33,7 +34,8 @@ export const Mutations = {
   CHANGE_HIERARCHY: 'CHANGE_HIERARCHY',
   CHANGE_ROOT_ID: 'CHANGE_ROOT_ID',
   CHANGE_PATHS_DATASET: 'CHANGE_PATHS_DATASET',
-  CHANGE_PATHS: 'CHANGE_PATHS'
+  CHANGE_PATHS: 'CHANGE_PATHS',
+  CHANGE_ACTIVE_PATH: 'CHANGE_ACTIVE_PATH'
 }
 
 export const Getters = {
@@ -42,9 +44,11 @@ export const Getters = {
   GET_LEFT_MAPPING: 'GET_LEFT_MAPPING',
   GET_RIGHT_MAPPING: 'GET_RIGHT_MAPPING',
   GET_DEPTH: 'GET_DEPTH',
+  GET_ACTIVE_PATH: 'GET_ACTIVE_PATH',
   GET_MAX_DEPTH: 'GET_MAX_DEPTH',
   GET_LABELS: 'GET_LABELS',
   GET_NODES: 'GET_NODES',
+  GET_PATHS: 'GET_PATHS',
   GET_CIRCLES_PATH: 'GET_CIRCLES_PATH',
   GET_HIERARCHY: 'GET_HIERARCHY',
   GET_ROOT_ID: 'GET_ROOT_ID',
@@ -66,6 +70,7 @@ export default {
     links: Array<Link>(),
     nodes: Array<Node>(),
     paths: Array<Path>(),
+    activePath: Path,
     circles: Array<Circle>(),
     leftArrows: Array<Arrow>(),
     rightArrows: Array<Arrow>(),
@@ -89,8 +94,14 @@ export default {
     [Getters.GET_HIERARCHY]: (state) => {
       return state.hierarchy
     },
+    [Getters.GET_PATHS]: (state) => {
+      return state.paths
+    },
     [Getters.GET_LEFT_DATASET]: (state) => {
       return state.leftDataset
+    },
+    [Getters.GET_ACTIVE_PATH]: (state) => {
+      return state.activePath
     },
     [Getters.GET_RIGHT_DATASET]: (state) => {
       return state.rightDataset
@@ -132,6 +143,12 @@ export default {
     },
     [Mutations.CHANGE_PATHS_DATASET] (state, value: any) {
       state.pathsDataset = value
+    },
+    [Mutations.CHANGE_PATHS] (state, value: Array<Path>) {
+      state.paths = value
+    },
+    [Mutations.CHANGE_ACTIVE_PATH] (state, value: Path) {
+      state.activePath = value
     },
     [Mutations.CHANGE_LEFT_MAPPING] (state, value: Array<MappingNode>) {
       state.leftMapping = value
@@ -187,9 +204,13 @@ export default {
     [Actions.RESIZE_CANVAS]: resizeCanvas,
     [Actions.UPDATE_CANVAS]: updateCanvas,
     [Actions.UPDATE_PATH]: updatePath,
-    [Actions.FETCH_PATHS_DATASET]: fetchPathsDataset
-
+    [Actions.FETCH_PATHS_DATASET]: fetchPathsDataset,
+    [Actions.SHOW_PATH]: showPath
   }
+}
+
+function showPath (context, path: Path) {
+  console.log(path)
 }
 
 function updatePath (context, value: number) {
@@ -200,7 +221,6 @@ function updatePath (context, value: number) {
 }
 
 function fetchPathsDataset (context, url: string) {
-  console.log(url)
   axios.get(url).then(
     response => {
       context.commit(Mutations.CHANGE_PATHS_DATASET, response.data.paths)
@@ -210,6 +230,7 @@ function fetchPathsDataset (context, url: string) {
       console.log(error)
     }
   )
+  context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
 }
 
 function createPaths (context, paths) {

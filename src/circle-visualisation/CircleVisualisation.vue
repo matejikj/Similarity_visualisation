@@ -28,6 +28,17 @@
         <v-col cols="1">
         </v-col>
       </v-row>
+      <v-row class="text-center">
+        <v-col cols="3">
+        </v-col>
+        <v-col cols="6">
+          <path-bar></path-bar>
+        </v-col>
+        <v-col cols="2">
+        </v-col>
+        <v-col cols="1">
+        </v-col>
+      </v-row>
       <v-speed-dial
         v-model="fab"
         absolute
@@ -55,6 +66,7 @@
 import SideBar from './SideBar.vue'
 import ValueSlider from '@/common-components/ValueSlider.vue'
 import HistoryBar from './HistoryBar.vue'
+import PathBar from '@/circle-visualisation/PathBar.vue'
 import CircleCanvas from './CircleCanvas.vue'
 import { Position } from '../models/Position'
 import AddPathDialog from '@/common-components/AddPathDialog.vue'
@@ -66,7 +78,8 @@ export default {
     SideBar,
     HistoryBar,
     CircleCanvas,
-    AddPathDialog
+    AddPathDialog,
+    PathBar
   },
   data: () => ({
     left: Position.Left,
