@@ -209,8 +209,12 @@ export default {
   }
 }
 
-function showPath (context, path: Path) {
-  console.log(path)
+function showPath (context) {
+  const path: Path = context.getters[Getters.GET_ACTIVE_PATH]
+  const nodes: Array<Node> = context.getters[Getters.GET_NODES]
+  const rootId = path.vertices[path.up]
+  context.commit(Mutations.CHANGE_ROOT_ID, rootId)
+  context.commit(Mutations.CHANGE_CIRCLES_PATH, path.vertices)
 }
 
 function updatePath (context, value: number) {

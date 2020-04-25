@@ -3,6 +3,7 @@
     v-model="select"
     :items="paths"
     label="Select"
+    return-object
     @change="updatePath"
   >
     <template slot="selection" slot-scope="data">
@@ -16,8 +17,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters, mapMutations } from 'vuex'
-import { Getters, Mutations } from './CircleVisualisation.store'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { Getters, Mutations, Actions } from './CircleVisualisation.store'
 import { Path } from '../models'
 import store from '../app/store'
 
@@ -40,6 +41,12 @@ export default Vue.extend({
     }
   },
   methods: {
+    ...mapActions('circleVisualisation', {
+      showPath: Actions.SHOW_PATH
+    }),
+    updatePath: function () {
+      this.showPath()
+    }
   }
 })
 </script>
