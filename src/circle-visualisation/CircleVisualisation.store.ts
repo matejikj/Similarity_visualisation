@@ -82,7 +82,8 @@ export default {
     window: {
       width: 0,
       height: 0
-    }
+    },
+    error: Error
   },
   getters: {
     [Getters.GET_MAX_DEPTH]: (state) => {
@@ -231,7 +232,7 @@ function fetchPathsDataset (context, url: string) {
       createPaths(context, response.data.paths)
     },
     error => {
-      console.log(error)
+      context.state.error = error
     }
   )
   context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
