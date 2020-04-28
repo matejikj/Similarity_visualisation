@@ -35,8 +35,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapMutations, mapActions } from 'vuex'
-import { Mutations, Actions } from '@/circle-visualisation/CircleVisualisation.store'
+import { mapActions } from 'vuex'
+import { Actions } from '@/circle-visualisation/CircleVisualisation.store'
 
 export default Vue.extend({
   name: 'AddPathsDialog',
@@ -56,6 +56,7 @@ export default Vue.extend({
     changePaths: function () {
       this.dialog = false
       this.fetchPathsDataset(this.pathsUrl)
+      this.$emit('pathsChanged')
     }
   }
 })

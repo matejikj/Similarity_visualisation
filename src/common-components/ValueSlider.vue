@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import store from '@/app/store'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { Mutations, Actions, Getters } from '@/circle-visualisation/CircleVisualisation.store'
 

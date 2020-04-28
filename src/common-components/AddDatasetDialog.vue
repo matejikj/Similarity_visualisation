@@ -38,7 +38,12 @@ export default Vue.extend({
   name: 'AddDatasetDialog',
 
   data: () => ({
-    collectionItems: ['hierarchy.v1', 'hierarchy.v2', 'hierarchy.v3', 'hierarchy.v3.reduced'],
+    collectionItems:
+      ['hierarchy.v1',
+        'hierarchy.v2',
+        'hierarchy.v3',
+        'hierarchy.v3.reduced'
+      ],
     selectedMappingItems: [],
     datasetUrl: 'example.json',
     dialog: false,

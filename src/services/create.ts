@@ -1,7 +1,5 @@
-import store from '../app/store'
 import { ROOT_ID, ROOT_LABEL, MappingNode, Node, ArrowData, Label, Link, Circle, Position, MappingData } from '@/models'
 import { packArrows } from './pack'
-import { mapMutations } from 'vuex'
 
 export function createNodes (links: Array<Link>, labels: Array<Label>): Array<Node> {
   const array = new Array<Node>()

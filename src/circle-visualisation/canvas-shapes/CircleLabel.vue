@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Circle } from '@/models'
 
 export default Vue.extend({
   name: 'CircleLabel',

@@ -3,13 +3,13 @@
     <v-container fluid fill-height>
       <v-row class="text-center">
         <v-col cols="2">
-          <side-bar v-bind:sidebarPosition="left"></side-bar>
+          <side-bar v-bind:sidebarPosition="left" @datasetAdded="datasetAdded" v-bind:url="leftDataset"></side-bar>
         </v-col>
         <v-col cols="8">
           <circle-canvas></circle-canvas>
         </v-col>
         <v-col cols="2">
-          <side-bar v-bind:sidebarPosition="right"></side-bar>
+          <side-bar v-bind:sidebarPosition="right" @datasetAdded="datasetAdded" v-bind:url="rightDataset"></side-bar>
         </v-col>
       </v-row>
       <v-row class="text-center">
@@ -32,7 +32,7 @@
         <v-col cols="3">
         </v-col>
         <v-col cols="6">
-          <path-bar></path-bar>
+          <path-bar v-bind:url="pathsDataset" @pathsChanged="pathsChanged" v-bind:isVisible="pathsVisible"></path-bar>
         </v-col>
         <v-col cols="2">
         </v-col>
@@ -56,7 +56,7 @@
             <v-icon v-else>mdi-account-circle</v-icon>
           </v-btn>
         </template>
-        <add-path-dialog></add-path-dialog>
+        <add-path-dialog @pathsChanged="pathsChanged"></add-path-dialog>
       </v-speed-dial>
     </v-container>
   </v-content>
@@ -84,9 +84,32 @@ export default {
   data: () => ({
     left: Position.Left,
     right: Position.Right,
+    leftDataset: undefined,
+    rightDataset: undefined,
+    pathsDataset: undefined,
+    pathsVisible: false,
     fab: false
   }),
+  created: function () {
+    if (Array.isArray(this.$route.query.dataset)) {
+      this.leftDataset = this.$route.query.dataset[0]
+      this.rightDataset = this.$route.query.dataset[1]
+    } else {
+      if (this.$route.query.dataset !== undefined) {
+        this.leftDataset = this.$route.query.dataset
+      }
+    }
+    if (this.$route.query.paths !== undefined) {
+      this.pathsDataset = this.$route.query.paths
+    }
+  },
   methods: {
+    pathsChanged: function () {
+      this.pathsVisible = true
+    },
+    datasetAdded: function () {
+      this.pathsVisible = false
+    }
   }
 }
 </script>

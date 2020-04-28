@@ -36,9 +36,9 @@ import Vue from 'vue'
 import CircleNode from './canvas-shapes/CircleNode.vue'
 import CircleLabel from './canvas-shapes/CircleLabel.vue'
 import CircleLink from './canvas-shapes/CircleLink.vue'
-import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { Position, Circle } from '@/models'
-import store, { Getters, Actions, Mutations } from './CircleVisualisation.store'
+import { mapGetters, mapActions } from 'vuex'
+import { Circle } from '@/models'
+import { Getters, Actions } from './CircleVisualisation.store'
 
 export default Vue.extend({
   name: 'CircleCanvas',

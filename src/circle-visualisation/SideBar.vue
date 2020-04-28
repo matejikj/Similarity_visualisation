@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <add-dataset-dialog @changeDataset="changeDataset" ></add-dataset-dialog>
+    <add-dataset-dialog v-if="addDatasetVisibility" @changeDataset="changeDataset" ></add-dataset-dialog>
     <v-select
       :items="selectList"
       item-text="name"
@@ -16,7 +16,6 @@
 <script lang='ts'>
 import Vue from 'vue'
 import axios from 'axios'
-import store from '../app/store'
 import AddDatasetDialog from '@/common-components/AddDatasetDialog.vue'
 import TreeViewList from '@/common-components/TreeViewList.vue'
 import { ComboboxItem } from '@/models/ComboboxItem'
@@ -33,20 +32,21 @@ export default Vue.extend({
     TreeViewList
   },
   props: {
-    sidebarPosition: {
-    }
+    sidebarPosition: {},
+    url: String
   },
   data: () => ({
-    collectionItems:
-      ['hierarchy.v1',
-        'hierarchy.v2',
-        'hierarchy.v3',
-        'hierarchy.v3.reduced'
-      ],
     mappingList: Array<MappingNode>(),
     selectList: Array<ComboboxItem>(),
-    error: Error()
+    error: Error(),
+    addDatasetVisibility: true
   }),
+  mounted: function () {
+    if (this.url !== undefined) {
+      this.addDatasetVisibility = false
+      this.changeDataset(this.url)
+    }
+  },
   computed: {
   },
   methods: {

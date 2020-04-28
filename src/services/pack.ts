@@ -1,6 +1,5 @@
 import { Circle, Position, Arrow, ArrowData } from '@/models'
 import * as d3 from 'd3'
-import store from '@/app/store'
 
 export function packArrows (height: number, width: number, circles: Array<Circle>, viewDepthLevel: Array<ArrowData>, position: Position): Array<Arrow> {
   let counter = 0
@@ -33,7 +32,7 @@ export function packCircles (height: number, width: number, root: Node, maxDepth
     .sum(d => Math.sqrt(d.value))
 
   const output = packChart(treeRoot).descendants()
-  const interpolate = d3.scaleSequential([1, 0], d3.interpolateMagma)
+  const interpolate = d3.scaleSequential([1, 0], d3.interpolateCool)
 
   for (let i = 0; i < output.length; i++) {
     const color = interpolate(output[i].data.depth / maxDepth)

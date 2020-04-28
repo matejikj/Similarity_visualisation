@@ -8,6 +8,7 @@ export class Circle {
     x: number;
     y: number;
     r: number;
+    // eslint-disable-next-line
     parent?: any;
 
     constructor (id: string, label: string, isLeaf: boolean, depth: number, x: number, y: number, r: number) {
