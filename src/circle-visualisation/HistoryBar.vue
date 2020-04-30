@@ -1,8 +1,20 @@
 <template>
   <v-content>
     <template v-for="(c, index) in visitedNodes">
-      <v-btn v-bind:key="index" class="ma-2" @click="click(index)" outlined large fab color="black">
-        {{ c.label }}
+      <v-btn
+        v-bind:content="`
+          label: ${c.label}</br>
+          id: ${c.id}
+        `"
+        v-tippy='{interactive : true, animateFill: false, placement:"left", animation:"shift-toward", delay:10, arrow : true}'
+        v-bind:key="index"
+        class="ma-2" @click="click(index)"
+        outlined
+        large
+        fab
+        color="black"
+      >
+        {{ c.label.length > 5 ? c.label.substring(0, 5) + ".." : c.label }}
       </v-btn>
     </template>
   </v-content>

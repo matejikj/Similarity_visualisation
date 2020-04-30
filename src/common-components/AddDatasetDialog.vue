@@ -10,10 +10,11 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-autocomplete
-              :items=collectionItems
+            <v-combobox
+              v-model="collection"
+              :items="collectionItems"
               label="Collection"
-            ></v-autocomplete>
+            />
           </v-row>
           <v-row>
             <v-col cols="12" sm="8" md="12">
@@ -44,6 +45,7 @@ export default Vue.extend({
         'hierarchy.v3',
         'hierarchy.v3.reduced'
       ],
+    collection: 'hierarchy.v1',
     selectedMappingItems: [],
     datasetUrl: 'example.json',
     dialog: false,
@@ -54,7 +56,7 @@ export default Vue.extend({
   methods: {
     changeDataset: function (): void {
       this.dialog = false
-      this.$emit('changeDataset', this.datasetUrl)
+      this.$emit('changeDataset', this.datasetUrl, this.collection)
     }
   }
 })

@@ -43,7 +43,7 @@ export default Vue.extend({
 
   data: () => ({
     selectedMappingItems: [],
-    pathsUrl: 'example.json',
+    pathsUrl: 'example-paths.json',
     dialog: false,
     display: true
   }),

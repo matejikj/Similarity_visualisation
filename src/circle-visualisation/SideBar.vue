@@ -15,15 +15,15 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import axios from 'axios'
 import AddDatasetDialog from '@/common-components/AddDatasetDialog.vue'
 import TreeViewList from '@/common-components/TreeViewList.vue'
 import { ComboboxItem } from '@/models/ComboboxItem'
 import { Position } from '@/models/Position'
 import { MappingNode } from '@/models/MappingNode'
-import { createMapping } from '../services/create'
+import { createMapping } from '../utils/hierarchyUtils'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { Actions, Mutations, Getters } from './CircleVisualisation.store'
+import store from '../app/store'
 
 export default Vue.extend({
   name: 'SideBar',
@@ -33,27 +33,33 @@ export default Vue.extend({
   },
   props: {
     sidebarPosition: {},
-    url: String
+    url: String,
+    collection: String
   },
   data: () => ({
     mappingList: Array<MappingNode>(),
-    selectList: Array<ComboboxItem>(),
     error: Error(),
     addDatasetVisibility: true
   }),
   mounted: function () {
-    if (this.url !== undefined) {
+    if (this.url !== undefined && this.collection !== undefined) {
       this.addDatasetVisibility = false
-      this.changeDataset(this.url)
+      this.changeDataset(this.url, this.collection)
     }
   },
   computed: {
+    selectList: function () {
+      if (this.$props.sidebarPosition === Position.Left) {
+        return store.getters['circleVisualisation/GET_LEFT_MAPPING_LIST']
+      } else {
+        return store.getters['circleVisualisation/GET_RIGHT_MAPPING_LIST']
+      }
+    }
   },
   methods: {
     ...mapActions('circleVisualisation', {
-      initialize: Actions.INITIALIZE_NODES,
-      buildTree: Actions.BUILD_TREE,
-      updateCanvas: Actions.UPDATE_CANVAS
+      updateCanvas: Actions.UPDATE_CANVAS,
+      fetchDataset: Actions.FETCH_DATASET
     }),
     ...mapMutations('circleVisualisation', {
       changeLeftDataset: Mutations.CHANGE_LEFT_DATASET,
@@ -66,34 +72,10 @@ export default Vue.extend({
       getRightDataset: Getters.GET_RIGHT_DATASET,
       getLabels: Getters.GET_LABELS
     }),
-    changeDataset: function (url: string) {
-      axios.get(url).then(
-        response => {
-          switch (this.$props.sidebarPosition) {
-            case Position.Left:
-              this.changeLeftDataset(response.data)
-              break
-            case Position.Right:
-              this.changeRightDataset(response.data)
-              break
-          }
-          this.selectList = []
-          for (let i = 0; i < response.data.mappings.length; i++) {
-            const node: ComboboxItem = {
-              id: i,
-              name: response.data.mappings[i].metadata.from
-            }
-            this.selectList.push(node)
-          }
-          this.initialize()
-          this.buildTree()
-        },
-        error => {
-          this.error = error
-        }
-      )
+    changeDataset: function (url: string, collection: string) {
+      const position = this.sidebarPosition
+      this.fetchDataset({ url, collection, position })
     },
-    // eslint-disable-next-line
     changeMapping: function (data: ComboboxItem) {
       this.mappingList = []
       switch (this.$props.sidebarPosition) {

@@ -8,7 +8,7 @@
         dy=".35em"
         @click.exact="emit(labelData)"
         @click.ctrl="openWiki(labelData)"
-        >{{labelData.label.substring(0, 4)}}...
+        >{{ labelData.label.length > 5 ? labelData.label.substring(0, 5) + ".." : labelData.label }}
      </text>
 </template>
 

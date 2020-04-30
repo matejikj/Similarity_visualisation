@@ -1,27 +1,31 @@
-import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node, Circle, Arrow, Position, Path } from '@/models'
-import { createLabels, createLinks, createNodes, createTree, createLayer, getMaxTreeDepth } from '@/services/create'
-import { packCircles, packArrows } from '@/services/pack'
 import axios from 'axios'
-import * as d3 from 'd3'
+import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem } from '@/models'
+import { createTree, createLayer, getMaxTreeDepth, packMappingArrows } from '@/utils/hierarchyUtils'
+import { packNodes, createNodes } from '@/utils/nodesUtils'
+import { highlightPaths, createPathNodes, createPaths } from '@/utils/pathUtils'
 
 export const STORE_NAME = 'circleVisualisation'
 
 export const Actions = {
   INITIALIZE_NODES: 'INITIALIZE_NODES',
   BUILD_TREE: 'BUILD_TREE',
-  ADD_NODE_TO_PATH: 'ADD_NODE_TO_PATH',
+  ADD_NODE_TO_VISITED_NODES: 'ADD_NODE_TO_VISITED_NODES',
   UPDATE_CANVAS: 'UPDATE_CANVAS',
   RESIZE_CANVAS: 'RESIZE_CANVAS',
   UPDATE_PATH: 'UPDATE_PATH',
   FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET',
-  SELECT_PATH: 'SELECT_PATHZ'
+  SELECT_PATH: 'SELECT_PATH',
+  FETCH_DATASET: 'FETCH_DATASET',
+  RESET_VIEW: 'RESET_VIEW'
 }
 
 export const Mutations = {
   CHANGE_WINDOW: 'CHANGE_WINDOW',
   CHANGE_LEFT_DATASET: 'CHANGE_LEFT_DATASET',
   CHANGE_RIGHT_DATASET: 'CHANGE_RIGHT_DATASET',
+  CHANGE_LEFT_MAPPING_LIST: 'CHANGE_LEFT_MAPPING_LIST',
   CHANGE_LEFT_MAPPING: 'CHANGE_LEFT_MAPPING',
+  CHANGE_RIGHT_MAPPING_LIST: 'CHANGE_RIGHT_MAPPING_LIST',
   CHANGE_RIGHT_MAPPING: 'CHANGE_RIGHT_MAPPING',
   CHANGE_DEPTH: 'CHANGE_DEPTH',
   CHANGE_MAX_DEPTH: 'CHANGE_MAX_DEPTH',
@@ -43,7 +47,9 @@ export const Mutations = {
 export const Getters = {
   GET_LEFT_DATASET: 'GET_LEFT_DATASET',
   GET_RIGHT_DATASET: 'GET_RIGHT_DATASET',
+  GET_LEFT_MAPPING_LIST: 'GET_LEFT_MAPPING_LIST',
   GET_LEFT_MAPPING: 'GET_LEFT_MAPPING',
+  GET_RIGHT_MAPPING_LIST: 'GET_RIGHT_MAPPING_LIST',
   GET_RIGHT_MAPPING: 'GET_RIGHT_MAPPING',
   GET_DEPTH: 'GET_DEPTH',
   GET_ACTIVE_PATH: 'GET_ACTIVE_PATH',
@@ -67,7 +73,9 @@ export default {
     leftDataset: Object(),
     rightDataset: Object(),
     pathsDataset: Object(),
+    leftMappingList: Array<ComboboxItem>(),
     leftMapping: Array<MappingNode>(),
+    rightMappingList: Array<ComboboxItem>(),
     rightMapping: Array<MappingNode>(),
     labels: Array<Label>(),
     links: Array<Link>(),
@@ -104,6 +112,12 @@ export default {
     },
     [Getters.GET_LEFT_DATASET]: (state) => {
       return state.leftDataset
+    },
+    [Getters.GET_LEFT_MAPPING_LIST]: (state) => {
+      return state.leftMappingList
+    },
+    [Getters.GET_RIGHT_MAPPING_LIST]: (state) => {
+      return state.rightMappingList
     },
     [Getters.GET_ACTIVE_PATH]: (state) => {
       return state.activePath
@@ -167,6 +181,12 @@ export default {
     [Mutations.CHANGE_RIGHT_MAPPING] (state, value: Array<MappingNode>) {
       state.rightMapping = value
     },
+    [Mutations.CHANGE_LEFT_MAPPING_LIST] (state, value: Array<ComboboxItem>) {
+      state.leftMappingList = value
+    },
+    [Mutations.CHANGE_RIGHT_MAPPING_LIST] (state, value: Array<ComboboxItem>) {
+      state.rightMappingList = value
+    },
     [Mutations.CHANGE_DEPTH] (state, value: number) {
       state.depth = value
     },
@@ -214,13 +234,23 @@ export default {
   actions: {
     [Actions.BUILD_TREE]: buildTree,
     [Actions.INITIALIZE_NODES]: initializeNodes,
-    [Actions.ADD_NODE_TO_PATH]: addNodeToPath,
+    [Actions.ADD_NODE_TO_VISITED_NODES]: addNodeToVisitedNodes,
     [Actions.RESIZE_CANVAS]: resizeCanvas,
     [Actions.UPDATE_CANVAS]: updateCanvas,
     [Actions.UPDATE_PATH]: updatePath,
     [Actions.FETCH_PATHS_DATASET]: fetchPathsDataset,
-    [Actions.SELECT_PATH]: selectPath
+    [Actions.SELECT_PATH]: selectPath,
+    [Actions.FETCH_DATASET]: fetchDataset,
+    [Actions.RESET_VIEW]: resetView
   }
+}
+
+function resetView (context) {
+  context.commit(Mutations.CHANGE_ROOT_ID, ROOT_ID)
+  context.commit(Mutations.CHANGE_PATH_NODES, [])
+  context.commit(Mutations.CHANGE_VISITED_NODES, [context.state.labels[ROOT_ID]])
+  context.dispatch(Actions.BUILD_TREE)
+  context.dispatch(Actions.UPDATE_CANVAS)
 }
 
 function selectPath (context) {
@@ -228,34 +258,9 @@ function selectPath (context) {
   // const nodes: Array<Node> = context.getters[Getters.GET_NODES]
   const rootId = activePath.vertices[activePath.up]
   context.commit(Mutations.CHANGE_ROOT_ID, rootId)
-  const visitedNode: Label = context.getters[Getters.GET_LABELS].filter(x => x.id === rootId)[0]
+  const visitedNode: Label = context.state.labels[rootId]
   context.commit(Mutations.CHANGE_VISITED_NODES, [visitedNode])
-  const pathNodes = Array<Node>()
-  let tmpUp = activePath.up
-  let indexLeft = 0
-  let indexRight = 0
-  const pathColor = d3.scaleLinear()
-    .domain([0, activePath.height])
-    .range(['#ff8d92', '#ff0000'])
-    .interpolate(d3.interpolateCubehelix)
-
-  activePath.vertices.forEach(x => {
-    const node: Node = context.getters[Getters.GET_NODES].filter(y => y.id === x)[0]
-    let j = 0
-    if (tmpUp > 0) {
-      j = indexLeft * activePath.height / activePath.up
-      indexLeft++
-      tmpUp--
-    } else {
-      j = (activePath.height - indexRight) * activePath.height / activePath.down
-      indexRight++
-    }
-    if (node !== undefined) {
-      node.color = pathColor(j)
-    }
-    pathNodes.push(node)
-  })
-  context.commit(Mutations.CHANGE_PATH_NODES, pathNodes)
+  context.commit(Mutations.CHANGE_PATH_NODES, createPathNodes(context.state.nodes, context.state.activePath))
 }
 
 function updatePath (context, value: number) {
@@ -265,57 +270,48 @@ function updatePath (context, value: number) {
   context.dispatch(Actions.UPDATE_CANVAS)
 }
 
+// eslint-disable-next-line
+function addMappingItemToArray (array: Array<ComboboxItem>, item: any, index: number) {
+  array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
+}
+
+function fetchDataset (context, { url, collection, position }) {
+  const selectList = []
+  axios.get(url).then(
+    response => {
+      response.data.mappings.forEach((element, i) => {
+        addMappingItemToArray(selectList, element, i)
+      })
+      switch (position) {
+        case Position.Left:
+          context.commit(Mutations.CHANGE_LEFT_DATASET, response.data)
+          context.commit(Mutations.CHANGE_LEFT_MAPPING_LIST, selectList)
+          break
+        case Position.Right:
+          context.commit(Mutations.CHANGE_RIGHT_DATASET, response.data)
+          context.commit(Mutations.CHANGE_RIGHT_MAPPING_LIST, selectList)
+          break
+      }
+      context.dispatch(Actions.INITIALIZE_NODES)
+      context.dispatch(Actions.BUILD_TREE)
+    },
+    error => {
+      context.state.error = error
+    }
+  )
+}
+
 function fetchPathsDataset (context, url: string) {
   axios.get(url).then(
     response => {
       context.commit(Mutations.CHANGE_PATHS_DATASET, response.data.paths)
-      createPaths(context, response.data.paths)
+      context.commit(Mutations.CHANGE_PATHS, createPaths(context.state.nodes, response.data.paths))
     },
     error => {
       context.state.error = error
     }
   )
   context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
-}
-
-function createPaths (context, paths) {
-  const array = new Array<Path>()
-
-  for (let i = 0; i < paths.length; i++) {
-    const from = paths[i].from[0]
-    const to = paths[i].to[0]
-    const vertices = Array<string>()
-    for (let j = 0; j < paths[i].path.length; j++) {
-      vertices.push(paths[i].path[j])
-    }
-    const directions = Array<boolean>()
-    for (let j = 0; j < (vertices.length - 1); j++) {
-      const node = context.state.nodes.filter(x => x.id === vertices[j])[0]
-      const parent = node.parents.filter(x => x.id === vertices[j + 1])[0]
-      if (parent === undefined) {
-        directions.push(false)
-      } else {
-        directions.push(true)
-      }
-    }
-    let up = 0
-    let down = 0
-    for (let j = 0; j < directions.length; j++) {
-      if (directions[j]) {
-        up++
-      } else {
-        down++
-      }
-    }
-    let height = 0
-    if (up > down) {
-      height = up
-    } else {
-      height = down
-    }
-    array.push(new Path(from, to, vertices, directions, up, down, height))
-  }
-  context.commit(Mutations.CHANGE_PATHS, array)
 }
 
 function buildTree (context) {
@@ -341,73 +337,40 @@ function resizeCanvas (context, value: {width: number; height: number}) {
 }
 
 function createCircles (context): Array<Circle> {
-  return packCircles(context.state.window.height, context.state.window.width, context.state.hierarchy, context.state.maxDepth)
+  return packNodes(context.state.window.height, context.state.window.width, context.state.hierarchy, context.state.maxDepth)
 }
 
 function updateCanvas (context) {
   context.commit(Mutations.CHANGE_CIRCLES, createCircles(context))
-  context.commit(Mutations.CHANGE_LEFT_ARROWS, packArrows(context.state.window.height, context.state.window.width,
+  context.commit(Mutations.CHANGE_LEFT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
     context.state.circles, createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes), Position.Left))
-  context.commit(Mutations.CHANGE_RIGHT_ARROWS, packArrows(context.state.window.height, context.state.window.width,
+  context.commit(Mutations.CHANGE_RIGHT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
     context.state.circles, createLayer(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes), Position.Right))
   if (context.state.activePath !== undefined) {
-    context.commit(Mutations.CHANGE_CIRCLES, highlightPaths(context))
+    context.commit(Mutations.CHANGE_CIRCLES, highlightPaths(context.state.circles, context.state.activePath))
   }
-}
-
-function highlightPaths (context): Array<Circle> {
-  const circles: Array<Circle> = context.getters[Getters.GET_CIRCLES]
-  const activePath: Path = context.getters[Getters.GET_ACTIVE_PATH]
-  if (activePath !== undefined) {
-    let tmpUp = activePath.up
-    let indexLeft = 0
-    let indexRight = 0
-    const pathColor = d3.scaleLinear()
-      .domain([0, activePath.height])
-      .range(['#ff8d92', '#ff0000'])
-      .interpolate(d3.interpolateCubehelix)
-    activePath.vertices.forEach(x => {
-      const circle: Circle = circles.filter(y => y.id === x)[0]
-      let j = 0
-      if (tmpUp > 0) {
-        j = indexLeft * activePath.height / activePath.up
-        indexLeft++
-        tmpUp--
-      } else {
-        j = (activePath.height - indexRight) * activePath.height / activePath.down
-        indexRight++
-      }
-      if (circle !== undefined) {
-        circle.fill = pathColor(j)
-      }
-    })
-  }
-  return circles
 }
 
 function initializeNodes (context) {
   context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
-  context.commit(Mutations.CHANGE_LABELS, createLabels(context.state.leftDataset, context.state.rightDataset))
+  const labels = createLabels(context.state.leftDataset, context.state.rightDataset)
+  context.commit(Mutations.CHANGE_LABELS, labels)
   context.commit(Mutations.CHANGE_LINKS, createLinks(context.state.leftDataset, context.state.rightDataset))
   context.commit(Mutations.CHANGE_NODES, createNodes(context.state.links, context.state.labels))
-  let rootLabel = context.state.labels.filter(x => x.id === ROOT_ID)[0]
-  if (rootLabel === undefined) {
-    rootLabel = new Label(ROOT_ID, ROOT_LABEL)
-  }
-  context.commit(Mutations.CHANGE_VISITED_NODES, [rootLabel])
+  context.commit(Mutations.CHANGE_VISITED_NODES, [labels[ROOT_ID]])
   context.commit(Mutations.CHANGE_PATH_NODES, Array<Node>())
   context.dispatch(Actions.BUILD_TREE, context)
   context.dispatch(Actions.UPDATE_CANVAS, context)
 }
 
-function addNodeToPath (context, leaf: Circle) {
+function addNodeToVisitedNodes (context, leaf: Circle) {
   context.commit(Mutations.CHANGE_ROOT_ID, leaf.id)
   const array = Array<Label>()
-  array.push(context.state.labels.filter(x => x.id === leaf.id)[0])
+  array.push(context.state.labels[leaf.id])
   let parent = leaf.parent
   while (parent !== null) {
     if (parent.data.id !== ROOT_ID && parent.parent != null) {
-      array.push(context.state.labels.filter(x => x.id === parent.data.id)[0])
+      array.push(context.state.labels[parent.data.id])
     }
     parent = parent.parent
   }
@@ -417,4 +380,60 @@ function addNodeToPath (context, leaf: Circle) {
       context.state.visitedNodes.push(element)
     }
   }
+}
+
+function createLabel (id: string, label: string) {
+  return new Label(
+    id,
+    label
+  )
+}
+
+// eslint-disable-next-line
+function createLabels (leftDataset: any, rightDataset: any) {
+  const result = new Set<string>()
+  for (const key in leftDataset.labels) {
+    result[key] = createLabel(key, leftDataset.labels[key])
+  }
+  for (const key in rightDataset.labels) {
+    result[key] = createLabel(key, rightDataset.labels[key])
+  }
+  result[ROOT_ID] = createLabel(ROOT_ID, ROOT_LABEL)
+  return result
+}
+
+function containsLink (array: Array<Link>, link: Link) {
+  if (array.filter(x => x.parent === link.parent &&
+    x.child === link.child && x.relation === link.relation).length === 0
+  ) {
+    return false
+  } else {
+    return true
+  }
+}
+
+function createLink (parent: string, child: string, relation: string) {
+  return new Link(parent,
+    child,
+    relation
+  )
+}
+
+// eslint-disable-next-line
+export function createLinks (leftDataset: any, rightDataset: any) {
+  const result = new Array<Link>()
+  if (leftDataset.hierarchy !== undefined) {
+    leftDataset.hierarchy.forEach(link => {
+      result.push(createLink(link[2], link[0], link[1]))
+    })
+  }
+  if (rightDataset.hierarchy !== undefined) {
+    rightDataset.hierarchy.forEach(link => {
+      const createdLink = createLink(link[2], link[0], link[1])
+      if (!containsLink(result, createdLink)) {
+        result.push(createdLink)
+      }
+    })
+  }
+  return result
 }

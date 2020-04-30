@@ -53,7 +53,7 @@
             fab
           >
             <v-icon v-if="fab">mdi-close</v-icon>
-            <v-icon v-else>mdi-account-circle</v-icon>
+            <v-icon v-else>mdi-menu</v-icon>
           </v-btn>
         </template>
         <add-path-dialog @pathsChanged="pathsChanged"></add-path-dialog>
@@ -105,6 +105,7 @@ export default {
   },
   methods: {
     pathsChanged: function () {
+      this.fab = false
       this.pathsVisible = true
     },
     datasetAdded: function () {

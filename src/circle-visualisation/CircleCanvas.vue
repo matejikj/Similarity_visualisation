@@ -74,7 +74,7 @@ export default Vue.extend({
     ...mapActions('circleVisualisation', {
       updateCanvas: Actions.UPDATE_CANVAS,
       resizeCanvas: Actions.RESIZE_CANVAS,
-      addNodeToPath: Actions.ADD_NODE_TO_PATH,
+      addNodeToPath: Actions.ADD_NODE_TO_VISITED_NODES,
       buildTree: Actions.BUILD_TREE
     }),
     handleResize () {

@@ -1,22 +1,44 @@
 <template>
   <v-container v-if="isVisible">
-    <v-select
-      v-model="select"
-      :items="paths"
-      label="Select"
-      return-object
-      @change="updatePath"
-    >
-      <template slot="selection" slot-scope="data">
-        {{ data.item.from }} to {{ data.item.to }}
-      </template>
-      <template slot="item" slot-scope="data">
-        {{ data.item.from }} to {{ data.item.to }}
-      </template>
-    </v-select>
+    <v-row>
+      <v-select
+        v-model="select"
+        :items="paths"
+        label="Select"
+        return-object
+        @change="updatePath"
+      >
+        <template slot="selection" slot-scope="data">
+          {{ data.item.from }} to {{ data.item.to }}
+        </template>
+        <template slot="item" slot-scope="data">
+          {{ data.item.from }} to {{ data.item.to }}
+        </template>
+      </v-select>
+      <v-btn
+        fab
+        small
+        relative
+        bottom
+        @click="cancelClicked"
+      >
+        <v-icon>mdi-close-circle</v-icon>
+      </v-btn>
+    </v-row>
     <p>Path nodes</p>
     <template v-for="(c, index) in pathNodes">
-      <v-btn v-bind:key="index" class="ma-2" @click="click(index)" fab v-bind:color="c.color">
+      <v-btn
+        v-bind:content="`
+          label: ${c.label}</br>
+          id: ${c.id}
+        `"
+        v-tippy='{interactive : true, animateFill: false, placement:"left", animation:"shift-toward", delay:10, arrow : true}'
+        v-bind:key="index"
+        class="ma-2"
+        @click="click(index)"
+        fab
+        v-bind:color="c.color"
+      >
         {{ c.label }}
       </v-btn>
     </template>
@@ -62,12 +84,17 @@ export default Vue.extend({
     ...mapActions('circleVisualisation', {
       showPath: Actions.SELECT_PATH,
       buildTree: Actions.BUILD_TREE,
-      updateCanvas: Actions.UPDATE_CANVAS
+      updateCanvas: Actions.UPDATE_CANVAS,
+      resetView: Actions.RESET_VIEW
     }),
     updatePath: function () {
       this.showPath()
       this.buildTree()
       this.updateCanvas()
+    },
+    cancelClicked: function () {
+      store.commit('circleVisualisation/CHANGE_ACTIVE_PATH', '')
+      this.resetView()
     }
   }
 })
