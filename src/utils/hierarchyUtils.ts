@@ -1,4 +1,5 @@
 import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData } from '@/models'
+import { getNodeById } from '@/utils/nodesUtils'
 
 export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
   const layerArray = Array<ArrowData>()
@@ -44,15 +45,14 @@ export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Arra
   return layerArray
 }
 
-export function createArrows (root: Node, position: Position, ids: Array<MappingNode>, nodes: Array<Node>): void {
+function createArrayFromHierarchy (root: Node) {
   const queue = Array<Node>()
-  let viewDepthLevel = Array<ArrowData>()
-  const screenLevel = Array<Node>()
+  const result = Array<Node>()
   queue.push(root)
   while (queue.length !== 0) {
     const vertex = queue.shift()
     if (vertex !== undefined) {
-      screenLevel.push(vertex)
+      result.push(vertex)
       if (vertex.children !== undefined && vertex.children !== null) {
         for (let i = 0; i < vertex.children.length; i++) {
           queue.push(vertex.children[i])
@@ -60,113 +60,127 @@ export function createArrows (root: Node, position: Position, ids: Array<Mapping
       }
     }
   }
+  return result
+}
+
+export function createArrows (root: Node, position: Position, ids: Array<MappingNode>, nodes: Array<Node>): void {
   if (ids !== null && ids !== undefined) {
-    viewDepthLevel = createLayer(ids, nodes)
-    packMappingArrows(1000, 1000, Array<Circle>(), viewDepthLevel, position)
+    packMappingArrows(1000, 1000, Array<Circle>(), createLayer(ids, nodes), position)
   }
 }
 
-export function createTree (rootId: string, nodes: Array<Node>, depth: number): Node {
+function copyNode (node: Node) {
+  return new Node(
+    node.label,
+    node.parents,
+    Array<Node>(),
+    node.id,
+    node.depth,
+    node.color
+  )
+}
+
+function resetNodeDepths (nodes: Array<Node>) {
   nodes.forEach(element => {
     element.depth = undefined
   })
-  const tmpRoot = nodes.filter(x => x.id === rootId)[0]
-  const root = new Node(tmpRoot.label, tmpRoot.parents, Array<Node>(), tmpRoot.id, tmpRoot.depth, tmpRoot.color)
-  let maxDepth = 0
+}
+
+function setNodeAsLeaf (node: Node) {
+  node.children = []
+  node.value = 1
+  node.isLeaf = true
+}
+
+export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
+  resetNodeDepths(nodes)
+  const root = getNodeById(nodes, rootId)
+  const rootCopy = copyNode(root)
   root.depth = 0
-  tmpRoot.depth = 0
-  const queue = Array<Node>()
-  queue.push(root)
+  rootCopy.depth = 0
+  let maxDepth = 0
+  const queue = [rootCopy]
   while (queue.length !== 0) {
     const node = queue.shift()
-    const children = nodes.filter(x => x.id === node?.id)[0].children
-    if (node !== undefined && children !== undefined) {
-      if (children.length !== 0) {
-        for (let i = 0; i < children.length; i++) {
-          const tmpChild = nodes.filter(x => x.id === children[i].id)[0]
-          const child = new Node(tmpChild.label, tmpChild.parents, Array<Node>(), tmpChild.id, tmpChild.depth, tmpChild.color)
-          node.children.push(child)
-          if (node.depth !== undefined) {
-            const newLevelDepth = node.depth + 1
-            child.depth = newLevelDepth
-            tmpChild.depth = newLevelDepth
-            if (maxDepth < newLevelDepth) {
-              maxDepth = newLevelDepth
-            }
-            if (newLevelDepth < depth) {
-              queue.push(node.children[i])
-            } else {
-              if (newLevelDepth === depth) {
-                child.children = []
-                child.value = 1
-                child.isLeaf = true
-              }
+    if (node === undefined) { continue }
+    const children = getNodeById(nodes, node.id).children
+    if (children === undefined) { continue }
+    if (children.length === 0) {
+      setNodeAsLeaf(node)
+    } else {
+      children.forEach(child => {
+        const childCopy = copyNode(child)
+        node.children.push(childCopy)
+        if (node.depth !== undefined) {
+          const childDepth = node.depth + 1
+          childCopy.depth = childDepth
+          child.depth = childDepth
+          if (maxDepth < childDepth) {
+            maxDepth = childDepth
+          }
+          if (childDepth < depth) {
+            queue.push(childCopy)
+          } else {
+            if (childDepth === depth) {
+              setNodeAsLeaf(childCopy)
             }
           }
         }
-      } else {
-        node.children = []
-        node.value = 1
-        node.isLeaf = true
-      }
+      })
     }
   }
-  return root
+  return rootCopy
 }
 
-export function getMaxTreeDepth (rootId: string, nodes: Array<Node>, depth: number): number {
-  nodes.forEach(element => {
-    element.depth = undefined
-  })
-  const tmpRoot = nodes.filter(x => x.id === rootId)[0]
-  const root = new Node(tmpRoot.label, tmpRoot.parents, Array<Node>(), tmpRoot.id, tmpRoot.depth, tmpRoot.color)
-  let maxDepth = 0
+export function getMaxTreeDepth (rootId: string, nodes: Array<Node>, depth: number) {
+  resetNodeDepths(nodes)
+  const root = getNodeById(nodes, rootId)
+  const rootCopy = copyNode(root)
   root.depth = 0
-  tmpRoot.depth = 0
-  const queue = Array<Node>()
-  queue.push(root)
+  rootCopy.depth = 0
+  let maxDepth = 0
+  const queue = [rootCopy]
   while (queue.length !== 0) {
     const node = queue.shift()
-    const children = nodes.filter(x => x.id === node?.id)[0].children
-    if (node !== undefined && children !== undefined) {
-      if (children.length !== 0) {
-        for (let i = 0; i < children.length; i++) {
-          const tmpChild = nodes.filter(x => x.id === children[i].id)[0]
-          const child = new Node(tmpChild.label, tmpChild.parents, Array<Node>(), tmpChild.id, tmpChild.depth, tmpChild.color)
-          node.children.push(child)
-          if (node.depth !== undefined) {
-            const newLevelDepth = node.depth + 1
-            child.depth = newLevelDepth
-            tmpChild.depth = newLevelDepth
-            if (maxDepth < newLevelDepth) {
-              maxDepth = newLevelDepth
-            }
-            if (newLevelDepth < depth) {
-              queue.push(node.children[i])
-            } else {
-              if (newLevelDepth === depth) {
-                child.children = []
-                child.value = 1
-                child.isLeaf = true
-              }
+    if (node === undefined) { continue }
+    const children = getNodeById(nodes, node.id).children
+    if (children === undefined) { continue }
+    if (children.length === 0) {
+      setNodeAsLeaf(node)
+    } else {
+      children.forEach(child => {
+        const childCopy = copyNode(child)
+        node.children.push(childCopy)
+        if (node.depth !== undefined) {
+          const childDepth = node.depth + 1
+          childCopy.depth = childDepth
+          child.depth = childDepth
+          if (maxDepth < childDepth) {
+            maxDepth = childDepth
+          }
+          if (childDepth < depth) {
+            queue.push(childCopy)
+          } else {
+            if (childDepth === depth) {
+              setNodeAsLeaf(childCopy)
             }
           }
         }
-      } else {
-        node.children = []
-        node.value = 1
-        node.isLeaf = true
-      }
+      })
     }
   }
   return maxDepth
 }
 
+function getCircleById (circles: Array<Circle>, id: string) {
+  return circles.filter(x => x.id === id)[0]
+}
+
 export function packMappingArrows (height: number, width: number, circles: Array<Circle>, viewDepthLevel: Array<ArrowData>, position: Position): Array<Arrow> {
   let counter = 0
-  const array = new Array<Arrow>()
+  const result = new Array<Arrow>()
   for (let i = 0; i < viewDepthLevel.length; i++) {
-    const targetNode = circles.filter(x => x.id === viewDepthLevel[i].id)[0]
+    const targetNode = getCircleById(circles, viewDepthLevel[i].id)
     const arrow: Arrow = {
       id: counter,
       word: viewDepthLevel[i].word,
@@ -178,9 +192,9 @@ export function packMappingArrows (height: number, width: number, circles: Array
       r: targetNode.r
     }
     counter++
-    array.push(arrow)
+    result.push(arrow)
   }
-  return array
+  return result
 }
 
 function createMappingData (id: string, group: string, size: number, shared: number) {
