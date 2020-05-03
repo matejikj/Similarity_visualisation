@@ -16,7 +16,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { Mutations, Actions, Getters } from '@/circle-visualisation/CircleVisualisation.store'
+import { Mutations, Actions, Getters } from '@/visualisation/Visualisation.store'
 
 export default Vue.extend({
   name: 'ValueSlider',
@@ -26,24 +26,24 @@ export default Vue.extend({
     color: '#009DFF'
   }),
   computed: {
-    ...mapGetters('circleVisualisation', {
+    ...mapGetters('visualisation', {
       maximum: Getters.GET_MAX_DEPTH,
       depth: Getters.GET_DEPTH
     })
   },
   methods: {
-    ...mapMutations('circleVisualisation', {
+    ...mapMutations('visualisation', {
       changeDepth: Mutations.CHANGE_DEPTH
     }),
-    ...mapActions('circleVisualisation', {
+    ...mapActions('visualisation', {
       buildTree: Actions.BUILD_TREE,
-      updateCanvas: Actions.UPDATE_CANVAS
+      updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS
     }),
     // eslint-disable-next-line
     handleDepthChange: function (data: any) {
       this.changeDepth(data)
       this.buildTree()
-      this.updateCanvas()
+      this.updateCircleCanvas()
     }
   }
 })

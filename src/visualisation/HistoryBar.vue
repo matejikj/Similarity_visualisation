@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Getters, Actions } from './CircleVisualisation.store'
+import { Getters, Actions } from './Visualisation.store'
 import { mapGetters, mapActions } from 'vuex'
 import { Label } from '../models'
 
@@ -32,17 +32,18 @@ export default Vue.extend({
   data: () => ({
   }),
   computed: {
-    ...mapGetters('circleVisualisation', {
+    ...mapGetters('visualisation', {
       visitedNodes: Getters.GET_VISITED_NODES,
       labels: Getters.GET_LABELS
     })
   },
   methods: {
-    ...mapActions('circleVisualisation', {
+    ...mapActions('visualisation', {
       updatePath: Actions.UPDATE_PATH
     }),
     click: function (data: Label) {
       this.updatePath(data)
+      console.log('AA')
     }
   }
 })

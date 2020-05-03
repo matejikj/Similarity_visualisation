@@ -4,19 +4,21 @@ import { createTree, createLayer, getMaxTreeDepth, packMappingArrows } from '@/u
 import { packNodes, createNodes } from '@/utils/nodesUtils'
 import { highlightPaths, createPathNodes, createPaths } from '@/utils/pathUtils'
 
-export const STORE_NAME = 'circleVisualisation'
+export const STORE_NAME = 'Visualisation'
 
 export const Actions = {
   INITIALIZE_NODES: 'INITIALIZE_NODES',
   BUILD_TREE: 'BUILD_TREE',
   ADD_NODE_TO_VISITED_NODES: 'ADD_NODE_TO_VISITED_NODES',
-  UPDATE_CANVAS: 'UPDATE_CANVAS',
+  UPDATE_CIRCLE_CANVAS: 'UPDATE_CIRCLE_CANVAS',
   RESIZE_CANVAS: 'RESIZE_CANVAS',
   UPDATE_PATH: 'UPDATE_PATH',
   FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET',
   SELECT_PATH: 'SELECT_PATH',
   FETCH_DATASET: 'FETCH_DATASET',
-  RESET_VIEW: 'RESET_VIEW'
+  RESET_VIEW: 'RESET_VIEW',
+  RESET_CIRCLE_VIEW: 'RESET_CIRCLE_VIEW',
+  RESET_TREE_VIEW: 'RESET_TREE_VIEW'
 }
 
 export const Mutations = {
@@ -36,12 +38,13 @@ export const Mutations = {
   CHANGE_LINKS: 'CHANGE_LINKS',
   CHANGE_LEFT_ARROWS: 'CHANGE_LEFT_ARROWS',
   CHANGE_RIGHT_ARROWS: 'CHANGE_RIGHT_ARROWS',
-  CHANGE_HIERARCHY: 'CHANGE_HIERARCHY',
+  CHANGE_CIRCLE_HIERARCHY: 'CHANGE_CIRCLE_HIERARCHY',
   CHANGE_ROOT_ID: 'CHANGE_ROOT_ID',
   CHANGE_PATHS_DATASET: 'CHANGE_PATHS_DATASET',
   CHANGE_PATHS: 'CHANGE_PATHS',
   CHANGE_ACTIVE_PATH: 'CHANGE_ACTIVE_PATH',
-  CHANGE_PATH_NODES: 'CHANGE_PATH_NODES'
+  CHANGE_PATH_NODES: 'CHANGE_PATH_NODES',
+  CHANGE_TREE_HIERARCHY: 'CHANGE_TREE_HIERARCHY'
 }
 
 export const Getters = {
@@ -58,13 +61,14 @@ export const Getters = {
   GET_NODES: 'GET_NODES',
   GET_PATHS: 'GET_PATHS',
   GET_VISITED_NODES: 'GET_VISITED_NODES',
-  GET_HIERARCHY: 'GET_HIERARCHY',
+  GET_CIRCLE_HIERARCHY: 'GET_HIERARCHY',
   GET_ROOT_ID: 'GET_ROOT_ID',
   GET_CIRCLES: 'GET_CIRCLES',
   GET_RIGHT_ARROWS: 'GET_RIGHT_ARROWS',
   GET_LEFT_ARROWS: 'GET_LEFT_ARROWS',
   GET_NODE_BY_ID: 'GET_NODE_BY_ID',
-  GET_PATH_NODES: 'GET_PATH_NODES'
+  GET_PATH_NODES: 'GET_PATH_NODES',
+  GET_TREE_HIERARCHY: 'GET_TREE_HIERARCHY'
 }
 
 export default {
@@ -87,7 +91,8 @@ export default {
     leftArrows: Array<Arrow>(),
     rightArrows: Array<Arrow>(),
     rootId: ROOT_ID,
-    hierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, undefined, undefined),
+    circleHierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, undefined, undefined),
+    treeHierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, undefined, undefined),
     visitedNodes: Array<Label>(),
     depth: 1,
     maxDepth: MAX_DEPTH,
@@ -104,8 +109,8 @@ export default {
     [Getters.GET_DEPTH]: (state) => {
       return state.depth
     },
-    [Getters.GET_HIERARCHY]: (state) => {
-      return state.hierarchy
+    [Getters.GET_CIRCLE_HIERARCHY]: (state) => {
+      return state.circleHierarchy
     },
     [Getters.GET_PATHS]: (state) => {
       return state.paths
@@ -154,6 +159,9 @@ export default {
     },
     [Getters.GET_PATH_NODES]: (state) => {
       return state.pathNodes
+    },
+    [Getters.GET_TREE_HIERARCHY]: (state) => {
+      return state.treeHierarchy
     }
   },
   mutations: {
@@ -221,14 +229,17 @@ export default {
     [Mutations.CHANGE_RIGHT_ARROWS] (state, value: Array<Arrow>) {
       state.rightArrows = value
     },
-    [Mutations.CHANGE_HIERARCHY] (state, value: Node) {
-      state.hierarchy = value
+    [Mutations.CHANGE_CIRCLE_HIERARCHY] (state, value: Node) {
+      state.circleHierarchy = value
     },
     [Mutations.CHANGE_ROOT_ID] (state, value: string) {
       state.rootId = value
     },
     [Mutations.CHANGE_PATH_NODES] (state, value: Array<Node>) {
       state.pathNodes = value
+    },
+    [Mutations.CHANGE_TREE_HIERARCHY] (state, value: Node) {
+      state.treeHierarchy = value
     }
   },
   actions: {
@@ -236,21 +247,30 @@ export default {
     [Actions.INITIALIZE_NODES]: initializeNodes,
     [Actions.ADD_NODE_TO_VISITED_NODES]: addNodeToVisitedNodes,
     [Actions.RESIZE_CANVAS]: resizeCanvas,
-    [Actions.UPDATE_CANVAS]: updateCanvas,
+    [Actions.UPDATE_CIRCLE_CANVAS]: updateCircleCanvas,
     [Actions.UPDATE_PATH]: updatePath,
     [Actions.FETCH_PATHS_DATASET]: fetchPathsDataset,
     [Actions.SELECT_PATH]: selectPath,
     [Actions.FETCH_DATASET]: fetchDataset,
-    [Actions.RESET_VIEW]: resetView
+    [Actions.RESET_CIRCLE_VIEW]: resetCircleView,
+    [Actions.RESET_TREE_VIEW]: resetTreeView
   }
 }
 
-function resetView (context) {
+function resetCircleView (context) {
   context.commit(Mutations.CHANGE_ROOT_ID, ROOT_ID)
   context.commit(Mutations.CHANGE_PATH_NODES, [])
   context.commit(Mutations.CHANGE_VISITED_NODES, [context.state.labels[ROOT_ID]])
   context.dispatch(Actions.BUILD_TREE)
-  context.dispatch(Actions.UPDATE_CANVAS)
+  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
+}
+
+function resetTreeView (context) {
+  context.commit(Mutations.CHANGE_ROOT_ID, ROOT_ID)
+  context.commit(Mutations.CHANGE_PATH_NODES, [])
+  context.commit(Mutations.CHANGE_VISITED_NODES, [context.state.labels[ROOT_ID]])
+  context.dispatch(Actions.BUILD_TREE)
+  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
 }
 
 function selectPath (context) {
@@ -267,7 +287,7 @@ function updatePath (context, value: number) {
   context.commit(Mutations.CHANGE_ROOT_ID, context.state.visitedNodes[value].id)
   context.commit(Mutations.CHANGE_VISITED_NODES, context.state.visitedNodes.slice(0, value + 1))
   context.dispatch(Actions.BUILD_TREE)
-  context.dispatch(Actions.UPDATE_CANVAS)
+  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
 }
 
 // eslint-disable-next-line
@@ -323,9 +343,9 @@ function buildTree (context) {
     }
     const maxDepth = getMaxTreeDepth(context.getters[Getters.GET_ROOT_ID], context.state.nodes, MAX_DEPTH)
     if (maxDepth < context.state.depth) {
-      context.commit(Mutations.CHANGE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, maxDepth))
+      context.commit(Mutations.CHANGE_CIRCLE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, maxDepth))
     } else {
-      context.commit(Mutations.CHANGE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, context.state.depth))
+      context.commit(Mutations.CHANGE_CIRCLE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, context.state.depth))
     }
     context.commit(Mutations.CHANGE_MAX_DEPTH, maxDepth)
   }
@@ -333,14 +353,14 @@ function buildTree (context) {
 
 function resizeCanvas (context, value: {width: number; height: number}) {
   context.commit(Mutations.CHANGE_WINDOW, value)
-  context.dispatch(Actions.UPDATE_CANVAS)
+  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
 }
 
 function createCircles (context): Array<Circle> {
-  return packNodes(context.state.window.height, context.state.window.width, context.state.hierarchy, context.state.maxDepth)
+  return packNodes(context.state.window.height, context.state.window.width, context.state.circleHierarchy, context.state.maxDepth)
 }
 
-function updateCanvas (context) {
+function updateCircleCanvas (context) {
   context.commit(Mutations.CHANGE_CIRCLES, createCircles(context))
   context.commit(Mutations.CHANGE_LEFT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
     context.state.circles, createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes), Position.Left))
@@ -360,7 +380,7 @@ function initializeNodes (context) {
   context.commit(Mutations.CHANGE_VISITED_NODES, [labels[ROOT_ID]])
   context.commit(Mutations.CHANGE_PATH_NODES, Array<Node>())
   context.dispatch(Actions.BUILD_TREE, context)
-  context.dispatch(Actions.UPDATE_CANVAS, context)
+  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS, context)
 }
 
 function addNodeToVisitedNodes (context, leaf: Circle) {

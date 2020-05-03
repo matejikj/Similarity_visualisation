@@ -1,9 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px">
-    <template v-slot:activator="{ on }">
-      <v-btn v-if="display" color="primary" v-on="on">Add dataset</v-btn>
-    </template>
-    <v-card>
+  <v-card>
       <v-card-title>
         <span class="headline">Add dataset</span>
       </v-card-title>
@@ -25,18 +21,15 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="changeDataset">Add</v-btn>
+        <v-btn color="blue darken-1" text @click="dialogClosed">Close</v-btn>
+        <v-btn color="blue darken-1" text @click="datasetChanged">Add</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-
-export default Vue.extend({
-  name: 'AddDatasetDialog',
+<script>
+export default {
+  name: 'AddDatasetForm',
 
   data: () => ({
     collectionItems:
@@ -47,17 +40,20 @@ export default Vue.extend({
       ],
     collection: 'hierarchy.v1',
     selectedMappingItems: [],
-    datasetUrl: 'example.json',
-    dialog: false,
-    display: true
+    datasetUrl: 'example.json'
   }),
-  computed: {
-  },
   methods: {
-    changeDataset: function (): void {
+    datasetChanged: function () {
       this.dialog = false
-      this.$emit('changeDataset', this.datasetUrl, this.collection)
+      this.$emit('datasetChanged', this.datasetUrl, this.collection)
+    },
+    dialogClosed: function () {
+      this.$emit('dialogClosed')
     }
   }
-})
+}
 </script>
+
+<style>
+
+</style>

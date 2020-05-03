@@ -48,7 +48,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
-import { Getters, Actions } from './CircleVisualisation.store'
+import { Getters, Actions } from './Visualisation.store'
 import store from '../app/store'
 
 export default Vue.extend({
@@ -61,40 +61,40 @@ export default Vue.extend({
     isVisible: Boolean
   },
   computed: {
-    ...mapGetters('circleVisualisation', {
+    ...mapGetters('visualisation', {
       paths: Getters.GET_PATHS,
       pathNodes: Getters.GET_PATH_NODES
     }),
     select: {
       get () {
-        return store.getters['circleVisualisation/GET_ACTIVE_PATH']
+        return store.getters['visualisation/GET_ACTIVE_PATH']
       },
       set (value) {
-        store.commit('circleVisualisation/CHANGE_ACTIVE_PATH', value)
+        store.commit('visualisation/CHANGE_ACTIVE_PATH', value)
       }
     }
   },
   mounted: function () {
     if (this.url !== undefined) {
-      store.dispatch('circleVisualisation/FETCH_PATHS_DATASET', this.url)
+      store.dispatch('visualisation/FETCH_PATHS_DATASET', this.url)
       this.$emit('pathsChanged')
     }
   },
   methods: {
-    ...mapActions('circleVisualisation', {
+    ...mapActions('visualisation', {
       showPath: Actions.SELECT_PATH,
       buildTree: Actions.BUILD_TREE,
-      updateCanvas: Actions.UPDATE_CANVAS,
-      resetView: Actions.RESET_VIEW
+      updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
+      resetCircleView: Actions.RESET_CIRCLE_VIEW
     }),
     updatePath: function () {
       this.showPath()
       this.buildTree()
-      this.updateCanvas()
+      this.updateCircleCanvas()
     },
     cancelClicked: function () {
-      store.commit('circleVisualisation/CHANGE_ACTIVE_PATH', '')
-      this.resetView()
+      store.commit('visualisation/CHANGE_ACTIVE_PATH', '')
+      this.resetCircleView()
     }
   }
 })

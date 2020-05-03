@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import CircleVisualisation from '../circle-visualisation/CircleVisualisation.vue'
+import Visualisation from '../visualisation/Visualisation.vue'
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'CircleVisualisation',
-    component: CircleVisualisation
+    name: 'Visualisation',
+    component: Visualisation
   },
   {
     path: '/tutorial',

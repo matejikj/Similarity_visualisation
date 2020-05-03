@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <add-dataset-dialog v-if="addDatasetVisibility" @changeDataset="changeDataset" ></add-dataset-dialog>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <template v-slot:activator="{ on }">
+        <v-btn v-if="display" color="primary" v-on="on">Add dataset</v-btn>
+      </template>
+      <add-dataset-form @datasetChanged="datasetChanged" @dialogClosed="dialogClosed"></add-dataset-form>
+    </v-dialog>
     <v-select
       :items="selectList"
       item-text="name"
@@ -15,20 +20,20 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import AddDatasetDialog from '@/common-components/AddDatasetDialog.vue'
+import AddDatasetForm from '@/common-components/AddDatasetForm.vue'
 import TreeViewList from '@/common-components/TreeViewList.vue'
 import { ComboboxItem } from '@/models/ComboboxItem'
 import { Position } from '@/models/Position'
 import { MappingNode } from '@/models/MappingNode'
 import { createMapping } from '../utils/hierarchyUtils'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import { Actions, Mutations, Getters } from './CircleVisualisation.store'
+import { Actions, Mutations, Getters } from './Visualisation.store'
 import store from '../app/store'
 
 export default Vue.extend({
   name: 'SideBar',
   components: {
-    AddDatasetDialog,
+    AddDatasetForm,
     TreeViewList
   },
   props: {
@@ -39,42 +44,44 @@ export default Vue.extend({
   data: () => ({
     mappingList: Array<MappingNode>(),
     error: Error(),
-    addDatasetVisibility: true
+    addDatasetVisibility: true,
+    dialog: false,
+    display: true
   }),
   mounted: function () {
     if (this.url !== undefined && this.collection !== undefined) {
       this.addDatasetVisibility = false
-      this.changeDataset(this.url, this.collection)
+      this.datasetChanged(this.url, this.collection)
     }
   },
   computed: {
     selectList: function () {
       if (this.$props.sidebarPosition === Position.Left) {
-        return store.getters['circleVisualisation/GET_LEFT_MAPPING_LIST']
+        return store.getters['visualisation/GET_LEFT_MAPPING_LIST']
       } else {
-        return store.getters['circleVisualisation/GET_RIGHT_MAPPING_LIST']
+        return store.getters['visualisation/GET_RIGHT_MAPPING_LIST']
       }
     }
   },
   methods: {
-    ...mapActions('circleVisualisation', {
-      updateCanvas: Actions.UPDATE_CANVAS,
+    ...mapActions('visualisation', {
+      updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       fetchDataset: Actions.FETCH_DATASET
     }),
-    ...mapMutations('circleVisualisation', {
+    ...mapMutations('visualisation', {
       changeLeftDataset: Mutations.CHANGE_LEFT_DATASET,
       changeRightDataset: Mutations.CHANGE_RIGHT_DATASET,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
       changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
     }),
-    ...mapGetters('circleVisualisation', {
+    ...mapGetters('visualisation', {
       getLeftDataset: Getters.GET_LEFT_DATASET,
       getRightDataset: Getters.GET_RIGHT_DATASET,
       getLabels: Getters.GET_LABELS
     }),
-    changeDataset: function (url: string, collection: string) {
-      const position = this.sidebarPosition
-      this.fetchDataset({ url, collection, position })
+    datasetChanged: function (url: string, collection: string) {
+      this.dialog = false
+      this.$emit('datasetChanged', url, collection, this.sidebarPosition)
     },
     changeMapping: function (data: ComboboxItem) {
       this.mappingList = []
@@ -87,6 +94,9 @@ export default Vue.extend({
           break
       }
     },
+    dialogClosed: function () {
+      this.dialog = false
+    },
     selectedChanged: function (array: Array<MappingNode>) {
       switch (this.$props.sidebarPosition) {
         case Position.Left:
@@ -96,7 +106,7 @@ export default Vue.extend({
           this.changeRightMapping(array)
           break
       }
-      this.updateCanvas()
+      this.updateCircleCanvas()
     }
   }
 })

@@ -33,12 +33,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import CircleNode from './canvas-shapes/CircleNode.vue'
-import CircleLabel from './canvas-shapes/CircleLabel.vue'
-import CircleLink from './canvas-shapes/CircleLink.vue'
+import CircleNode from './CircleNode.vue'
+import CircleLabel from './CircleLabel.vue'
+import CircleLink from './CircleLink.vue'
 import { mapGetters, mapActions } from 'vuex'
 import { Circle } from '@/models'
-import { Getters, Actions } from './CircleVisualisation.store'
+import { Getters, Actions } from '@/visualisation/Visualisation.store'
 
 export default Vue.extend({
   name: 'CircleCanvas',
@@ -50,7 +50,7 @@ export default Vue.extend({
   data: () => ({
   }),
   computed: {
-    ...mapGetters('circleVisualisation', {
+    ...mapGetters('visualisation', {
       circles: Getters.GET_CIRCLES,
       leftArrows: Getters.GET_LEFT_ARROWS,
       rightArrows: Getters.GET_RIGHT_ARROWS
@@ -71,8 +71,8 @@ export default Vue.extend({
     })
   },
   methods: {
-    ...mapActions('circleVisualisation', {
-      updateCanvas: Actions.UPDATE_CANVAS,
+    ...mapActions('visualisation', {
+      updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       resizeCanvas: Actions.RESIZE_CANVAS,
       addNodeToPath: Actions.ADD_NODE_TO_VISITED_NODES,
       buildTree: Actions.BUILD_TREE
@@ -88,7 +88,7 @@ export default Vue.extend({
     zoomCircle (e: Circle) {
       this.addNodeToPath(e)
       this.buildTree()
-      this.updateCanvas()
+      this.updateCircleCanvas()
     }
   }
 })

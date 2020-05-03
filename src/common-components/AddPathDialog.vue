@@ -8,7 +8,7 @@
           v-on="on"
           color="indigo"
         >
-          <v-icon>mdi-plus</v-icon>
+          <v-icon>mdi-set-center</v-icon>
         </v-btn>
     </template>
     <v-card>
@@ -36,7 +36,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapActions } from 'vuex'
-import { Actions } from '@/circle-visualisation/CircleVisualisation.store'
+import { Actions } from '@/visualisation/Visualisation.store'
 
 export default Vue.extend({
   name: 'AddPathsDialog',
@@ -50,7 +50,7 @@ export default Vue.extend({
   computed: {
   },
   methods: {
-    ...mapActions('circleVisualisation', {
+    ...mapActions('visualisation', {
       fetchPathsDataset: Actions.FETCH_PATHS_DATASET
     }),
     changePaths: function () {
