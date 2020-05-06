@@ -6,7 +6,8 @@
           <side-bar v-bind:sidebarPosition="left" @datasetChanged="datasetChanged" v-bind:url="leftDataset"></side-bar>
         </v-col>
         <v-col cols="8">
-          <circle-canvas></circle-canvas>
+          <circle-canvas v-if="isCirclesViewVisible"></circle-canvas>
+          <tree-canvas v-if="!isCirclesViewVisible"></tree-canvas>
         </v-col>
         <v-col cols="2">
           <side-bar v-bind:sidebarPosition="right" @datasetChanged="datasetChanged" v-bind:url="rightDataset"></side-bar>
@@ -78,7 +79,7 @@
           fab
           dark
           small
-          @click="viewToggle"
+          @click="viewTree"
         >
           <v-icon>mdi-graph</v-icon>
         </v-btn>
@@ -87,7 +88,7 @@
           fab
           dark
           small
-          @click="viewToggle"
+          @click="viewCircles"
         >
           <v-icon>mdi-chart-bubble</v-icon>
         </v-btn>
@@ -102,6 +103,7 @@ import ValueSlider from '@/common-components/ValueSlider.vue'
 import HistoryBar from './HistoryBar.vue'
 import PathBar from '@/visualisation/PathBar.vue'
 import CircleCanvas from './circle-canvas/CircleCanvas'
+import TreeCanvas from './tree-canvas/TreeCanvas'
 import { Position } from '../models/Position'
 import AddPathDialog from '@/common-components/AddPathDialog.vue'
 import { Actions } from './Visualisation.store'
@@ -117,7 +119,8 @@ export default {
     CircleCanvas,
     AddPathDialog,
     PathBar,
-    AddDatasetForm
+    AddDatasetForm,
+    TreeCanvas
   },
   data: () => ({
     left: Position.Left,
@@ -158,8 +161,13 @@ export default {
       this.fetchDataset({ url, collection, position })
       this.pathsVisible = false
     },
-    viewToggle: function () {
+    viewCircles: function () {
       this.isCirclesViewVisible = !this.isCirclesViewVisible
+      this.resetCircleView()
+    },
+    viewTree: function () {
+      this.isCirclesViewVisible = !this.isCirclesViewVisible
+      this.resetTreeView()
     },
     leftDatasetChanged: function (url, collection) {
       this.fab = false

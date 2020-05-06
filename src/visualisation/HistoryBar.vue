@@ -43,7 +43,6 @@ export default Vue.extend({
     }),
     click: function (data: Label) {
       this.updatePath(data)
-      console.log('AA')
     }
   }
 })

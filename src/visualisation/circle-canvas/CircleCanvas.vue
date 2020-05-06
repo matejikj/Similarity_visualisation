@@ -75,7 +75,7 @@ export default Vue.extend({
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       resizeCanvas: Actions.RESIZE_CANVAS,
       addNodeToPath: Actions.ADD_NODE_TO_VISITED_NODES,
-      buildTree: Actions.BUILD_TREE
+      createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES
     }),
     handleResize () {
       this.resizeCanvas({
@@ -87,7 +87,7 @@ export default Vue.extend({
     },
     zoomCircle (e: Circle) {
       this.addNodeToPath(e)
-      this.buildTree()
+      this.createHierarchyForCircles()
       this.updateCircleCanvas()
     }
   }

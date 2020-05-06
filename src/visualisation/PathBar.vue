@@ -83,13 +83,13 @@ export default Vue.extend({
   methods: {
     ...mapActions('visualisation', {
       showPath: Actions.SELECT_PATH,
-      buildTree: Actions.BUILD_TREE,
+      createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       resetCircleView: Actions.RESET_CIRCLE_VIEW
     }),
     updatePath: function () {
       this.showPath()
-      this.buildTree()
+      this.createHierarchyForCircles()
       this.updateCircleCanvas()
     },
     cancelClicked: function () {

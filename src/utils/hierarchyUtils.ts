@@ -1,5 +1,5 @@
-import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData } from '@/models'
-import { getNodeById } from '@/utils/nodesUtils'
+import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_DEPTH } from '@/models'
+import { getNodeById, getNodeByKey } from '@/utils/nodesUtils'
 
 export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
   const layerArray = Array<ArrowData>()
@@ -45,7 +45,7 @@ export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Arra
   return layerArray
 }
 
-function createArrayFromHierarchy (root: Node) {
+export function createArrayFromHierarchy (root: Node) {
   const queue = Array<Node>()
   const result = Array<Node>()
   queue.push(root)
@@ -75,6 +75,7 @@ function copyNode (node: Node) {
     node.parents,
     Array<Node>(),
     node.id,
+    node.key,
     node.depth,
     node.color
   )
@@ -96,6 +97,9 @@ export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
   resetNodeDepths(nodes)
   const root = getNodeById(nodes, rootId)
   const rootCopy = copyNode(root)
+  let keyCounter = 0
+  rootCopy.key = keyCounter
+  keyCounter++
   root.depth = 0
   rootCopy.depth = 0
   let maxDepth = 0
@@ -110,6 +114,8 @@ export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
     } else {
       children.forEach(child => {
         const childCopy = copyNode(child)
+        childCopy.key = keyCounter
+        keyCounter++
         node.children.push(childCopy)
         if (node.depth !== undefined) {
           const childDepth = node.depth + 1
@@ -130,6 +136,51 @@ export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
     }
   }
   return rootCopy
+}
+
+export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, treeHeight: number) {
+  resetNodeDepths(nodes)
+  const rootCopy = copyNode(root)
+  let keyCounter = maxKey
+  rootCopy.key = keyCounter
+  keyCounter++
+  rootCopy.depth = root.depth
+  const depth = root.depth !== undefined ? root.depth + MAX_DEPTH : MAX_DEPTH
+  let maxDepth = treeHeight
+  const queue = [rootCopy]
+  while (queue.length !== 0) {
+    const node = queue.shift()
+    if (node === undefined) { continue }
+    const children = getNodeById(nodes, node.id).children
+    if (children === undefined) { continue }
+    if (children.length === 0) {
+      setNodeAsLeaf(node)
+    } else {
+      children.forEach(child => {
+        const childCopy = copyNode(child)
+        childCopy.key = keyCounter
+        keyCounter++
+        node.children.push(childCopy)
+        if (node.depth !== undefined) {
+          const childDepth = node.depth + 1
+          childCopy.depth = childDepth
+          child.depth = childDepth
+          if (maxDepth < childDepth) {
+            maxDepth = childDepth
+          }
+          if (childDepth < depth) {
+            queue.push(childCopy)
+          } else {
+            if (childDepth === depth) {
+              setNodeAsLeaf(childCopy)
+            }
+          }
+        }
+      })
+    }
+  }
+
+  return { rootCopy, maxDepth }
 }
 
 export function getMaxTreeDepth (rootId: string, nodes: Array<Node>, depth: number) {

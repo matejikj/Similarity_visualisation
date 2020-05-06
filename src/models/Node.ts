@@ -3,12 +3,13 @@ export class Node {
   parents: Array<Node>;
   children: Array<Node>;
   id: string;
+  key: number;
   color?: string;
   depth?: number;
   value?: number;
   isLeaf: boolean;
 
-  constructor (label: string, parents: Array<Node>, children: Array<Node>, id: string, depth?: number, color?: string) {
+  constructor (label: string, parents: Array<Node>, children: Array<Node>, id: string, key: number, depth?: number, color?: string) {
     this.color = color
     this.depth = depth
     this.label = label
@@ -16,5 +17,6 @@ export class Node {
     this.children = children
     this.id = id
     this.isLeaf = false
+    this.key = key
   }
 }

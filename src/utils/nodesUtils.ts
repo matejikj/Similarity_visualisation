@@ -1,4 +1,4 @@
-import { ROOT_ID, Node, Label, Link, Circle } from '@/models'
+import { ROOT_ID, Node, Label, Link, Circle, Arrow, TREE_CIRCLE_RADIUS } from '@/models'
 import * as d3 from 'd3'
 
 function stringArrayContainsNodeById (array: Array<string>, id: string) {
@@ -19,6 +19,7 @@ function createNode (labels: Array<Label>, nodeId: string): Node {
     new Array<Node>(),
     new Array<Node>(),
     nodeId,
+    0,
     undefined,
     undefined
   )
@@ -36,6 +37,10 @@ function containsNode (nodes: Array<Node>, nodeId: string) {
 
 export function getNodeById (nodes: Array<Node>, id: string) {
   return nodes.filter(x => x.id === id)[0]
+}
+
+export function getNodeByKey (nodes: Array<Node>, key: number) {
+  return nodes.filter(x => x.key === key)[0]
 }
 
 export function createNodes (links: Array<Link>, labels: Array<Label>) {
@@ -93,6 +98,7 @@ export function packNodes (height: number, width: number, root: Node, maxDepth: 
   for (let i = 0; i < output.length; i++) {
     const color = interpolate(output[i].data.depth / maxDepth)
     const n: Circle = {
+      key: output[i].data.key,
       fill: color,
       parent: output[i].parent !== null ? output[i].parent : null,
       id: output[i].data.id,
@@ -106,4 +112,65 @@ export function packNodes (height: number, width: number, root: Node, maxDepth: 
     circles.push(n)
   }
   return circles
+}
+
+export function packTreeHierarchy (root: Node, width: number, height: number) {
+  const circles = Array<Circle>()
+  const links = Array<Arrow>()
+
+  const levelWidth = [1]
+  const childCount = function (level, n) {
+    if (n.children && n.children.length > 0) {
+      if (levelWidth.length <= level + 1) {
+        levelWidth.push(0)
+      }
+      levelWidth[level + 1] += n.children.length
+      n.children.forEach(function (d) {
+        childCount(level + 1, d)
+      })
+    }
+  }
+  childCount(0, root)
+
+  // const treemap = d3.tree().size([height, width])
+  const treemap = d3.tree().size([d3.max(levelWidth) * 80, height * 100])
+
+  const hierarchyRoot: any = d3.hierarchy(root, function (d) {
+    return d.children
+  })
+  hierarchyRoot.x0 = 0
+  hierarchyRoot.y0 = width / 2
+
+  const radius = TREE_CIRCLE_RADIUS
+  const interpolate = d3.scaleSequential([1, 0], d3.interpolateCool)
+
+  const treeData = treemap(hierarchyRoot)
+  treeData.descendants().forEach(element => {
+    const color = interpolate(element.data.depth / height)
+    const n: Circle = {
+      key: element.data.key,
+      fill: color,
+      parent: element.parent !== null ? element.parent : null,
+      id: element.data.id,
+      label: element.data.label,
+      isLeaf: element.data.isLeaf,
+      x: element.x,
+      y: element.y,
+      r: radius,
+      depth: element.data.depth
+    }
+    circles.push(n)
+  })
+  treeData.links().forEach((element, index) => {
+    const n: Arrow = {
+      id: index,
+      r: 10,
+      lx: element.source.x,
+      ly: element.source.y,
+      rx: element.target.x,
+      ry: element.target.y
+    }
+    links.push(n)
+  })
+  return { circles, links }
 }

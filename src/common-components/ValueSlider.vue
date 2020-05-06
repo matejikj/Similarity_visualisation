@@ -36,13 +36,13 @@ export default Vue.extend({
       changeDepth: Mutations.CHANGE_DEPTH
     }),
     ...mapActions('visualisation', {
-      buildTree: Actions.BUILD_TREE,
+      createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS
     }),
     // eslint-disable-next-line
     handleDepthChange: function (data: any) {
       this.changeDepth(data)
-      this.buildTree()
+      this.createHierarchyForCircles()
       this.updateCircleCanvas()
     }
   }
