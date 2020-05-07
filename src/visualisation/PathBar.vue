@@ -6,7 +6,7 @@
         :items="paths"
         label="Select"
         return-object
-        @change="updatePath"
+        @change="pathUpdated"
       >
         <template slot="selection" slot-scope="data">
           {{ data.item.from }} to {{ data.item.to }}
@@ -82,19 +82,12 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions('visualisation', {
-      showPath: Actions.SELECT_PATH,
-      createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
-      updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
-      resetCircleView: Actions.RESET_CIRCLE_VIEW
     }),
-    updatePath: function () {
-      this.showPath()
-      this.createHierarchyForCircles()
-      this.updateCircleCanvas()
+    pathUpdated: function () {
+      this.$emit('pathUpdated')
     },
     cancelClicked: function () {
-      store.commit('visualisation/CHANGE_ACTIVE_PATH', '')
-      this.resetCircleView()
+      this.$emit('cancelClicked')
     }
   }
 })

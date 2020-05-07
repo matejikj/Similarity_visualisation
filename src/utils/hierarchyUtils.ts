@@ -1,4 +1,4 @@
-import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_DEPTH } from '@/models'
+import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_DEPTH, MAX_TREE_DEPTH } from '@/models'
 import { getNodeById, getNodeByKey } from '@/utils/nodesUtils'
 
 export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
@@ -145,7 +145,7 @@ export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, tree
   rootCopy.key = keyCounter
   keyCounter++
   rootCopy.depth = root.depth
-  const depth = root.depth !== undefined ? root.depth + MAX_DEPTH : MAX_DEPTH
+  const depth = root.depth !== undefined ? root.depth + MAX_TREE_DEPTH : MAX_TREE_DEPTH
   let maxDepth = treeHeight
   const queue = [rootCopy]
   while (queue.length !== 0) {
@@ -246,6 +246,19 @@ export function packMappingArrows (height: number, width: number, circles: Array
     result.push(arrow)
   }
   return result
+}
+
+export function highlightTreeMapping (circles: Array<Circle>, leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
+  for (let i = 0; i < leftMappingNodes.length; i++) {
+    const targetCircle = getCircleById(circles, leftMappingNodes[i].id)
+    targetCircle.fill = 'red'
+    targetCircle.r += 2
+  }
+  for (let i = 0; i < rightMappingNodes.length; i++) {
+    const targetCircle = getCircleById(circles, rightMappingNodes[i].id)
+    targetCircle.fill = 'red'
+    targetCircle.r += 2
+  }
 }
 
 function createMappingData (id: string, group: string, size: number, shared: number) {

@@ -65,7 +65,6 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions('visualisation', {
-      updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       fetchDataset: Actions.FETCH_DATASET
     }),
     ...mapMutations('visualisation', {
@@ -106,7 +105,7 @@ export default Vue.extend({
           this.changeRightMapping(array)
           break
       }
-      this.updateCircleCanvas()
+      this.$emit('mappingChanged')
     }
   }
 })

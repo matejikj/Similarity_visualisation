@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { Node, Circle, Path } from '@/models'
+import { Node, Circle, Path, Label } from '@/models'
 import { getNodeById } from '@/utils/nodesUtils'
 
 export function createPathNodes (nodes: Array<Node>, activePath: Path) {
@@ -32,32 +32,28 @@ export function createPathNodes (nodes: Array<Node>, activePath: Path) {
 }
 
 // eslint-disable-next-line
-export function createPaths (nodes: Array<Node>, paths: any): Array<Path> {
+export function createPaths (nodes: Array<Node>, paths: any, labels: Array<Label>): Array<Path> {
   const array = new Array<Path>()
   for (let i = 0; i < paths.length; i++) {
-    const from = paths[i].from[0]
-    const to = paths[i].to[0]
+    const from = labels[paths[i].nodes[0]].label
+    const to = labels[paths[i].nodes[paths[i].nodes.length - 1]].label
     const vertices = Array<string>()
-    for (let j = 0; j < paths[i].path.length; j++) {
-      vertices.push(paths[i].path[j])
-    }
-    const directions = Array<boolean>()
-    for (let j = 0; j < (vertices.length - 1); j++) {
-      const node = getNodeById(nodes, vertices[j])
-      const parent = node.parents.filter(x => x.id === vertices[j + 1])[0]
-      if (parent === undefined) {
-        directions.push(false)
-      } else {
-        directions.push(true)
-      }
+    for (let j = 0; j < paths[i].nodes.length; j++) {
+      vertices.push(paths[i].nodes[j])
     }
     let up = 0
     let down = 0
-    for (let j = 0; j < directions.length; j++) {
-      if (directions[j]) {
+    const root = paths[i].shared
+    let rootVisited = true
+    for (let j = 0; j < paths[i].nodes.length; j++) {
+      if (paths[i].nodes[j] !== root && rootVisited) {
         up++
       } else {
-        down++
+        if (paths[i].nodes[j] === root) {
+          rootVisited = false
+        } else {
+          down++
+        }
       }
     }
     let height = 0
@@ -66,7 +62,7 @@ export function createPaths (nodes: Array<Node>, paths: any): Array<Path> {
     } else {
       height = down
     }
-    array.push(new Path(from, to, vertices, directions, up, down, height))
+    array.push(new Path(from, to, vertices, up, down, height))
   }
   return array
 }

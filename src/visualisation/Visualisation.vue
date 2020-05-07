@@ -3,22 +3,33 @@
     <v-container fluid fill-height>
       <v-row class="text-center">
         <v-col cols="2">
-          <side-bar v-bind:sidebarPosition="left" @datasetChanged="datasetChanged" v-bind:url="leftDataset"></side-bar>
+          <side-bar
+            @mappingChanged='mappingChanged'
+            v-bind:sidebarPosition="left"
+            @datasetChanged="datasetChanged"
+            v-bind:url="leftDataset"
+          >
+          </side-bar>
         </v-col>
         <v-col cols="8">
-          <circle-canvas v-if="isCirclesViewVisible"></circle-canvas>
-          <tree-canvas v-if="!isCirclesViewVisible"></tree-canvas>
+          <circle-canvas v-if="isCirclesViewActive"></circle-canvas>
+          <tree-canvas v-if="!isCirclesViewActive"></tree-canvas>
         </v-col>
         <v-col cols="2">
-          <side-bar v-bind:sidebarPosition="right" @datasetChanged="datasetChanged" v-bind:url="rightDataset"></side-bar>
+          <side-bar @mappingChanged='mappingChanged'
+            v-bind:sidebarPosition="right"
+            @datasetChanged="datasetChanged"
+            v-bind:url="rightDataset"
+          >
+          </side-bar>
         </v-col>
       </v-row>
-      <v-row class="text-center">
+      <v-row v-if="isCirclesViewActive" class="text-center">
         <v-col cols="12">
           <History-bar></History-bar>
         </v-col>
       </v-row>
-      <v-row class="text-center">
+      <v-row v-if="isCirclesViewActive" class="text-center">
         <v-col cols="3">
         </v-col>
         <v-col cols="6">
@@ -33,7 +44,13 @@
         <v-col cols="3">
         </v-col>
         <v-col cols="6">
-          <path-bar v-bind:url="pathsDataset" @pathsChanged="pathsChanged" v-bind:isVisible="pathsVisible"></path-bar>
+          <path-bar v-bind:url="pathsDataset"
+            @pathsChanged="pathsChanged"
+            v-bind:isVisible="pathsVisible"
+            @cancelClicked='cancelClicked'
+            @pathUpdated='pathUpdated'
+          >
+          </path-bar>
         </v-col>
         <v-col cols="2">
         </v-col>
@@ -75,7 +92,7 @@
           <add-dataset-form @datasetChanged="rightDatasetChanged" @dialogClosed="dialogClosed"></add-dataset-form>
         </v-dialog>
         <v-btn
-          v-if="isCirclesViewVisible"
+          v-if="isCirclesViewActive"
           fab
           dark
           small
@@ -84,7 +101,7 @@
           <v-icon>mdi-graph</v-icon>
         </v-btn>
         <v-btn
-        v-if="!isCirclesViewVisible"
+        v-if="!isCirclesViewActive"
           fab
           dark
           small
@@ -106,8 +123,8 @@ import CircleCanvas from './circle-canvas/CircleCanvas'
 import TreeCanvas from './tree-canvas/TreeCanvas'
 import { Position } from '../models/Position'
 import AddPathDialog from '@/common-components/AddPathDialog.vue'
-import { Actions } from './Visualisation.store'
-import { mapActions } from 'vuex'
+import { Actions, Mutations } from './Visualisation.store'
+import { mapActions, mapMutations } from 'vuex'
 import AddDatasetForm from '@/common-components/AddDatasetForm.vue'
 
 export default {
@@ -132,7 +149,7 @@ export default {
     leftDialogDisplay: false,
     rightDialogDisplay: false,
     fab: false,
-    isCirclesViewVisible: true
+    isCirclesViewActive: true
   }),
   created: function () {
     if (Array.isArray(this.$route.query.dataset)) {
@@ -151,7 +168,15 @@ export default {
     ...mapActions('visualisation', {
       resetCircleView: Actions.RESET_CIRCLE_VIEW,
       resetTreeView: Actions.RESET_TREE_VIEW,
-      fetchDataset: Actions.FETCH_DATASET
+      fetchDataset: Actions.FETCH_DATASET,
+      createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
+      createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
+      updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
+      updateTreeCanvas: Actions.UPDATE_TREE_CANVAS,
+      showPath: Actions.SELECT_PATH
+    }),
+    ...mapMutations('visualisation', {
+      changeActivePath: Mutations.CHANGE_ACTIVE_PATH
     }),
     pathsChanged: function () {
       this.fab = false
@@ -162,28 +187,72 @@ export default {
       this.pathsVisible = false
     },
     viewCircles: function () {
-      this.isCirclesViewVisible = !this.isCirclesViewVisible
-      this.resetCircleView()
+      this.isCirclesViewActive = !this.isCirclesViewActive
+      if (this.isCirclesViewActive) {
+        this.resetCircleView()
+      } else {
+        this.resetTreeView()
+      }
     },
     viewTree: function () {
-      this.isCirclesViewVisible = !this.isCirclesViewVisible
-      this.resetTreeView()
+      this.isCirclesViewActive = !this.isCirclesViewActive
+      if (this.isCirclesViewActive) {
+        this.resetCircleView()
+      } else {
+        this.resetTreeView()
+      }
     },
     leftDatasetChanged: function (url, collection) {
       this.fab = false
       this.leftDialogDisplay = false
       const position = Position.Left
       this.fetchDataset({ url, collection, position })
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+      } else {
+        this.createHierarchyForTree()
+      }
     },
     rightDatasetChanged: function (url, collection) {
       this.fab = false
       this.rightDialogDisplay = false
       const position = Position.Right
       this.fetchDataset({ url, collection, position })
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+      } else {
+        this.createHierarchyForTree()
+      }
     },
     dialogClosed: function () {
       this.rightDialogDisplay = false
       this.leftDialogDisplay = false
+    },
+    mappingChanged: function () {
+      if (this.isCirclesViewActive) {
+        this.updateCircleCanvas()
+      } else {
+        this.updateTreeCanvas()
+      }
+    },
+    cancelClicked: function () {
+      this.changeActivePath('')
+      if (this.isCirclesViewActive) {
+        this.resetCircleView()
+      } else {
+        this.resetTreeView()
+      }
+    },
+    pathUpdated: function () {
+      if (this.isCirclesViewActive) {
+        this.showPath()
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.showPath()
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
     }
   }
 }

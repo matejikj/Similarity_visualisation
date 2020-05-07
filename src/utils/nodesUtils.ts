@@ -133,7 +133,7 @@ export function packTreeHierarchy (root: Node, width: number, height: number) {
   childCount(0, root)
 
   // const treemap = d3.tree().size([height, width])
-  const treemap = d3.tree().size([d3.max(levelWidth) * 80, height * 100])
+  const treemap = d3.tree().size([d3.max(levelWidth) * 45, height * 200])
 
   const hierarchyRoot: any = d3.hierarchy(root, function (d) {
     return d.children

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem } from '@/models'
-import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy } from '@/utils/hierarchyUtils'
+import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '@/models'
+import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping } from '@/utils/hierarchyUtils'
 import { packNodes, createNodes, packTreeHierarchy, getNodeByKey } from '@/utils/nodesUtils'
 import { highlightPaths, createPathNodes, createPaths } from '@/utils/pathUtils'
 
@@ -357,7 +357,7 @@ function fetchPathsDataset (context, url: string) {
   axios.get(url).then(
     response => {
       context.commit(Mutations.CHANGE_PATHS_DATASET, response.data.paths)
-      context.commit(Mutations.CHANGE_PATHS, createPaths(context.state.nodes, response.data.paths))
+      context.commit(Mutations.CHANGE_PATHS, createPaths(context.state.nodes, response.data.paths, context.state.labels))
     },
     error => {
       context.state.error = error
@@ -413,8 +413,8 @@ function createHierarchyForTree (context) {
   if (context.state.nodes.length === 0) {
     return undefined
   } else {
-    context.commit(Mutations.CHANGE_TREE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, MAX_DEPTH))
-    context.commit(Mutations.CHANGE_TREE_HEIGHT, MAX_DEPTH)
+    context.commit(Mutations.CHANGE_TREE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, MAX_TREE_DEPTH))
+    context.commit(Mutations.CHANGE_TREE_HEIGHT, MAX_TREE_DEPTH)
   }
 }
 
@@ -442,6 +442,9 @@ function updateTreeCanvas (context) {
   const result = packTreeHierarchy(context.state.treeHierarchy, context.state.window.width, context.state.treeHeight)
   context.commit(Mutations.CHANGE_TREE_NODES, result.circles)
   context.commit(Mutations.CHANGE_TREE_LINKS, result.links)
+  highlightTreeMapping(context.state.treeNodes,
+    createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes),
+    createLayer(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes))
 }
 
 function initializeNodes (context) {
