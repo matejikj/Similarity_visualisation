@@ -59,6 +59,8 @@ export default Vue.extend({
       width: this.$refs.svg.clientWidth
     })
 
+    this.updateTreeCanvas()
+
     const g = d3.selectAll('g')
 
     /* eslint-disable no-undef */
@@ -74,7 +76,8 @@ export default Vue.extend({
     ...mapActions('visualisation', {
       resizeCanvas: Actions.RESIZE_CANVAS,
       appendNode: Actions.APPEND_NODE_TREE,
-      cutChildren: Actions.CUT_NODE_TREE_CHILDREN
+      cutChildren: Actions.CUT_NODE_TREE_CHILDREN,
+      updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
     }),
     handleResize () {
       this.resizeCanvas({
@@ -83,6 +86,7 @@ export default Vue.extend({
         // @ts-ignore
         width: this.$refs.svg.clientWidth
       })
+      this.updateTreeCanvas()
     },
     nodeClicked (item: Circle) {
       if (item.isLeaf) {

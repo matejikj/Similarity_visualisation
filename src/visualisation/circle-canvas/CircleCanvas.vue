@@ -36,6 +36,7 @@ import Vue from 'vue'
 import CircleNode from './CircleNode.vue'
 import CircleLabel from './CircleLabel.vue'
 import CircleLink from './CircleLink.vue'
+import * as d3 from 'd3'
 import { mapGetters, mapActions } from 'vuex'
 import { Circle } from '@/models'
 import { Getters, Actions } from '@/visualisation/Visualisation.store'
@@ -69,6 +70,18 @@ export default Vue.extend({
       // @ts-ignore
       width: this.$refs.svg.clientWidth
     })
+
+    this.updateCircleCanvas()
+
+    const g = d3.selectAll('g')
+
+    /* eslint-disable no-undef */
+    // @ts-ignore
+    const svg = d3.select('#svg')
+      .call(d3.zoom().on('zoom', function () {
+        g.attr('transform', d3.event.transform)
+      }))
+    /* eslint-enable no-undef */
   },
   methods: {
     ...mapActions('visualisation', {
@@ -84,6 +97,7 @@ export default Vue.extend({
         // @ts-ignore
         width: this.$refs.svg.clientWidth
       })
+      this.updateCircleCanvas()
     },
     zoomCircle (e: Circle) {
       this.addNodeToPath(e)

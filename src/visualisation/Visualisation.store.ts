@@ -7,20 +7,17 @@ import { highlightPaths, createPathNodes, createPaths } from '@/utils/pathUtils'
 export const STORE_NAME = 'Visualisation'
 
 export const Actions = {
-  INITIALIZE_NODES: 'INITIALIZE_NODES',
-  CREATE_HIERARCHY_FOR_CIRCLES: 'CREATE_HIERARCHY_FOR_CIRCLES',
-  ADD_NODE_TO_VISITED_NODES: 'ADD_NODE_TO_VISITED_NODES',
-  UPDATE_CIRCLE_CANVAS: 'UPDATE_CIRCLE_CANVAS',
-  RESIZE_CANVAS: 'RESIZE_CANVAS',
-  UPDATE_PATH: 'UPDATE_PATH',
-  FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET',
-  SELECT_PATH: 'SELECT_PATH',
   FETCH_DATASET: 'FETCH_DATASET',
-  RESET_VIEW: 'RESET_VIEW',
-  RESET_CIRCLE_VIEW: 'RESET_CIRCLE_VIEW',
-  RESET_TREE_VIEW: 'RESET_TREE_VIEW',
-  UPDATE_TREE_CANVAS: 'UPDATE_TREE_CANVAS',
+  FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET',
+  INITIALIZE_NODES: 'INITIALIZE_NODES',
+  RESIZE_CANVAS: 'RESIZE_CANVAS',
+  CREATE_HIERARCHY_FOR_CIRCLES: 'CREATE_HIERARCHY_FOR_CIRCLES',
   CREATE_HIERARCHY_FOR_TREE: 'CREATE_HIERARCHY_FOR_TREE',
+  UPDATE_CIRCLE_CANVAS: 'UPDATE_CIRCLE_CANVAS',
+  UPDATE_TREE_CANVAS: 'UPDATE_TREE_CANVAS',
+  ADD_NODE_TO_VISITED_NODES: 'ADD_NODE_TO_VISITED_NODES',
+  UPDATE_PATH: 'UPDATE_PATH',
+  SELECT_PATH: 'SELECT_PATH',
   APPEND_NODE_TREE: 'APPEND_NODE_TREE',
   CUT_NODE_TREE_CHILDREN: 'CUT_NODE_TREE_CHILDREN'
 }
@@ -285,25 +282,9 @@ export default {
     [Actions.FETCH_PATHS_DATASET]: fetchPathsDataset,
     [Actions.SELECT_PATH]: selectPath,
     [Actions.FETCH_DATASET]: fetchDataset,
-    [Actions.RESET_CIRCLE_VIEW]: resetCircleView,
-    [Actions.RESET_TREE_VIEW]: resetTreeView,
     [Actions.APPEND_NODE_TREE]: appendNodeTree,
     [Actions.CUT_NODE_TREE_CHILDREN]: cutNodeTreeChildren
   }
-}
-
-function resetCircleView (context) {
-  context.commit(Mutations.CHANGE_ROOT_ID, ROOT_ID)
-  context.commit(Mutations.CHANGE_PATH_NODES, [])
-  context.commit(Mutations.CHANGE_VISITED_NODES, [context.state.labels[ROOT_ID]])
-  context.dispatch(Actions.CREATE_HIERARCHY_FOR_CIRCLES)
-  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
-}
-
-function resetTreeView (context) {
-  context.commit(Mutations.CHANGE_ROOT_ID, ROOT_ID)
-  context.dispatch(Actions.CREATE_HIERARCHY_FOR_TREE)
-  context.dispatch(Actions.UPDATE_TREE_CANVAS)
 }
 
 function selectPath (context) {
@@ -328,9 +309,9 @@ function addMappingItemToArray (array: Array<ComboboxItem>, item: any, index: nu
   array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
 }
 
-function fetchDataset (context, { url, collection, position }) {
+async function fetchDataset (context, { url, collection, position }) {
   const selectList = []
-  axios.get(url).then(
+  await axios.get(url).then(
     response => {
       response.data.mappings.forEach((element, i) => {
         addMappingItemToArray(selectList, element, i)
@@ -420,7 +401,6 @@ function createHierarchyForTree (context) {
 
 function resizeCanvas (context, value: {width: number; height: number}) {
   context.commit(Mutations.CHANGE_WINDOW, value)
-  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
 }
 
 function createCircles (context): Array<Circle> {
@@ -445,6 +425,9 @@ function updateTreeCanvas (context) {
   highlightTreeMapping(context.state.treeNodes,
     createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes),
     createLayer(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes))
+  if (context.state.activePath !== undefined) {
+    context.commit(Mutations.CHANGE_TREE_NODES, highlightPaths(context.state.treeNodes, context.state.activePath))
+  }
 }
 
 function initializeNodes (context) {
@@ -455,8 +438,6 @@ function initializeNodes (context) {
   context.commit(Mutations.CHANGE_NODES, createNodes(context.state.links, context.state.labels))
   context.commit(Mutations.CHANGE_VISITED_NODES, [labels[ROOT_ID]])
   context.commit(Mutations.CHANGE_PATH_NODES, Array<Node>())
-  context.dispatch(Actions.CREATE_HIERARCHY_FOR_CIRCLES, context)
-  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS, context)
 }
 
 function addNodeToVisitedNodes (context, leaf: Circle) {
@@ -478,7 +459,7 @@ function addNodeToVisitedNodes (context, leaf: Circle) {
   }
 }
 
-function createLabel (id: string, label: string) {
+export function createLabel (id: string, label: string) {
   return new Label(
     id,
     label

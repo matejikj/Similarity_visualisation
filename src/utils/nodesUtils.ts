@@ -88,7 +88,7 @@ export function packNodes (height: number, width: number, root: Node, maxDepth: 
   const margin = 0
   const packChart = d3.pack()
   packChart.size([width - margin, height - margin])
-  packChart.padding(2)
+  packChart.padding(7)
   const treeRoot = d3.hierarchy(root)
     .sum(d => Math.sqrt(d.value))
 

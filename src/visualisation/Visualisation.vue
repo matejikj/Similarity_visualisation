@@ -6,7 +6,7 @@
           <side-bar
             @mappingChanged='mappingChanged'
             v-bind:sidebarPosition="left"
-            @datasetChanged="datasetChanged"
+            @datasetChanged="leftDatasetChanged"
             v-bind:url="leftDataset"
           >
           </side-bar>
@@ -18,7 +18,7 @@
         <v-col cols="2">
           <side-bar @mappingChanged='mappingChanged'
             v-bind:sidebarPosition="right"
-            @datasetChanged="datasetChanged"
+            @datasetChanged="rightDatasetChanged"
             v-bind:url="rightDataset"
           >
           </side-bar>
@@ -123,9 +123,10 @@ import CircleCanvas from './circle-canvas/CircleCanvas'
 import TreeCanvas from './tree-canvas/TreeCanvas'
 import { Position } from '../models/Position'
 import AddPathDialog from '@/common-components/AddPathDialog.vue'
-import { Actions, Mutations } from './Visualisation.store'
+import { Actions, Mutations, createLabel } from './Visualisation.store'
 import { mapActions, mapMutations } from 'vuex'
 import AddDatasetForm from '@/common-components/AddDatasetForm.vue'
+import { ROOT_LABEL, ROOT_ID } from '../models'
 
 export default {
   name: 'Visualisation',
@@ -166,8 +167,6 @@ export default {
   },
   methods: {
     ...mapActions('visualisation', {
-      resetCircleView: Actions.RESET_CIRCLE_VIEW,
-      resetTreeView: Actions.RESET_TREE_VIEW,
       fetchDataset: Actions.FETCH_DATASET,
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
@@ -176,52 +175,47 @@ export default {
       showPath: Actions.SELECT_PATH
     }),
     ...mapMutations('visualisation', {
-      changeActivePath: Mutations.CHANGE_ACTIVE_PATH
+      changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
+      changeRootId: Mutations.CHANGE_ROOT_ID,
+      changePathNodes: Mutations.CHANGE_PATH_NODES,
+      changeVisitedNodes: Mutations.CHANGE_VISITED_NODES
     }),
     pathsChanged: function () {
       this.fab = false
       this.pathsVisible = true
     },
-    datasetChanged: function (url, collection, position) {
-      this.fetchDataset({ url, collection, position })
-      this.pathsVisible = false
-    },
     viewCircles: function () {
-      this.isCirclesViewActive = !this.isCirclesViewActive
-      if (this.isCirclesViewActive) {
-        this.resetCircleView()
-      } else {
-        this.resetTreeView()
-      }
+      this.isCirclesViewActive = true
+      this.createHierarchyForCircles()
     },
     viewTree: function () {
-      this.isCirclesViewActive = !this.isCirclesViewActive
-      if (this.isCirclesViewActive) {
-        this.resetCircleView()
-      } else {
-        this.resetTreeView()
-      }
+      this.isCirclesViewActive = false
+      this.createHierarchyForTree()
     },
-    leftDatasetChanged: function (url, collection) {
+    leftDatasetChanged: async function (url, collection) {
       this.fab = false
       this.leftDialogDisplay = false
       const position = Position.Left
-      this.fetchDataset({ url, collection, position })
+      await this.fetchDataset({ url, collection, position })
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
+        this.updateCircleCanvas()
       } else {
         this.createHierarchyForTree()
+        this.updateTreeCanvas()
       }
     },
-    rightDatasetChanged: function (url, collection) {
+    rightDatasetChanged: async function (url, collection) {
       this.fab = false
       this.rightDialogDisplay = false
       const position = Position.Right
-      this.fetchDataset({ url, collection, position })
+      await this.fetchDataset({ url, collection, position })
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
+        this.updateCircleCanvas()
       } else {
         this.createHierarchyForTree()
+        this.updateTreeCanvas()
       }
     },
     dialogClosed: function () {
@@ -236,20 +230,24 @@ export default {
       }
     },
     cancelClicked: function () {
-      this.changeActivePath('')
+      this.changeRootId(ROOT_ID)
+      this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
+      this.changePathNodes([])
+      this.changeActivePath(undefined)
       if (this.isCirclesViewActive) {
-        this.resetCircleView()
-      } else {
-        this.resetTreeView()
-      }
-    },
-    pathUpdated: function () {
-      if (this.isCirclesViewActive) {
-        this.showPath()
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
       } else {
-        this.showPath()
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
+    },
+    pathUpdated: function () {
+      this.showPath()
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
         this.createHierarchyForTree()
         this.updateTreeCanvas()
       }

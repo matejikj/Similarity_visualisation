@@ -40,7 +40,7 @@ export default {
       ],
     collection: 'hierarchy.v1',
     selectedMappingItems: [],
-    datasetUrl: 'dataset.json'
+    datasetUrl: 'example.json'
   }),
   methods: {
     datasetChanged: function () {
