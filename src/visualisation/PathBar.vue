@@ -34,12 +34,12 @@
         `"
         v-tippy='{interactive : true, animateFill: false, placement:"left", animation:"shift-toward", delay:10, arrow : true}'
         v-bind:key="index"
-        class="ma-2"
+        class="btn-help ma-2"
         @click="click(index)"
         fab
         v-bind:color="c.color"
       >
-        {{ c.label }}
+        {{ c.label.length > 5 ? c.label.substring(0, 5) + ".." : c.label }}
       </v-btn>
     </template>
   </v-container>
@@ -92,3 +92,9 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style>
+.btn-help {
+  text-transform: none;
+}
+</style>

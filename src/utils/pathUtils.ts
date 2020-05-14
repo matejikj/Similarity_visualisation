@@ -4,30 +4,19 @@ import { getNodeById } from '@/utils/nodesUtils'
 
 export function createPathNodes (nodes: Array<Node>, activePath: Path) {
   const pathNodes = Array<Node>()
-  let tmpUp = activePath.up
-  let indexLeft = 0
-  let indexRight = 0
   const pathColor = d3.scaleLinear()
     .domain([0, activePath.height])
     .range(['#ff8d92', '#ff0000'])
     .interpolate(d3.interpolateCubehelix)
 
-  activePath.vertices.forEach(x => {
-    const node: Node = getNodeById(nodes, x)
-    let j = 0
-    if (tmpUp > 0) {
-      j = indexLeft * activePath.height / activePath.up
-      indexLeft++
-      tmpUp--
-    } else {
-      j = (activePath.height - indexRight) * activePath.height / activePath.down
-      indexRight++
-    }
+  for (let i = 0; i < activePath.vertices.length; i++) {
+    const node: Node = getNodeById(nodes, activePath.vertices[i])
+    const number = Math.abs(i - activePath.up)
     if (node !== undefined) {
-      node.color = pathColor(j)
+      node.color = pathColor(number)
     }
     pathNodes.push(node)
-  })
+  }
   return pathNodes
 }
 
@@ -69,28 +58,17 @@ export function createPaths (nodes: Array<Node>, paths: any, labels: Array<Label
 
 export function highlightPaths (circles: Array<Circle>, activePath: Path) {
   if (activePath !== undefined) {
-    let tmpUp = activePath.up
-    let indexLeft = 0
-    let indexRight = 0
     const pathColor = d3.scaleLinear()
       .domain([0, activePath.height])
-      .range(['#ff8d92', '#ff0000'])
+      .range(['#ff0000', '#ff8d92'])
       .interpolate(d3.interpolateCubehelix)
-    activePath.vertices.forEach(x => {
-      const circle: Circle = circles.filter(y => y.id === x)[0]
-      let j = 0
-      if (tmpUp > 0) {
-        j = indexLeft * activePath.height / activePath.up
-        indexLeft++
-        tmpUp--
-      } else {
-        j = (activePath.height - indexRight) * activePath.height / activePath.down
-        indexRight++
-      }
+    for (let i = 0; i < activePath.vertices.length; i++) {
+      const circle: Circle = circles.filter(y => y.id === activePath.vertices[i])[0]
+      const number = Math.abs(i - activePath.up)
       if (circle !== undefined) {
-        circle.fill = pathColor(j)
+        circle.fill = pathColor(number)
       }
-    })
+    }
   }
   return circles
 }

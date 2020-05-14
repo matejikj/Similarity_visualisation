@@ -172,13 +172,15 @@ export default {
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS,
-      showPath: Actions.SELECT_PATH
+      selectPath: Actions.SELECT_PATH
     }),
     ...mapMutations('visualisation', {
       changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
       changeRootId: Mutations.CHANGE_ROOT_ID,
       changePathNodes: Mutations.CHANGE_PATH_NODES,
-      changeVisitedNodes: Mutations.CHANGE_VISITED_NODES
+      changeVisitedNodes: Mutations.CHANGE_VISITED_NODES,
+      changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
     }),
     pathsChanged: function () {
       this.fab = false
@@ -230,6 +232,8 @@ export default {
       }
     },
     cancelClicked: function () {
+      this.changeLeftMapping([])
+      this.changeRightMapping([])
       this.changeRootId(ROOT_ID)
       this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
       this.changePathNodes([])
@@ -243,7 +247,7 @@ export default {
       }
     },
     pathUpdated: function () {
-      this.showPath()
+      this.selectPath()
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
@@ -255,3 +259,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.btn-nodes {
+  font-size: 8;
+}
+</style>

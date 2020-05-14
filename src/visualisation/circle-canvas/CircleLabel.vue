@@ -2,7 +2,7 @@
     <text class="labels"
         fill="white"
         :x="labelData.x"
-        v-if="labelData.isLeaf"
+        v-if="labelData.isLeaf && labelData.r > 5"
         :font-size="labelData.r / 2"
         :y="labelData.y"
         dy=".35em"

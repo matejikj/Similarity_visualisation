@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <p>Level of descendants in the view</p>
     <v-slider
       v-bind:min="minimum"
       v-bind:value="depth"

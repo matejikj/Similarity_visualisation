@@ -291,10 +291,31 @@ function selectPath (context) {
   const activePath: Path = context.getters[Getters.GET_ACTIVE_PATH]
   // const nodes: Array<Node> = context.getters[Getters.GET_NODES]
   const rootId = activePath.vertices[activePath.up]
+  let leftLabel = context.state.labels[activePath.vertices[0]]
+  if (leftLabel.label === undefined) {
+    leftLabel = activePath.vertices[0]
+  } else {
+    leftLabel = leftLabel.label
+  }
+  const leftMapping = new MappingNode(0, leftLabel)
+  leftMapping.nodeID = activePath.vertices[0]
+  leftMapping.mapBy = leftLabel
+  let rightLabel = context.state.labels[activePath.vertices[activePath.vertices.length - 1]]
+  if (rightLabel.label === undefined) {
+    rightLabel = activePath.vertices[activePath.vertices.length - 1]
+  } else {
+    rightLabel = rightLabel.label
+  }
+  const rightMapping = new MappingNode(0, rightLabel)
+  rightMapping.nodeID = activePath.vertices[activePath.vertices.length - 1]
+  rightMapping.mapBy = rightLabel
+  context.commit(Mutations.CHANGE_LEFT_MAPPING, [leftMapping])
+  context.commit(Mutations.CHANGE_RIGHT_MAPPING, [rightMapping])
   context.commit(Mutations.CHANGE_ROOT_ID, rootId)
   const visitedNode: Label = context.state.labels[rootId]
   context.commit(Mutations.CHANGE_VISITED_NODES, [visitedNode])
   context.commit(Mutations.CHANGE_PATH_NODES, createPathNodes(context.state.nodes, context.state.activePath))
+  // context.commit(Mutations.)
 }
 
 function updatePath (context, value: number) {
@@ -431,6 +452,7 @@ function updateTreeCanvas (context) {
 }
 
 function initializeNodes (context) {
+  context.commit(Mutations.CHANGE_ROOT_ID, ROOT_ID)
   context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
   const labels = createLabels(context.state.leftDataset, context.state.rightDataset)
   context.commit(Mutations.CHANGE_LABELS, labels)

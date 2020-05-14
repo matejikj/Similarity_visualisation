@@ -1,5 +1,6 @@
 <template>
   <v-content>
+    <p>Visited nodes</p>
     <template v-for="(c, index) in visitedNodes">
       <v-btn
         v-bind:content="`
@@ -8,7 +9,7 @@
         `"
         v-tippy='{interactive : true, animateFill: false, placement:"left", animation:"shift-toward", delay:10, arrow : true}'
         v-bind:key="index"
-        class="ma-2" @click="click(index)"
+        class="btn-help ma-2" @click="click(index)"
         outlined
         large
         fab
@@ -49,6 +50,9 @@ export default Vue.extend({
 </script>
 
 <style>
+.btn-help {
+  text-transform: none;
+}
 .circle {
   cursor: pointer;
 }
