@@ -2,14 +2,16 @@
   <v-dialog v-model="dialog" persistent max-width="600px">
     <template v-slot:activator="{ on }">
       <v-btn
-          fab
-          dark
-          small
-          v-on="on"
-          color="indigo"
-        >
-          <v-icon>mdi-set-center</v-icon>
-        </v-btn>
+        v-bind:content="`Add paths file`"
+        v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
+        fab
+        dark
+        small
+        v-on="on"
+        color="indigo"
+      >
+        <v-icon>mdi-set-center</v-icon>
+      </v-btn>
     </template>
     <v-card>
       <v-card-title>

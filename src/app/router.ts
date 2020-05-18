@@ -9,11 +9,6 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Visualisation',
     component: Visualisation
-  },
-  {
-    path: '/tutorial',
-    name: 'Tutorial',
-    component: () => import('../tutorial/TutorialView.vue')
   }
 ]
 

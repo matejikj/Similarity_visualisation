@@ -77,21 +77,41 @@
         <add-path-dialog @pathsChanged="pathsChanged"></add-path-dialog>
         <v-dialog v-model="leftDialogDisplay" persistent max-width="600px">
           <template v-slot:activator="{ on }">
-            <v-btn fab small color="primary" v-on="on">
+            <v-btn
+              fab
+              small
+              color="primary"
+              v-on="on"
+              v-bind:content="`Change left dataset`"
+              v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
+            >
               <v-icon>mdi-set-left</v-icon>
           </v-btn>
           </template>
-          <add-dataset-form @datasetChanged="leftDatasetChanged" @dialogClosed="dialogClosed"></add-dataset-form>
+          <add-dataset-form
+            @datasetChanged="leftDatasetChanged"
+            @dialogClosed="dialogClosed"
+          >
+          </add-dataset-form>
         </v-dialog>
         <v-dialog v-model="rightDialogDisplay" persistent max-width="600px">
           <template v-slot:activator="{ on }">
-            <v-btn fab small color="primary" v-on="on">
+            <v-btn
+              fab
+              small
+              color="primary"
+              v-on="on"
+              v-bind:content="`Change right dataset`"
+              v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
+            >
               <v-icon>mdi-set-right</v-icon>
           </v-btn>
           </template>
           <add-dataset-form @datasetChanged="rightDatasetChanged" @dialogClosed="dialogClosed"></add-dataset-form>
         </v-dialog>
         <v-btn
+          v-bind:content="`Switch to tree view`"
+          v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
           v-if="isCirclesViewActive"
           fab
           dark
@@ -102,6 +122,8 @@
         </v-btn>
         <v-btn
         v-if="!isCirclesViewActive"
+          v-bind:content="`Switch to circle view`"
+          v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
           fab
           dark
           small
@@ -109,6 +131,7 @@
         >
           <v-icon>mdi-chart-bubble</v-icon>
         </v-btn>
+        <tutorial></tutorial>
       </v-speed-dial>
     </v-container>
   </v-content>
@@ -127,6 +150,7 @@ import { Actions, Mutations, createLabel } from './Visualisation.store'
 import { mapActions, mapMutations } from 'vuex'
 import AddDatasetForm from '@/common-components/AddDatasetForm.vue'
 import { ROOT_LABEL, ROOT_ID } from '../models'
+import Tutorial from '@/tutorial/TutorialDialog.vue'
 
 export default {
   name: 'Visualisation',
@@ -138,7 +162,8 @@ export default {
     AddPathDialog,
     PathBar,
     AddDatasetForm,
-    TreeCanvas
+    TreeCanvas,
+    Tutorial
   },
   data: () => ({
     left: Position.Left,

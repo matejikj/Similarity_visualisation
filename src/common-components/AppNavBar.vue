@@ -5,7 +5,6 @@
       dense
     >
       <v-btn to="/">Visualisation</v-btn>
-      <v-btn to="/tutorial">Tutorial</v-btn>
     </v-app-bar>
   </div>
 </template>
