@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapActions } from 'vuex'
-import { Actions } from '@/visualisation/Visualisation.store'
+import { Actions } from '@/vis-container/Visualisation.store'
 
 export default Vue.extend({
   name: 'AddPathsDialog',

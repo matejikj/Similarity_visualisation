@@ -39,7 +39,7 @@ import CircleLink from './CircleLink.vue'
 import * as d3 from 'd3'
 import { mapGetters, mapActions } from 'vuex'
 import { Circle } from '@/models'
-import { Getters, Actions } from '@/visualisation/Visualisation.store'
+import { Getters, Actions } from '@/vis-container/Visualisation.store'
 
 export default Vue.extend({
   name: 'CircleCanvas',

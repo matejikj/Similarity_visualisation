@@ -141,9 +141,9 @@
 import SideBar from './SideBar.vue'
 import ValueSlider from '@/common-components/ValueSlider.vue'
 import HistoryBar from './HistoryBar.vue'
-import PathBar from '@/visualisation/PathBar.vue'
-import CircleCanvas from './circle-canvas/CircleCanvas'
-import TreeCanvas from './tree-canvas/TreeCanvas'
+import PathBar from '@/vis-container/PathBar.vue'
+import CircleCanvas from './CircleVisualisation/CircleCanvas'
+import TreeCanvas from './TreeVisualisation/TreeCanvas'
 import { Position } from '../models/Position'
 import AddPathDialog from '@/common-components/AddPathDialog.vue'
 import { Actions, Mutations, createLabel } from './Visualisation.store'
@@ -153,7 +153,7 @@ import { ROOT_LABEL, ROOT_ID } from '../models'
 import Tutorial from '@/tutorial/TutorialDialog.vue'
 
 export default {
-  name: 'Visualisation',
+  name: 'VisContainer',
   components: {
     ValueSlider,
     SideBar,
@@ -165,12 +165,16 @@ export default {
     TreeCanvas,
     Tutorial
   },
+  props: {
+    leftDataset: {},
+    rightDataset: {},
+    hierarchy: {},
+    labels: {},
+    paths: {}
+  },
   data: () => ({
     left: Position.Left,
     right: Position.Right,
-    leftDataset: undefined,
-    rightDataset: undefined,
-    pathsDataset: undefined,
     pathsVisible: false,
     leftDialogDisplay: false,
     rightDialogDisplay: false,

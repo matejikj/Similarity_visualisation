@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { Mutations, Actions, Getters } from '@/visualisation/Visualisation.store'
+import { Mutations, Actions, Getters } from '@/vis-container/Visualisation.store'
 
 export default Vue.extend({
   name: 'ValueSlider',

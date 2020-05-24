@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import Visualisation from '../visualisation/Visualisation.vue'
+import VisContainer from '../vis-container/VisContainer.vue'
 
 Vue.use(VueRouter)
 
@@ -8,7 +8,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Visualisation',
-    component: Visualisation
+    component: VisContainer
   }
 ]
 
