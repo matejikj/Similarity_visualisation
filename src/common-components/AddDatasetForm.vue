@@ -6,13 +6,13 @@
       <p>dataset1.json and dataset2.json are available</p>
       <v-card-text>
         <v-container>
-          <!-- <v-row>
+          <v-row>
             <v-combobox
               v-model="collection"
               :items="collectionItems"
               label="Collection"
             />
-          </v-row> -->
+          </v-row>
           <v-row>
             <v-col cols="12" sm="8" md="12">
               <v-text-field v-model="datasetUrl" label="URL" hint="Url of dataset"></v-text-field>

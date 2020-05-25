@@ -7,8 +7,8 @@ import { highlightPaths, createPathNodes, createPaths } from '@/utils/pathUtils'
 export const STORE_NAME = 'Visualisation'
 
 export const Actions = {
-  FETCH_DATASET: 'FETCH_DATASET',
-  FETCH_PATHS_DATASET: 'FETCH_PATHS_DATASET',
+  UPDATE_DATASET: 'UPDATE_DATASET',
+  UPDATE_PATHS_DATASET: 'UPDATE_PATHS_DATASET',
   INITIALIZE_NODES: 'INITIALIZE_NODES',
   RESIZE_CANVAS: 'RESIZE_CANVAS',
   CREATE_HIERARCHY_FOR_CIRCLES: 'CREATE_HIERARCHY_FOR_CIRCLES',
@@ -279,9 +279,9 @@ export default {
     [Actions.UPDATE_CIRCLE_CANVAS]: updateCircleCanvas,
     [Actions.UPDATE_TREE_CANVAS]: updateTreeCanvas,
     [Actions.UPDATE_PATH]: updatePath,
-    [Actions.FETCH_PATHS_DATASET]: fetchPathsDataset,
+    [Actions.UPDATE_PATHS_DATASET]: updatePathsDataset,
     [Actions.SELECT_PATH]: selectPath,
-    [Actions.FETCH_DATASET]: fetchDataset,
+    [Actions.UPDATE_DATASET]: updateDataset,
     [Actions.APPEND_NODE_TREE]: appendNodeTree,
     [Actions.CUT_NODE_TREE_CHILDREN]: cutNodeTreeChildren
   }
@@ -330,41 +330,27 @@ function addMappingItemToArray (array: Array<ComboboxItem>, item: any, index: nu
   array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
 }
 
-async function fetchDataset (context, { url, collection, position }) {
+function updateDataset (context, { dataset, position }) {
   const selectList = []
-  await axios.get(url).then(
-    response => {
-      response.data.mappings.forEach((element, i) => {
-        addMappingItemToArray(selectList, element, i)
-      })
-      switch (position) {
-        case Position.Left:
-          context.commit(Mutations.CHANGE_LEFT_DATASET, response.data)
-          context.commit(Mutations.CHANGE_LEFT_MAPPING_LIST, selectList)
-          break
-        case Position.Right:
-          context.commit(Mutations.CHANGE_RIGHT_DATASET, response.data)
-          context.commit(Mutations.CHANGE_RIGHT_MAPPING_LIST, selectList)
-          break
-      }
-      context.dispatch(Actions.INITIALIZE_NODES)
-    },
-    error => {
-      context.state.error = error
-    }
-  )
+  dataset.mappings.forEach((element, i) => {
+    addMappingItemToArray(selectList, element, i)
+  })
+  switch (position) {
+    case Position.Left:
+      context.commit(Mutations.CHANGE_LEFT_DATASET, dataset)
+      context.commit(Mutations.CHANGE_LEFT_MAPPING_LIST, selectList)
+      break
+    case Position.Right:
+      context.commit(Mutations.CHANGE_RIGHT_DATASET, dataset)
+      context.commit(Mutations.CHANGE_RIGHT_MAPPING_LIST, selectList)
+      break
+  }
+  context.dispatch(Actions.INITIALIZE_NODES)
 }
 
-function fetchPathsDataset (context, url: string) {
-  axios.get(url).then(
-    response => {
-      context.commit(Mutations.CHANGE_PATHS_DATASET, response.data.paths)
-      context.commit(Mutations.CHANGE_PATHS, createPaths(context.state.nodes, response.data.paths, context.state.labels))
-    },
-    error => {
-      context.state.error = error
-    }
-  )
+function updatePathsDataset (context, dataset) {
+  context.commit(Mutations.CHANGE_PATHS_DATASET, dataset.paths)
+  context.commit(Mutations.CHANGE_PATHS, createPaths(context.state.nodes, dataset.paths, context.state.labels))
   context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
 }
 

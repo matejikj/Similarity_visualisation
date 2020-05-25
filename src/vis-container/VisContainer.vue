@@ -7,7 +7,7 @@
             @mappingChanged='mappingChanged'
             v-bind:sidebarPosition="left"
             @datasetChanged="leftDatasetChanged"
-            v-bind:url="leftDataset"
+            v-bind:url="leftDatasetUrl"
           >
           </side-bar>
         </v-col>
@@ -19,7 +19,7 @@
           <side-bar @mappingChanged='mappingChanged'
             v-bind:sidebarPosition="right"
             @datasetChanged="rightDatasetChanged"
-            v-bind:url="rightDataset"
+            v-bind:url="rightDatasetUrl"
           >
           </side-bar>
         </v-col>
@@ -44,7 +44,7 @@
         <v-col cols="3">
         </v-col>
         <v-col cols="6">
-          <path-bar v-bind:url="pathsDataset"
+          <path-bar v-bind:url="paths"
             @pathsChanged="pathsChanged"
             v-bind:isVisible="pathsVisible"
             @cancelClicked='cancelClicked'
@@ -138,6 +138,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import SideBar from './SideBar.vue'
 import ValueSlider from '@/common-components/ValueSlider.vue'
 import HistoryBar from './HistoryBar.vue'
@@ -152,7 +153,7 @@ import AddDatasetForm from '@/common-components/AddDatasetForm.vue'
 import { ROOT_LABEL, ROOT_ID } from '../models'
 import Tutorial from '@/tutorial/TutorialDialog.vue'
 
-export default {
+export default Vue.extend({
   name: 'VisContainer',
   components: {
     ValueSlider,
@@ -166,37 +167,83 @@ export default {
     Tutorial
   },
   props: {
-    leftDataset: {},
-    rightDataset: {},
-    hierarchy: {},
-    labels: {},
-    paths: {}
+    leftDataset: undefined,
+    rightDataset: undefined,
+    paths: undefined
   },
   data: () => ({
     left: Position.Left,
     right: Position.Right,
     pathsVisible: false,
+    leftDatasetUrl: '',
+    rightDatasetUrl: '',
     leftDialogDisplay: false,
     rightDialogDisplay: false,
     fab: false,
     isCirclesViewActive: true
   }),
-  created: function () {
-    if (Array.isArray(this.$route.query.dataset)) {
-      this.leftDataset = this.$route.query.dataset[0]
-      this.rightDataset = this.$route.query.dataset[1]
-    } else {
-      if (this.$route.query.dataset !== undefined) {
-        this.leftDataset = this.$route.query.dataset
+  watch: {
+    leftDataset (newValue) {
+      const position = Position.Left
+      const dataset = this.leftDataset
+      this.updateDataset({ dataset, position })
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
+    },
+    rightDataset (newValue) {
+      const position = Position.Right
+      const dataset = this.rightDataset
+      this.updateDataset({ dataset, position })
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
+    },
+    paths (newValue) {
+      this.updatePathsDataset(this.paths)
+    }
+  },
+  mounted () {
+    if (this.leftDataset !== undefined) {
+      const position = Position.Left
+      const dataset = this.leftDataset
+      this.updateDataset({ dataset, position })
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
       }
     }
-    if (this.$route.query.paths !== undefined) {
-      this.pathsDataset = this.$route.query.paths
+    if (this.rightDataset !== undefined) {
+      const position = Position.Right
+      const dataset = this.rightDataset
+      this.updateDataset({ dataset, position })
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
+    }
+    if (this.paths !== undefined) {
+      this.updatePathsDataset(this.paths)
     }
   },
   methods: {
     ...mapActions('visualisation', {
-      fetchDataset: Actions.FETCH_DATASET,
+      updatePathsDataset: Actions.UPDATE_PATHS_DATASET,
+      updateDataset: Actions.UPDATE_DATASET,
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
@@ -211,7 +258,8 @@ export default {
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
       changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
     }),
-    pathsChanged: function () {
+    pathsChanged: function (url) {
+      this.$emit('pathsChanged', url)
       this.fab = false
       this.pathsVisible = true
     },
@@ -226,28 +274,12 @@ export default {
     leftDatasetChanged: async function (url, collection) {
       this.fab = false
       this.leftDialogDisplay = false
-      const position = Position.Left
-      await this.fetchDataset({ url, collection, position })
-      if (this.isCirclesViewActive) {
-        this.createHierarchyForCircles()
-        this.updateCircleCanvas()
-      } else {
-        this.createHierarchyForTree()
-        this.updateTreeCanvas()
-      }
+      this.$emit('leftDatasetChanged', url, collection)
     },
     rightDatasetChanged: async function (url, collection) {
       this.fab = false
       this.rightDialogDisplay = false
-      const position = Position.Right
-      await this.fetchDataset({ url, collection, position })
-      if (this.isCirclesViewActive) {
-        this.createHierarchyForCircles()
-        this.updateCircleCanvas()
-      } else {
-        this.createHierarchyForTree()
-        this.updateTreeCanvas()
-      }
+      this.$emit('rightDatasetChanged', url, collection)
     },
     dialogClosed: function () {
       this.rightDialogDisplay = false
@@ -286,7 +318,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style>

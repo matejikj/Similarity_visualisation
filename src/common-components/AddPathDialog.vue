@@ -52,13 +52,9 @@ export default Vue.extend({
   computed: {
   },
   methods: {
-    ...mapActions('visualisation', {
-      fetchPathsDataset: Actions.FETCH_PATHS_DATASET
-    }),
     changePaths: function () {
       this.dialog = false
-      this.fetchPathsDataset(this.pathsUrl)
-      this.$emit('pathsChanged')
+      this.$emit('pathsChanged', this.pathsUrl)
     }
   }
 })
