@@ -30,7 +30,7 @@ export function addMappingItemToArray (array: Array<ComboboxItem>, item: any, in
 }
 
 function getNodeLabel (labels: Array<Label>, nodeId: string) {
-  const result = labels[nodeId]
+  const result = labels !== undefined ? labels[nodeId] : nodeId
   return result
 }
 

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import Root from '../vis-container/Root.vue'
+import VisMaster from '../vis-container/VisMaster.vue'
 
 Vue.use(VueRouter)
 
@@ -8,7 +8,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Visualisation',
-    component: Root
+    component: VisMaster
   }
 ]
 

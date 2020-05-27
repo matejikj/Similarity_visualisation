@@ -1,5 +1,4 @@
 <template>
-  <v-content>
     <v-container fluid fill-height>
       <v-row class="text-center">
         <v-col cols="2">
@@ -58,84 +57,7 @@
         <v-col cols="1">
         </v-col>
       </v-row>
-      <v-speed-dial
-        v-model="floatingActionBtnVisible"
-        absolute
-        right
-        bottom
-      >
-        <template v-slot:activator>
-          <v-btn
-            v-model="floatingActionBtnVisible"
-            color="blue darken-2"
-            dark
-            fab
-          >
-            <v-icon v-if="floatingActionBtnVisible">mdi-close</v-icon>
-            <v-icon v-else>mdi-menu</v-icon>
-          </v-btn>
-        </template>
-        <add-path-dialog @pathsChanged="pathsChanged"></add-path-dialog>
-        <v-dialog v-model="leftDialogDisplay" persistent max-width="600px">
-          <template v-slot:activator="{ on }">
-            <v-btn
-              fab
-              small
-              color="primary"
-              v-on="on"
-              v-bind:content="`Change left dataset`"
-              v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
-            >
-              <v-icon>mdi-set-left</v-icon>
-          </v-btn>
-          </template>
-          <add-dataset-form
-            @datasetChanged="leftDatasetChanged"
-            @dialogClosed="dialogClosed"
-          >
-          </add-dataset-form>
-        </v-dialog>
-        <v-dialog v-model="rightDialogDisplay" persistent max-width="600px">
-          <template v-slot:activator="{ on }">
-            <v-btn
-              fab
-              small
-              color="primary"
-              v-on="on"
-              v-bind:content="`Change right dataset`"
-              v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
-            >
-              <v-icon>mdi-set-right</v-icon>
-          </v-btn>
-          </template>
-          <add-dataset-form @datasetChanged="rightDatasetChanged" @dialogClosed="dialogClosed"></add-dataset-form>
-        </v-dialog>
-        <v-btn
-          v-bind:content="`Switch to tree view`"
-          v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
-          v-if="isCirclesViewActive"
-          fab
-          dark
-          small
-          @click="viewTree"
-        >
-          <v-icon>mdi-graph</v-icon>
-        </v-btn>
-        <v-btn
-          v-if="!isCirclesViewActive"
-          v-bind:content="`Switch to circle view`"
-          v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
-          fab
-          dark
-          small
-          @click="viewCircles"
-        >
-          <v-icon>mdi-chart-bubble</v-icon>
-        </v-btn>
-        <tutorial></tutorial>
-      </v-speed-dial>
     </v-container>
-  </v-content>
 </template>
 
 <script>
@@ -147,12 +69,9 @@ import PathBar from '../vis-container/PathBar.vue'
 import CircleCanvas from './CircleVisualisation/CircleCanvas'
 import TreeCanvas from './TreeVisualisation/TreeCanvas'
 import { Position } from '../models/Position'
-import AddPathDialog from '../common-components/AddPathDialog.vue'
 import { Actions, Mutations, Getters } from './Visualisation.store'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import AddDatasetForm from '../common-components/AddDatasetForm.vue'
 import { ROOT_LABEL, ROOT_ID } from '../models'
-import Tutorial from '../tutorial/TutorialDialog.vue'
 import { addMappingItemToArray, createNodes, createLabel } from '../utils/nodesUtils'
 import { createMapping } from '../utils/hierarchyUtils'
 import { createPaths } from '../utils/pathUtils'
@@ -164,11 +83,8 @@ export default Vue.extend({
     SideBar,
     HistoryBar,
     CircleCanvas,
-    AddPathDialog,
     PathBar,
-    AddDatasetForm,
-    TreeCanvas,
-    Tutorial
+    TreeCanvas
   },
   props: {
     leftDataset: undefined,
@@ -177,17 +93,14 @@ export default Vue.extend({
     labels: {
       type: Object
     },
-    hierarchy: undefined
+    hierarchy: undefined,
+    isCirclesViewActive: undefined
   },
   data: () => ({
     left: Position.Left,
     right: Position.Right,
     paths: undefined,
     pathsVisible: false,
-    leftDialogDisplay: false,
-    rightDialogDisplay: false,
-    floatingActionBtnVisible: false,
-    isCirclesViewActive: true,
     leftMappingTree: undefined,
     rightMappingTree: undefined
   }),
@@ -315,17 +228,14 @@ export default Vue.extend({
       this.rightDialogDisplay = false
       this.$emit('rightDatasetChanged', url, collection)
     },
-    viewCircles: function () {
-      this.isCirclesViewActive = true
-      this.createHierarchyForCircles()
-    },
-    viewTree: function () {
-      this.isCirclesViewActive = false
-      this.createHierarchyForTree()
-    },
-    dialogClosed: function () {
-      this.rightDialogDisplay = false
-      this.leftDialogDisplay = false
+    toggleView: function () {
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
     },
     mappingChoosed: function (position, id) {
       switch (position) {
@@ -394,9 +304,6 @@ export default Vue.extend({
     initializeNodes: function () {
       this.changeRootId(ROOT_ID)
       this.changeActivePath(undefined)
-      if (!this.labels[ROOT_ID]) {
-        this.labels[ROOT_ID] = ROOT_LABEL
-      }
       this.changeNodes(createNodes(this.hierarchy, this.labels))
       this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
       this.initPathNodes()

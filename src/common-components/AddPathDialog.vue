@@ -52,7 +52,7 @@ export default Vue.extend({
   methods: {
     changePaths: function () {
       this.dialog = false
-      this.$emit('pathsChanged', this.pathsUrl)
+      this.$emit('pathsDatasetChanged', this.pathsUrl)
     }
   }
 })
