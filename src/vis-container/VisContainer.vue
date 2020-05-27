@@ -4,22 +4,23 @@
       <v-row class="text-center">
         <v-col cols="2">
           <side-bar
-            @mappingChanged='mappingChanged'
+            @mappingChoosed="mappingChoosed"
+            @mappingChanged="mappingChanged"
+            v-bind:mappingList="leftMappingTree"
             v-bind:sidebarPosition="left"
-            @datasetChanged="leftDatasetChanged"
-            v-bind:url="leftDatasetUrl"
           >
           </side-bar>
         </v-col>
         <v-col cols="8">
-          <circle-canvas v-if="isCirclesViewActive"></circle-canvas>
+          <circle-canvas @circleClicked="circleClicked" v-if="isCirclesViewActive"></circle-canvas>
           <tree-canvas v-if="!isCirclesViewActive"></tree-canvas>
         </v-col>
         <v-col cols="2">
-          <side-bar @mappingChanged='mappingChanged'
+          <side-bar
+            @mappingChoosed="mappingChoosed"
+            @mappingChanged="mappingChanged"
+            v-bind:mappingList="rightMappingTree"
             v-bind:sidebarPosition="right"
-            @datasetChanged="rightDatasetChanged"
-            v-bind:url="rightDatasetUrl"
           >
           </side-bar>
         </v-col>
@@ -44,8 +45,8 @@
         <v-col cols="3">
         </v-col>
         <v-col cols="6">
-          <path-bar v-bind:url="paths"
-            @pathsChanged="pathsChanged"
+          <path-bar
+            v-bind:paths="paths"
             v-bind:isVisible="pathsVisible"
             @cancelClicked='cancelClicked'
             @pathUpdated='pathUpdated'
@@ -58,19 +59,19 @@
         </v-col>
       </v-row>
       <v-speed-dial
-        v-model="fab"
+        v-model="floatingActionBtnVisible"
         absolute
         right
         bottom
       >
         <template v-slot:activator>
           <v-btn
-            v-model="fab"
+            v-model="floatingActionBtnVisible"
             color="blue darken-2"
             dark
             fab
           >
-            <v-icon v-if="fab">mdi-close</v-icon>
+            <v-icon v-if="floatingActionBtnVisible">mdi-close</v-icon>
             <v-icon v-else>mdi-menu</v-icon>
           </v-btn>
         </template>
@@ -121,7 +122,7 @@
           <v-icon>mdi-graph</v-icon>
         </v-btn>
         <v-btn
-        v-if="!isCirclesViewActive"
+          v-if="!isCirclesViewActive"
           v-bind:content="`Switch to circle view`"
           v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
           fab
@@ -147,11 +148,14 @@ import CircleCanvas from './CircleVisualisation/CircleCanvas'
 import TreeCanvas from './TreeVisualisation/TreeCanvas'
 import { Position } from '../models/Position'
 import AddPathDialog from '@/common-components/AddPathDialog.vue'
-import { Actions, Mutations, createLabel } from './Visualisation.store'
-import { mapActions, mapMutations } from 'vuex'
+import { Actions, Mutations, Getters } from './Visualisation.store'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
 import AddDatasetForm from '@/common-components/AddDatasetForm.vue'
-import { ROOT_LABEL, ROOT_ID } from '../models'
+import { ROOT_LABEL, ROOT_ID, Label, Node } from '../models'
 import Tutorial from '@/tutorial/TutorialDialog.vue'
+import { addMappingItemToArray, createNodes, mapLinks, createLabel } from '@/utils/nodesUtils'
+import { createMapping } from '@/utils/hierarchyUtils'
+import { createPaths } from '@/utils/pathUtils'
 
 export default Vue.extend({
   name: 'VisContainer',
@@ -169,24 +173,35 @@ export default Vue.extend({
   props: {
     leftDataset: undefined,
     rightDataset: undefined,
-    paths: undefined
+    pathsDataset: undefined,
+    labels: {
+      type: Object
+    },
+    hierarchy: undefined
   },
   data: () => ({
     left: Position.Left,
     right: Position.Right,
+    paths: undefined,
     pathsVisible: false,
-    leftDatasetUrl: '',
-    rightDatasetUrl: '',
     leftDialogDisplay: false,
     rightDialogDisplay: false,
-    fab: false,
-    isCirclesViewActive: true
+    floatingActionBtnVisible: false,
+    isCirclesViewActive: true,
+    leftMappingTree: undefined,
+    rightMappingTree: undefined
   }),
+  computed: {
+    ...mapGetters('visualisation', {
+      nodes: Getters.GET_NODES
+    })
+  },
   watch: {
     leftDataset (newValue) {
       const position = Position.Left
       const dataset = this.leftDataset
-      this.updateDataset({ dataset, position })
+      this.updateMappingsCombobox(dataset, position)
+      this.initializeNodes()
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
@@ -198,7 +213,8 @@ export default Vue.extend({
     rightDataset (newValue) {
       const position = Position.Right
       const dataset = this.rightDataset
-      this.updateDataset({ dataset, position })
+      this.updateMappingsCombobox(dataset, position)
+      this.initializeNodes()
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
@@ -207,15 +223,14 @@ export default Vue.extend({
         this.updateTreeCanvas()
       }
     },
-    paths (newValue) {
-      this.updatePathsDataset(this.paths)
+    pathsDataset (newValue) {
+      this.updatePaths()
     }
   },
   mounted () {
     if (this.leftDataset !== undefined) {
-      const position = Position.Left
-      const dataset = this.leftDataset
-      this.updateDataset({ dataset, position })
+      this.updateMappingsCombobox(this.leftDataset, Position.Left)
+      this.initializeNodes()
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
@@ -225,9 +240,8 @@ export default Vue.extend({
       }
     }
     if (this.rightDataset !== undefined) {
-      const position = Position.Right
-      const dataset = this.rightDataset
-      this.updateDataset({ dataset, position })
+      this.updateMappingsCombobox(this.rightDataset, Position.Right)
+      this.initializeNodes()
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
@@ -236,19 +250,19 @@ export default Vue.extend({
         this.updateTreeCanvas()
       }
     }
-    if (this.paths !== undefined) {
-      this.updatePathsDataset(this.paths)
+    if (this.pathsDataset !== undefined) {
+      this.updatePaths()
     }
   },
   methods: {
     ...mapActions('visualisation', {
-      updatePathsDataset: Actions.UPDATE_PATHS_DATASET,
-      updateDataset: Actions.UPDATE_DATASET,
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS,
-      selectPath: Actions.SELECT_PATH
+      selectPath: Actions.SELECT_PATH,
+      initPathNodes: Actions.INIT_PATH_NODES,
+      addNodeToPath: Actions.ADD_NODE_TO_VISITED_NODES
     }),
     ...mapMutations('visualisation', {
       changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
@@ -256,20 +270,20 @@ export default Vue.extend({
       changePathNodes: Mutations.CHANGE_PATH_NODES,
       changeVisitedNodes: Mutations.CHANGE_VISITED_NODES,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
-      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING,
+      changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
+      changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
+      changeNodes: Mutations.CHANGE_NODES
     }),
+    updatePaths: function () {
+      this.pathsVisible = true
+      this.paths = createPaths(this.nodes, this.pathsDataset, this.labels)
+      this.changeActivePath(undefined)
+    },
     pathsChanged: function (url) {
-      this.$emit('pathsChanged', url)
+      this.$emit('pathsDatasetChanged', url)
       this.fab = false
       this.pathsVisible = true
-    },
-    viewCircles: function () {
-      this.isCirclesViewActive = true
-      this.createHierarchyForCircles()
-    },
-    viewTree: function () {
-      this.isCirclesViewActive = false
-      this.createHierarchyForTree()
     },
     leftDatasetChanged: async function (url, collection) {
       this.fab = false
@@ -281,11 +295,37 @@ export default Vue.extend({
       this.rightDialogDisplay = false
       this.$emit('rightDatasetChanged', url, collection)
     },
+    viewCircles: function () {
+      this.isCirclesViewActive = true
+      this.createHierarchyForCircles()
+    },
+    viewTree: function () {
+      this.isCirclesViewActive = false
+      this.createHierarchyForTree()
+    },
     dialogClosed: function () {
       this.rightDialogDisplay = false
       this.leftDialogDisplay = false
     },
-    mappingChanged: function () {
+    mappingChoosed: function (position, id) {
+      switch (position) {
+        case Position.Left:
+          this.leftMappingTree = createMapping(this.labels, this.leftDataset, id)
+          break
+        case Position.Right:
+          this.rightMappingTree = createMapping(this.labels, this.rightDataset, id)
+          break
+      }
+    },
+    mappingChanged: function (position, array) {
+      switch (position) {
+        case Position.Left:
+          this.changeLeftMapping(array)
+          break
+        case Position.Right:
+          this.changeRightMapping(array)
+          break
+      }
       if (this.isCirclesViewActive) {
         this.updateCircleCanvas()
       } else {
@@ -308,7 +348,7 @@ export default Vue.extend({
       }
     },
     pathUpdated: function () {
-      this.selectPath()
+      this.selectPath(this.labels)
       if (this.isCirclesViewActive) {
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
@@ -316,6 +356,36 @@ export default Vue.extend({
         this.createHierarchyForTree()
         this.updateTreeCanvas()
       }
+    },
+    updateMappingsCombobox: function (dataset, position) {
+      const result = []
+      dataset.mappings.forEach((element, i) => {
+        addMappingItemToArray(result, element, i)
+      })
+      switch (position) {
+        case Position.Left:
+          this.changeLeftMappingList(result)
+          break
+        case Position.Right:
+          this.changeRightMappingList(result)
+          break
+      }
+    },
+    initializeNodes: function () {
+      this.changeRootId(ROOT_ID)
+      this.changeActivePath(undefined)
+      if (!this.labels[ROOT_ID]) {
+        this.labels[ROOT_ID] = ROOT_LABEL
+      }
+      this.changeNodes(createNodes(this.hierarchy, this.labels))
+      this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
+      this.initPathNodes()
+    },
+    circleClicked: function (leaf) {
+      const labels = this.labels
+      this.addNodeToPath({ labels, leaf })
+      this.createHierarchyForCircles()
+      this.updateCircleCanvas()
     }
   }
 })

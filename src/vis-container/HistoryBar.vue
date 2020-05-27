@@ -34,8 +34,7 @@ export default Vue.extend({
   }),
   computed: {
     ...mapGetters('visualisation', {
-      visitedNodes: Getters.GET_VISITED_NODES,
-      labels: Getters.GET_LABELS
+      visitedNodes: Getters.GET_VISITED_NODES
     })
   },
   methods: {

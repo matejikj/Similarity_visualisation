@@ -35,7 +35,6 @@
         v-tippy='{interactive : true, animateFill: false, placement:"left", animation:"shift-toward", delay:10, arrow : true}'
         v-bind:key="index"
         class="btn-help ma-2"
-        @click="click(index)"
         fab
         v-bind:color="c.color"
       >
@@ -57,12 +56,11 @@ export default Vue.extend({
   data: () => ({
   }),
   props: {
-    url: String,
+    paths: {},
     isVisible: Boolean
   },
   computed: {
     ...mapGetters('visualisation', {
-      paths: Getters.GET_PATHS,
       pathNodes: Getters.GET_PATH_NODES
     }),
     select: {
@@ -72,12 +70,6 @@ export default Vue.extend({
       set (value) {
         store.commit('visualisation/CHANGE_ACTIVE_PATH', value)
       }
-    }
-  },
-  mounted: function () {
-    if (this.url !== undefined) {
-      store.dispatch('visualisation/FETCH_PATHS_DATASET', this.url)
-      this.$emit('pathsChanged')
     }
   },
   methods: {

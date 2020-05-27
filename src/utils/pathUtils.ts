@@ -21,11 +21,11 @@ export function createPathNodes (nodes: Array<Node>, activePath: Path) {
 }
 
 // eslint-disable-next-line
-export function createPaths (nodes: Array<Node>, paths: any, labels: Array<Label>): Array<Path> {
+export function createPaths (nodes: Array<Node>, paths: any, labels: Set<Label>): Array<Path> {
   const array = new Array<Path>()
   for (let i = 0; i < paths.length; i++) {
-    const from = labels[paths[i].nodes[0]].label
-    const to = labels[paths[i].nodes[paths[i].nodes.length - 1]].label
+    const from = labels[paths[i].nodes[0]]
+    const to = labels[paths[i].nodes[paths[i].nodes.length - 1]]
     const vertices = Array<string>()
     for (let j = 0; j < paths[i].nodes.length; j++) {
       vertices.push(paths[i].nodes[j])
@@ -60,7 +60,7 @@ export function highlightPaths (circles: Array<Circle>, activePath: Path) {
   if (activePath !== undefined) {
     const pathColor = d3.scaleLinear()
       .domain([0, activePath.height])
-      .range(['#ff0000', '#ff8d92'])
+      .range(['#ff8d92', '#ff0000'])
       .interpolate(d3.interpolateCubehelix)
     for (let i = 0; i < activePath.vertices.length; i++) {
       const circle: Circle = circles.filter(y => y.id === activePath.vertices[i])[0]

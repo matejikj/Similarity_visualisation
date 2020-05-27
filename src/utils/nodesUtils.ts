@@ -1,4 +1,4 @@
-import { ROOT_ID, Node, Label, Link, Circle, Arrow, TREE_CIRCLE_RADIUS } from '@/models'
+import { ROOT_ID, Node, Link, Circle, Arrow, TREE_CIRCLE_RADIUS, ComboboxItem, Label } from '@/models'
 import * as d3 from 'd3'
 
 function stringArrayContainsNodeById (array: Array<string>, id: string) {
@@ -9,8 +9,29 @@ function stringArrayContainsNodeById (array: Array<string>, id: string) {
   }
 }
 
+export function createLabel (id: string, label: string) {
+  return {
+    id: id,
+    label: label
+  }
+}
+
+export function mapLinks (links: any) {
+  const result: Array<Link> = links.map(item => ({
+    parent: item[2],
+    child: item[0]
+  }))
+  return result
+}
+
+// eslint-disable-next-line
+export function addMappingItemToArray (array: Array<ComboboxItem>, item: any, index: number) {
+  array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
+}
+
 function getNodeLabel (labels: Array<Label>, nodeId: string) {
-  return labels[nodeId].label
+  const result = labels[nodeId]
+  return result
 }
 
 function createNode (labels: Array<Label>, nodeId: string): Node {
@@ -43,7 +64,8 @@ export function getNodeByKey (nodes: Array<Node>, key: number) {
   return nodes.filter(x => x.key === key)[0]
 }
 
-export function createNodes (links: Array<Link>, labels: Array<Label>) {
+export function createNodes (hierarchy, labels: Array<Label>) {
+  const links: Array<Link> = mapLinks(hierarchy)
   const result = new Array<Node>()
   const visitedNodes = new Array<string>()
   links.forEach(link => {

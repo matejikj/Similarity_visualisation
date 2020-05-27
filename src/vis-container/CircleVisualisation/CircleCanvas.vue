@@ -87,7 +87,6 @@ export default Vue.extend({
     ...mapActions('visualisation', {
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       resizeCanvas: Actions.RESIZE_CANVAS,
-      addNodeToPath: Actions.ADD_NODE_TO_VISITED_NODES,
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES
     }),
     handleResize () {
@@ -100,9 +99,7 @@ export default Vue.extend({
       this.updateCircleCanvas()
     },
     zoomCircle (e: Circle) {
-      this.addNodeToPath(e)
-      this.createHierarchyForCircles()
-      this.updateCircleCanvas()
+      this.$emit('circleClicked', e)
     }
   }
 })

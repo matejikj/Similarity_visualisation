@@ -307,7 +307,7 @@ export function createMapping (labels: Array<Label>, mapping: any, mappingID: nu
   mappingDataArray.forEach(element => {
     let name
     if (existLabel(labels, element.id)) {
-      name = labels[element.id].label
+      name = labels[element.id]
     } else {
       name = element.id
     }

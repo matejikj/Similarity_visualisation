@@ -1,15 +1,11 @@
-import axios from 'axios'
-import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, Link, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '@/models'
+import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '@/models'
 import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping } from '@/utils/hierarchyUtils'
-import { packNodes, createNodes, packTreeHierarchy, getNodeByKey } from '@/utils/nodesUtils'
+import { packNodes, packTreeHierarchy, getNodeByKey, createLabel } from '@/utils/nodesUtils'
 import { highlightPaths, createPathNodes, createPaths } from '@/utils/pathUtils'
 
 export const STORE_NAME = 'Visualisation'
 
 export const Actions = {
-  UPDATE_DATASET: 'UPDATE_DATASET',
-  UPDATE_PATHS_DATASET: 'UPDATE_PATHS_DATASET',
-  INITIALIZE_NODES: 'INITIALIZE_NODES',
   RESIZE_CANVAS: 'RESIZE_CANVAS',
   CREATE_HIERARCHY_FOR_CIRCLES: 'CREATE_HIERARCHY_FOR_CIRCLES',
   CREATE_HIERARCHY_FOR_TREE: 'CREATE_HIERARCHY_FOR_TREE',
@@ -19,30 +15,25 @@ export const Actions = {
   UPDATE_PATH: 'UPDATE_PATH',
   SELECT_PATH: 'SELECT_PATH',
   APPEND_NODE_TREE: 'APPEND_NODE_TREE',
-  CUT_NODE_TREE_CHILDREN: 'CUT_NODE_TREE_CHILDREN'
+  CUT_NODE_TREE_CHILDREN: 'CUT_NODE_TREE_CHILDREN',
+  INIT_PATH_NODES: 'INIT_PATH_NODES'
 }
 
 export const Mutations = {
   CHANGE_WINDOW: 'CHANGE_WINDOW',
-  CHANGE_LEFT_DATASET: 'CHANGE_LEFT_DATASET',
-  CHANGE_RIGHT_DATASET: 'CHANGE_RIGHT_DATASET',
   CHANGE_LEFT_MAPPING_LIST: 'CHANGE_LEFT_MAPPING_LIST',
   CHANGE_LEFT_MAPPING: 'CHANGE_LEFT_MAPPING',
   CHANGE_RIGHT_MAPPING_LIST: 'CHANGE_RIGHT_MAPPING_LIST',
   CHANGE_RIGHT_MAPPING: 'CHANGE_RIGHT_MAPPING',
   CHANGE_DEPTH: 'CHANGE_DEPTH',
   CHANGE_MAX_DEPTH: 'CHANGE_MAX_DEPTH',
-  CHANGE_LABELS: 'CHANGE_LABELS',
   CHANGE_NODES: 'CHANGE_NODES',
   CHANGE_VISITED_NODES: 'CHANGE_VISITED_NODES',
   CHANGE_CIRCLES: 'CHANGE_CIRCLES',
-  CHANGE_LINKS: 'CHANGE_LINKS',
   CHANGE_LEFT_ARROWS: 'CHANGE_LEFT_ARROWS',
   CHANGE_RIGHT_ARROWS: 'CHANGE_RIGHT_ARROWS',
   CHANGE_CIRCLE_HIERARCHY: 'CHANGE_CIRCLE_HIERARCHY',
   CHANGE_ROOT_ID: 'CHANGE_ROOT_ID',
-  CHANGE_PATHS_DATASET: 'CHANGE_PATHS_DATASET',
-  CHANGE_PATHS: 'CHANGE_PATHS',
   CHANGE_ACTIVE_PATH: 'CHANGE_ACTIVE_PATH',
   CHANGE_PATH_NODES: 'CHANGE_PATH_NODES',
   CHANGE_TREE_HIERARCHY: 'CHANGE_TREE_HIERARCHY',
@@ -53,8 +44,6 @@ export const Mutations = {
 
 export const Getters = {
   GET_TREE_HEIGHT: 'GET_TREE_HEIGHT',
-  GET_LEFT_DATASET: 'GET_LEFT_DATASET',
-  GET_RIGHT_DATASET: 'GET_RIGHT_DATASET',
   GET_LEFT_MAPPING_LIST: 'GET_LEFT_MAPPING_LIST',
   GET_LEFT_MAPPING: 'GET_LEFT_MAPPING',
   GET_RIGHT_MAPPING_LIST: 'GET_RIGHT_MAPPING_LIST',
@@ -62,9 +51,7 @@ export const Getters = {
   GET_DEPTH: 'GET_DEPTH',
   GET_ACTIVE_PATH: 'GET_ACTIVE_PATH',
   GET_MAX_DEPTH: 'GET_MAX_DEPTH',
-  GET_LABELS: 'GET_LABELS',
   GET_NODES: 'GET_NODES',
-  GET_PATHS: 'GET_PATHS',
   GET_VISITED_NODES: 'GET_VISITED_NODES',
   GET_CIRCLE_HIERARCHY: 'GET_HIERARCHY',
   GET_ROOT_ID: 'GET_ROOT_ID',
@@ -81,17 +68,11 @@ export const Getters = {
 export default {
   namespaced: true,
   state: {
-    leftDataset: Object(),
-    rightDataset: Object(),
-    pathsDataset: Object(),
     leftMappingList: Array<ComboboxItem>(),
     leftMapping: Array<MappingNode>(),
     rightMappingList: Array<ComboboxItem>(),
     rightMapping: Array<MappingNode>(),
-    labels: Array<Label>(),
-    links: Array<Link>(),
     nodes: Array<Node>(),
-    paths: Array<Path>(),
     activePath: undefined,
     pathNodes: Array<Node>(),
     circles: Array<Circle>(),
@@ -125,12 +106,6 @@ export default {
     [Getters.GET_CIRCLE_HIERARCHY]: (state) => {
       return state.circleHierarchy
     },
-    [Getters.GET_PATHS]: (state) => {
-      return state.paths
-    },
-    [Getters.GET_LEFT_DATASET]: (state) => {
-      return state.leftDataset
-    },
     [Getters.GET_LEFT_MAPPING_LIST]: (state) => {
       return state.leftMappingList
     },
@@ -139,9 +114,6 @@ export default {
     },
     [Getters.GET_ACTIVE_PATH]: (state) => {
       return state.activePath
-    },
-    [Getters.GET_RIGHT_DATASET]: (state) => {
-      return state.rightDataset
     },
     [Getters.GET_LEFT_MAPPING]: (state) => {
       return state.leftMapping
@@ -154,9 +126,6 @@ export default {
     },
     [Getters.GET_NODES]: (state) => {
       return state.nodes
-    },
-    [Getters.GET_LABELS]: (state) => {
-      return state.labels
     },
     [Getters.GET_ROOT_ID]: (state) => {
       return state.rootId
@@ -184,21 +153,6 @@ export default {
     }
   },
   mutations: {
-    // eslint-disable-next-line
-    [Mutations.CHANGE_LEFT_DATASET] (state, value: any) {
-      state.leftDataset = value
-    },
-    // eslint-disable-next-line
-    [Mutations.CHANGE_RIGHT_DATASET] (state, value: any) {
-      state.rightDataset = value
-    },
-    // eslint-disable-next-line
-    [Mutations.CHANGE_PATHS_DATASET] (state, value: any) {
-      state.pathsDataset = value
-    },
-    [Mutations.CHANGE_PATHS] (state, value: Array<Path>) {
-      state.paths = value
-    },
     [Mutations.CHANGE_ACTIVE_PATH] (state, value: Path) {
       state.activePath = value
     },
@@ -220,9 +174,6 @@ export default {
     [Mutations.CHANGE_MAX_DEPTH] (state, value: number) {
       state.maxDepth = value
     },
-    [Mutations.CHANGE_LABELS] (state, value: Array<Label>) {
-      state.labels = value
-    },
     [Mutations.CHANGE_NODES] (state, value: Array<Node>) {
       state.nodes = value
     },
@@ -235,12 +186,6 @@ export default {
     },
     [Mutations.CHANGE_CIRCLES] (state, value: Array<Circle>) {
       state.circles = value
-    },
-    [Mutations.CHANGE_LINKS] (state, value: Array<Link>) {
-      state.links = value
-    },
-    [Mutations.CHANGE_LABELS] (state, value: Array<Label>) {
-      state.labels = value
     },
     [Mutations.CHANGE_LEFT_ARROWS] (state, value: Array<Arrow>) {
       state.leftArrows = value
@@ -263,35 +208,38 @@ export default {
     [Mutations.CHANGE_TREE_NODES] (state, value: Array<Circle>) {
       state.treeNodes = value
     },
-    [Mutations.CHANGE_TREE_LINKS] (state, value: Array<Link>) {
-      state.treeLinks = value
-    },
     [Mutations.CHANGE_TREE_HEIGHT] (state, value: number) {
       state.treeHeight = value
+    },
+    [Mutations.CHANGE_TREE_LINKS] (state, value: Array<Arrow>) {
+      state.treeLinks = value
     }
   },
   actions: {
     [Actions.CREATE_HIERARCHY_FOR_CIRCLES]: createHierarchyForCircles,
     [Actions.CREATE_HIERARCHY_FOR_TREE]: createHierarchyForTree,
-    [Actions.INITIALIZE_NODES]: initializeNodes,
     [Actions.ADD_NODE_TO_VISITED_NODES]: addNodeToVisitedNodes,
     [Actions.RESIZE_CANVAS]: resizeCanvas,
     [Actions.UPDATE_CIRCLE_CANVAS]: updateCircleCanvas,
     [Actions.UPDATE_TREE_CANVAS]: updateTreeCanvas,
     [Actions.UPDATE_PATH]: updatePath,
-    [Actions.UPDATE_PATHS_DATASET]: updatePathsDataset,
     [Actions.SELECT_PATH]: selectPath,
-    [Actions.UPDATE_DATASET]: updateDataset,
     [Actions.APPEND_NODE_TREE]: appendNodeTree,
-    [Actions.CUT_NODE_TREE_CHILDREN]: cutNodeTreeChildren
+    [Actions.CUT_NODE_TREE_CHILDREN]: cutNodeTreeChildren,
+    [Actions.INIT_PATH_NODES]: initPathNodes
   }
 }
 
-function selectPath (context) {
+function initPathNodes (context) {
+  context.commit(Mutations.CHANGE_PATH_NODES, Array<Node>())
+}
+
+// UPRAVIT KOD
+function selectPath (context, labels) {
   const activePath: Path = context.getters[Getters.GET_ACTIVE_PATH]
   // const nodes: Array<Node> = context.getters[Getters.GET_NODES]
   const rootId = activePath.vertices[activePath.up]
-  let leftLabel = context.state.labels[activePath.vertices[0]]
+  let leftLabel = labels[activePath.vertices[0]]
   if (leftLabel.label === undefined) {
     leftLabel = activePath.vertices[0]
   } else {
@@ -300,7 +248,7 @@ function selectPath (context) {
   const leftMapping = new MappingNode(0, leftLabel)
   leftMapping.nodeID = activePath.vertices[0]
   leftMapping.mapBy = leftLabel
-  let rightLabel = context.state.labels[activePath.vertices[activePath.vertices.length - 1]]
+  let rightLabel = labels[activePath.vertices[activePath.vertices.length - 1]]
   if (rightLabel.label === undefined) {
     rightLabel = activePath.vertices[activePath.vertices.length - 1]
   } else {
@@ -312,8 +260,7 @@ function selectPath (context) {
   context.commit(Mutations.CHANGE_LEFT_MAPPING, [leftMapping])
   context.commit(Mutations.CHANGE_RIGHT_MAPPING, [rightMapping])
   context.commit(Mutations.CHANGE_ROOT_ID, rootId)
-  const visitedNode: Label = context.state.labels[rootId]
-  context.commit(Mutations.CHANGE_VISITED_NODES, [visitedNode])
+  context.commit(Mutations.CHANGE_VISITED_NODES, [createLabel(rootId, labels[rootId])])
   context.commit(Mutations.CHANGE_PATH_NODES, createPathNodes(context.state.nodes, context.state.activePath))
   // context.commit(Mutations.)
 }
@@ -323,35 +270,6 @@ function updatePath (context, value: number) {
   context.commit(Mutations.CHANGE_VISITED_NODES, context.state.visitedNodes.slice(0, value + 1))
   context.dispatch(Actions.CREATE_HIERARCHY_FOR_CIRCLES)
   context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
-}
-
-// eslint-disable-next-line
-function addMappingItemToArray (array: Array<ComboboxItem>, item: any, index: number) {
-  array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
-}
-
-function updateDataset (context, { dataset, position }) {
-  const selectList = []
-  dataset.mappings.forEach((element, i) => {
-    addMappingItemToArray(selectList, element, i)
-  })
-  switch (position) {
-    case Position.Left:
-      context.commit(Mutations.CHANGE_LEFT_DATASET, dataset)
-      context.commit(Mutations.CHANGE_LEFT_MAPPING_LIST, selectList)
-      break
-    case Position.Right:
-      context.commit(Mutations.CHANGE_RIGHT_DATASET, dataset)
-      context.commit(Mutations.CHANGE_RIGHT_MAPPING_LIST, selectList)
-      break
-  }
-  context.dispatch(Actions.INITIALIZE_NODES)
-}
-
-function updatePathsDataset (context, dataset) {
-  context.commit(Mutations.CHANGE_PATHS_DATASET, dataset.paths)
-  context.commit(Mutations.CHANGE_PATHS, createPaths(context.state.nodes, dataset.paths, context.state.labels))
-  context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
 }
 
 function createHierarchyForCircles (context) {
@@ -437,25 +355,20 @@ function updateTreeCanvas (context) {
   }
 }
 
-function initializeNodes (context) {
-  context.commit(Mutations.CHANGE_ROOT_ID, ROOT_ID)
-  context.commit(Mutations.CHANGE_ACTIVE_PATH, undefined)
-  const labels = createLabels(context.state.leftDataset, context.state.rightDataset)
-  context.commit(Mutations.CHANGE_LABELS, labels)
-  context.commit(Mutations.CHANGE_LINKS, createLinks(context.state.leftDataset, context.state.rightDataset))
-  context.commit(Mutations.CHANGE_NODES, createNodes(context.state.links, context.state.labels))
-  context.commit(Mutations.CHANGE_VISITED_NODES, [labels[ROOT_ID]])
-  context.commit(Mutations.CHANGE_PATH_NODES, Array<Node>())
-}
-
-function addNodeToVisitedNodes (context, leaf: Circle) {
+function addNodeToVisitedNodes (context, { labels, leaf }) {
   context.commit(Mutations.CHANGE_ROOT_ID, leaf.id)
   const array = Array<Label>()
-  array.push(context.state.labels[leaf.id])
+  array.push({
+    id: leaf.id,
+    label: labels[leaf.id]
+  })
   let parent = leaf.parent
   while (parent !== null) {
     if (parent.data.id !== ROOT_ID && parent.parent != null) {
-      array.push(context.state.labels[parent.data.id])
+      array.push({
+        id: parent.data.id,
+        label: labels[parent.data.id]
+      })
     }
     parent = parent.parent
   }
@@ -465,60 +378,4 @@ function addNodeToVisitedNodes (context, leaf: Circle) {
       context.state.visitedNodes.push(element)
     }
   }
-}
-
-export function createLabel (id: string, label: string) {
-  return new Label(
-    id,
-    label
-  )
-}
-
-// eslint-disable-next-line
-function createLabels (leftDataset: any, rightDataset: any) {
-  const result = new Set<string>()
-  for (const key in leftDataset.labels) {
-    result[key] = createLabel(key, leftDataset.labels[key])
-  }
-  for (const key in rightDataset.labels) {
-    result[key] = createLabel(key, rightDataset.labels[key])
-  }
-  result[ROOT_ID] = createLabel(ROOT_ID, ROOT_LABEL)
-  return result
-}
-
-function containsLink (array: Array<Link>, link: Link) {
-  if (array.filter(x => x.parent === link.parent &&
-    x.child === link.child && x.relation === link.relation).length === 0
-  ) {
-    return false
-  } else {
-    return true
-  }
-}
-
-function createLink (parent: string, child: string, relation: string) {
-  return new Link(parent,
-    child,
-    relation
-  )
-}
-
-// eslint-disable-next-line
-export function createLinks (leftDataset: any, rightDataset: any) {
-  const result = new Array<Link>()
-  if (leftDataset.hierarchy !== undefined) {
-    leftDataset.hierarchy.forEach(link => {
-      result.push(createLink(link[2], link[0], link[1]))
-    })
-  }
-  if (rightDataset.hierarchy !== undefined) {
-    rightDataset.hierarchy.forEach(link => {
-      const createdLink = createLink(link[2], link[0], link[1])
-      if (!containsLink(result, createdLink)) {
-        result.push(createdLink)
-      }
-    })
-  }
-  return result
 }

@@ -30,11 +30,9 @@ export default Vue.extend({
   },
   props: {
     sidebarPosition: {},
-    url: String,
-    collection: String
+    mappingList: {}
   },
   data: () => ({
-    mappingList: Array<MappingNode>(),
     error: Error()
   }),
   computed: {
@@ -51,32 +49,11 @@ export default Vue.extend({
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
       changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
     }),
-    ...mapGetters('visualisation', {
-      getLeftDataset: Getters.GET_LEFT_DATASET,
-      getRightDataset: Getters.GET_RIGHT_DATASET,
-      getLabels: Getters.GET_LABELS
-    }),
     changeMapping: function (data: ComboboxItem) {
-      this.mappingList = []
-      switch (this.$props.sidebarPosition) {
-        case Position.Left:
-          this.mappingList = createMapping(this.getLabels(), this.getLeftDataset(), data.id)
-          break
-        case Position.Right:
-          this.mappingList = createMapping(this.getLabels(), this.getRightDataset(), data.id)
-          break
-      }
+      this.$emit('mappingChoosed', this.sidebarPosition, data.id)
     },
     selectedChanged: function (array: Array<MappingNode>) {
-      switch (this.$props.sidebarPosition) {
-        case Position.Left:
-          this.changeLeftMapping(array)
-          break
-        case Position.Right:
-          this.changeRightMapping(array)
-          break
-      }
-      this.$emit('mappingChanged')
+      this.$emit('mappingChanged', this.sidebarPosition, array)
     }
   }
 })
