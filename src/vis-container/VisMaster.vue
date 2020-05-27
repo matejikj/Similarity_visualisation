@@ -104,48 +104,48 @@ export default Vue.extend({
     AddDatasetForm,
     Tutorial
   },
-  created () {
-    axios.get('hierarchy.json').then(
-      response => {
-        this.hierarchy = response.data.hierarchy
-      },
-      error => {
-        this.error = error
-      }
-    )
-    axios.get('labels.json').then(
-      response => {
-        this.labels = response.data.labels
-      },
-      error => {
-        this.error = error
-      }
-    )
-    axios.get('dataset1.json').then(
-      response => {
-        this.leftDataset = response.data
-      },
-      error => {
-        this.error = error
-      }
-    )
-    axios.get('dataset1.json').then(
-      response => {
-        this.rightDataset = response.data
-      },
-      error => {
-        this.error = error
-      }
-    )
-    axios.get('paths-shortest.json').then(
-      response => {
-        this.paths = response.data.paths
-      },
-      error => {
-        this.error = error
-      }
-    )
-  },
+  // created () {
+  //   axios.get('hierarchy.json').then(
+  //     response => {
+  //       this.hierarchy = response.data.hierarchy
+  //     },
+  //     error => {
+  //       this.error = error
+  //     }
+  //   )
+  //   axios.get('labels.json').then(
+  //     response => {
+  //       this.labels = response.data.labels
+  //     },
+  //     error => {
+  //       this.error = error
+  //     }
+  //   )
+  //   axios.get('dataset1.json').then(
+  //     response => {
+  //       this.leftDataset = response.data
+  //     },
+  //     error => {
+  //       this.error = error
+  //     }
+  //   )
+  //   axios.get('dataset1.json').then(
+  //     response => {
+  //       this.rightDataset = response.data
+  //     },
+  //     error => {
+  //       this.error = error
+  //     }
+  //   )
+  //   axios.get('paths-shortest.json').then(
+  //     response => {
+  //       this.paths = response.data.paths
+  //     },
+  //     error => {
+  //       this.error = error
+  //     }
+  //   )
+  // },
   data: () => ({
     error: Error(),
     leftDataset: undefined,
