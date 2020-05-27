@@ -1,5 +1,5 @@
-import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_DEPTH, MAX_TREE_DEPTH } from '@/models'
-import { getNodeById, getNodeByKey } from '@/utils/nodesUtils'
+import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_TREE_DEPTH } from '../models'
+import { getNodeById } from './nodesUtils'
 
 export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
   const layerArray = Array<ArrowData>()

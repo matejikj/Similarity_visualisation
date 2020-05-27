@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import visualisation from '@/vis-container/Visualisation.store'
+import visualisation from '../vis-container/Visualisation.store'
 
 Vue.use(Vuex)
 

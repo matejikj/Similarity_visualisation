@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
-import { Node, Circle, Path, Label } from '@/models'
-import { getNodeById } from '@/utils/nodesUtils'
+import { Node, Circle, Path, Label } from '../models'
+import { getNodeById } from './nodesUtils'
 
 export function createPathNodes (nodes: Array<Node>, activePath: Path) {
   const pathNodes = Array<Node>()

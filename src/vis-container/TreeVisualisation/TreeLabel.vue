@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { TREE_CIRCLE_RADIUS } from '@/models'
+import { TREE_CIRCLE_RADIUS } from '../../models'
 
 export default Vue.extend({
   name: 'TreeLabel',

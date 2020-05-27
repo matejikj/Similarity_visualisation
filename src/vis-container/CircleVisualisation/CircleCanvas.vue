@@ -38,8 +38,8 @@ import CircleLabel from './CircleLabel.vue'
 import CircleLink from './CircleLink.vue'
 import * as d3 from 'd3'
 import { mapGetters, mapActions } from 'vuex'
-import { Circle } from '@/models'
-import { Getters, Actions } from '@/vis-container/Visualisation.store'
+import { Circle } from '../../models'
+import { Getters, Actions } from '../Visualisation.store'
 
 export default Vue.extend({
   name: 'CircleCanvas',
@@ -82,6 +82,7 @@ export default Vue.extend({
         g.attr('transform', d3.event.transform)
       }))
     /* eslint-enable no-undef */
+    console.log(svg)
   },
   methods: {
     ...mapActions('visualisation', {

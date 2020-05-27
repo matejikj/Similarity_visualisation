@@ -14,13 +14,12 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import TreeViewList from '@/common-components/TreeViewList.vue'
-import { ComboboxItem } from '@/models/ComboboxItem'
-import { Position } from '@/models/Position'
-import { MappingNode } from '@/models/MappingNode'
-import { createMapping } from '../utils/hierarchyUtils'
-import { mapMutations, mapGetters } from 'vuex'
-import { Actions, Mutations, Getters } from './Visualisation.store'
+import TreeViewList from '../common-components/TreeViewList.vue'
+import { ComboboxItem } from '../models/ComboboxItem'
+import { Position } from '../models/Position'
+import { MappingNode } from '../models/MappingNode'
+import { mapMutations } from 'vuex'
+import { Mutations } from './Visualisation.store'
 import store from '../app/store'
 
 export default Vue.extend({

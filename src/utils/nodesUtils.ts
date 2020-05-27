@@ -1,4 +1,4 @@
-import { ROOT_ID, Node, Link, Circle, Arrow, TREE_CIRCLE_RADIUS, ComboboxItem, Label } from '@/models'
+import { ROOT_ID, Node, Link, Circle, Arrow, TREE_CIRCLE_RADIUS, ComboboxItem, Label } from '../models'
 import * as d3 from 'd3'
 
 function stringArrayContainsNodeById (array: Array<string>, id: string) {

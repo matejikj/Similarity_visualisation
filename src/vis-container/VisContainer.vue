@@ -141,21 +141,21 @@
 <script>
 import Vue from 'vue'
 import SideBar from './SideBar.vue'
-import ValueSlider from '@/common-components/ValueSlider.vue'
+import ValueSlider from '../common-components/ValueSlider.vue'
 import HistoryBar from './HistoryBar.vue'
-import PathBar from '@/vis-container/PathBar.vue'
+import PathBar from '../vis-container/PathBar.vue'
 import CircleCanvas from './CircleVisualisation/CircleCanvas'
 import TreeCanvas from './TreeVisualisation/TreeCanvas'
 import { Position } from '../models/Position'
-import AddPathDialog from '@/common-components/AddPathDialog.vue'
+import AddPathDialog from '../common-components/AddPathDialog.vue'
 import { Actions, Mutations, Getters } from './Visualisation.store'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import AddDatasetForm from '@/common-components/AddDatasetForm.vue'
-import { ROOT_LABEL, ROOT_ID, Label, Node } from '../models'
-import Tutorial from '@/tutorial/TutorialDialog.vue'
-import { addMappingItemToArray, createNodes, mapLinks, createLabel } from '@/utils/nodesUtils'
-import { createMapping } from '@/utils/hierarchyUtils'
-import { createPaths } from '@/utils/pathUtils'
+import AddDatasetForm from '../common-components/AddDatasetForm.vue'
+import { ROOT_LABEL, ROOT_ID } from '../models'
+import Tutorial from '../tutorial/TutorialDialog.vue'
+import { addMappingItemToArray, createNodes, createLabel } from '../utils/nodesUtils'
+import { createMapping } from '../utils/hierarchyUtils'
+import { createPaths } from '../utils/pathUtils'
 
 export default Vue.extend({
   name: 'VisContainer',
@@ -197,7 +197,7 @@ export default Vue.extend({
     })
   },
   watch: {
-    leftDataset (newValue) {
+    leftDataset () {
       const position = Position.Left
       const dataset = this.leftDataset
       this.updateMappingsCombobox(dataset, position)
@@ -210,7 +210,7 @@ export default Vue.extend({
         this.updateTreeCanvas()
       }
     },
-    rightDataset (newValue) {
+    rightDataset () {
       const position = Position.Right
       const dataset = this.rightDataset
       this.updateMappingsCombobox(dataset, position)
@@ -223,8 +223,18 @@ export default Vue.extend({
         this.updateTreeCanvas()
       }
     },
-    pathsDataset (newValue) {
+    pathsDataset () {
       this.updatePaths()
+    },
+    hierarchy () {
+      this.initializeNodes()
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
     }
   },
   mounted () {
@@ -252,6 +262,16 @@ export default Vue.extend({
     }
     if (this.pathsDataset !== undefined) {
       this.updatePaths()
+    }
+    if (this.hierarchy !== undefined) {
+      this.initializeNodes()
+      if (this.isCirclesViewActive) {
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      } else {
+        this.createHierarchyForTree()
+        this.updateTreeCanvas()
+      }
     }
   },
   methods: {

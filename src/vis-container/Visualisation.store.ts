@@ -1,7 +1,7 @@
-import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '@/models'
-import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping } from '@/utils/hierarchyUtils'
-import { packNodes, packTreeHierarchy, getNodeByKey, createLabel } from '@/utils/nodesUtils'
-import { highlightPaths, createPathNodes, createPaths } from '@/utils/pathUtils'
+import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '../models'
+import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping } from '../utils/hierarchyUtils'
+import { packNodes, packTreeHierarchy, getNodeByKey, createLabel } from '../utils/nodesUtils'
+import { highlightPaths, createPathNodes } from '../utils/pathUtils'
 
 export const STORE_NAME = 'Visualisation'
 
