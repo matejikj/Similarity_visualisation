@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="isVisible">
+  <v-container>
     <v-row>
       <v-select
         v-model="select"
@@ -47,8 +47,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
-import { Getters, Actions } from './Visualisation.store'
-import store from '../app/store'
+import { Getters, Actions } from '../Visualisation.store'
+import store from '../../app/store'
 
 export default Vue.extend({
   name: 'PathBar',
@@ -56,8 +56,7 @@ export default Vue.extend({
   data: () => ({
   }),
   props: {
-    paths: {},
-    isVisible: Boolean
+    paths: {}
   },
   computed: {
     ...mapGetters('visualisation', {

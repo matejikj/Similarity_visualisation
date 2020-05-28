@@ -23,9 +23,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Getters, Actions } from './Visualisation.store'
+import { Getters, Actions } from '../Visualisation.store'
 import { mapGetters, mapActions } from 'vuex'
-import { Label } from '../models'
+import { Label } from '../../models'
 
 export default Vue.extend({
   name: 'HistoryBar',

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import VisMaster from '../vis-container/VisMaster.vue'
+import VisMaster from '../visualisation/VisMaster.vue'
 
 Vue.use(VueRouter)
 

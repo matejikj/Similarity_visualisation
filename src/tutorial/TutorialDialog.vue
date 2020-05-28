@@ -15,7 +15,7 @@
     </template>
         <v-carousel
           light
-          hide-delimiter-background
+          hide-delimiters
           show-arrows-on-hover
           height="80vh"
         >
@@ -32,7 +32,6 @@
                 :src="require(`./img/${image}.png`)"
                 :alt="titles[index]"
               />
-              <v-delimiter></v-delimiter>
               <div class="carousel-title">
                 {{ titles[index] }}
               </div>

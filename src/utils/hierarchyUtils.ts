@@ -297,7 +297,7 @@ function existLabel (labels: Array<Label>, id: string) {
   }
 }
 // eslint-disable-next-line
-export function createMapping (labels: Array<Label>, mapping: any, mappingID: number): Array<MappingNode> {
+export function createMapping (labels: Array<Label>, mapping: any, mappingID: number) {
   const result = Array<MappingNode>()
   const mappingDataArray = Array<MappingData>()
   mapping.mappings[mappingID].data.forEach(item => {

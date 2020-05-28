@@ -1,0 +1,114 @@
+<template>
+  <v-container>
+    <v-row>
+      <vis-container
+        v-bind:leftDataset="leftDataset"
+        v-bind:rightDataset="rightDataset"
+        v-bind:hierarchy="hierarchy"
+        v-bind:labels="labels"
+        v-bind:activeView="activeView"
+      >
+      </vis-container>
+    </v-row>
+      <layout
+        v-bind:pathsDataset="paths"
+        v-bind:labels="labels"
+        v-bind:activeView="activeView"
+      >
+    </layout>
+    <v-row>
+    </v-row>
+    <custom-menu
+      @leftDatasetChanged="leftDatasetChanged"
+      @rightDatasetChanged="rightDatasetChanged"
+      @pathsDatasetChanged="pathsDatasetChanged"
+      @setTreeView="setTreeView"
+      @setCircleView="setCircleView"
+    ></custom-menu>
+  </v-container>
+</template>
+
+<script lang='ts'>
+import Vue from 'vue'
+import Layout from './Layout/Layout.vue'
+import VisContainer from './VisContainer.vue'
+import axios from 'axios'
+import CustomMenu from './CustomMenu.vue'
+
+export default Vue.extend({
+  name: 'VisMaster',
+  components: {
+    CustomMenu,
+    Layout,
+    VisContainer
+  },
+  created () {
+    axios.get('hierarchy.json').then(
+      response => {
+        this.hierarchy = response.data.hierarchy
+      },
+      error => {
+        this.error = error
+      }
+    )
+    axios.get('labels.json').then(
+      response => {
+        this.labels = response.data.labels
+      },
+      error => {
+        this.error = error
+      }
+    )
+    axios.get('dataset1.json').then(
+      response => {
+        this.leftDataset = response.data
+      },
+      error => {
+        this.error = error
+      }
+    )
+    axios.get('dataset2.json').then(
+      response => {
+        this.rightDataset = response.data
+      },
+      error => {
+        this.error = error
+      }
+    )
+    axios.get('paths-shortest.json').then(
+      response => {
+        this.paths = response.data.paths
+      },
+      error => {
+        this.error = error
+      }
+    )
+  },
+  data: () => ({
+    error: Error(),
+    leftDataset: undefined,
+    rightDataset: undefined,
+    paths: undefined,
+    labels: undefined,
+    hierarchy: undefined,
+    activeView: 1
+  }),
+  methods: {
+    leftDatasetChanged: function () {
+      this.$emit('leftDatasetChanged')
+    },
+    rightDatasetChanged: function () {
+      this.$emit('rightDatasetChanged')
+    },
+    pathsDatasetChanged: function () {
+      this.$emit('pathsDatasetChanged')
+    },
+    setTreeView: function () {
+      this.activeView = 2
+    },
+    setCircleView: function () {
+      this.activeView = 1
+    }
+  }
+})
+</script>

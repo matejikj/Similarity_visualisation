@@ -14,12 +14,10 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import TreeViewList from '../common-components/TreeViewList.vue'
+import TreeViewList from './TreeViewList.vue'
 import { ComboboxItem } from '../models/ComboboxItem'
 import { Position } from '../models/Position'
 import { MappingNode } from '../models/MappingNode'
-import { mapMutations } from 'vuex'
-import { Mutations } from './Visualisation.store'
 import store from '../app/store'
 
 export default Vue.extend({
@@ -27,10 +25,7 @@ export default Vue.extend({
   components: {
     TreeViewList
   },
-  props: {
-    sidebarPosition: {},
-    mappingList: {}
-  },
+  props: ['sidebarPosition', 'mappingList'],
   data: () => ({
     error: Error()
   }),
@@ -44,10 +39,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...mapMutations('visualisation', {
-      changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
-      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
-    }),
     changeMapping: function (data: ComboboxItem) {
       this.$emit('mappingChoosed', this.sidebarPosition, data.id)
     },

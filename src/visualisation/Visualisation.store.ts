@@ -245,7 +245,10 @@ function selectPath (context, labels) {
   } else {
     leftLabel = leftLabel.label
   }
-  const leftMapping = new MappingNode(0, leftLabel)
+  const leftMapping: MappingNode = {
+    id: 0,
+    name: leftLabel
+  }
   leftMapping.nodeID = activePath.vertices[0]
   leftMapping.mapBy = leftLabel
   let rightLabel = labels[activePath.vertices[activePath.vertices.length - 1]]
@@ -254,7 +257,10 @@ function selectPath (context, labels) {
   } else {
     rightLabel = rightLabel.label
   }
-  const rightMapping = new MappingNode(0, rightLabel)
+  const rightMapping: MappingNode = {
+    id: 0,
+    name: rightLabel
+  }
   rightMapping.nodeID = activePath.vertices[activePath.vertices.length - 1]
   rightMapping.mapBy = rightLabel
   context.commit(Mutations.CHANGE_LEFT_MAPPING, [leftMapping])
@@ -333,6 +339,7 @@ function createCircles (context): Array<Circle> {
 }
 
 function updateCircleCanvas (context) {
+  console.log('UPDATE_CIRCLE')
   context.commit(Mutations.CHANGE_CIRCLES, createCircles(context))
   context.commit(Mutations.CHANGE_LEFT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
     context.state.circles, createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes), Position.Left))
@@ -344,6 +351,7 @@ function updateCircleCanvas (context) {
 }
 
 function updateTreeCanvas (context) {
+  console.log('UPDATE_TERE')
   const result = packTreeHierarchy(context.state.treeHierarchy, context.state.window.width, context.state.treeHeight)
   context.commit(Mutations.CHANGE_TREE_NODES, result.circles)
   context.commit(Mutations.CHANGE_TREE_LINKS, result.links)

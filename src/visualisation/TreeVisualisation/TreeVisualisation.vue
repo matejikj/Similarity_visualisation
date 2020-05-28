@@ -1,0 +1,143 @@
+<template>
+  <svg id="svg" ref="svg" width="100%" height="70vh">
+    <g>
+      <template v-for="(c, index) in links">
+        <tree-link class="movable" v-bind:key="index" v-bind:linkData="c"></tree-link>
+      </template>
+    </g>
+    <g>
+      <template v-for="(c, index) in circles">
+        <tree-node class="movable" @nodeClicked="nodeClicked" v-bind:key="index" v-bind:nodeData="c"></tree-node>
+      </template>
+    </g>
+    <g>
+      <template v-for="(c, index) in circles">
+        <tree-label class="movable" @labelClicked='nodeClicked' v-bind:key="index" v-bind:labelData="c"></tree-label>
+      </template>
+    </g>
+  </svg>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { Actions, Getters, Mutations } from '../Visualisation.store'
+import TreeNode from './TreeNode.vue'
+import TreeLink from './TreeLink.vue'
+import TreeLabel from './TreeLabel.vue'
+import * as d3 from 'd3'
+import { Circle, Position, ROOT_ID, ROOT_LABEL } from '../../models'
+import { createNodes, createLabel } from '../../utils/nodesUtils'
+
+export default Vue.extend({
+  name: 'TreeVisualisation',
+  components: {
+    TreeNode,
+    TreeLink,
+    TreeLabel
+  },
+  props: ['rightDataset', 'leftDataset', 'hierarchy', 'labels', 'activeView'],
+  data: () => ({
+    left: Position.Left,
+    right: Position.Right
+  }),
+  computed: {
+    ...mapGetters('visualisation', {
+      circles: Getters.GET_TREE_NODES,
+      links: Getters.GET_TREE_LINKS
+    })
+  },
+  created () {
+    window.addEventListener('resize', this.handleResize)
+  },
+  destroyed () {
+    window.removeEventListener('resize', this.handleResize)
+  },
+  mounted () {
+    this.resizeCanvas({
+      // @ts-ignore
+      height: this.$refs.svg.clientHeight,
+      // @ts-ignore
+      width: this.$refs.svg.clientWidth
+    })
+
+    this.updateVisualisation()
+
+    const g = d3.selectAll('g')
+
+    /* eslint-disable no-undef */
+    // @ts-ignore
+    const svg = d3.select('#svg')
+      .call(d3.zoom().on('zoom', function () {
+        g.attr('transform', d3.event.transform)
+      }))
+    /* eslint-enable no-undef */
+    // 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')'
+  },
+  watch: {
+    hierarchy () {
+      this.initializeNodes()
+      this.updateVisualisation()
+    }
+  },
+  methods: {
+    ...mapActions('visualisation', {
+      resizeCanvas: Actions.RESIZE_CANVAS,
+      appendNode: Actions.APPEND_NODE_TREE,
+      cutChildren: Actions.CUT_NODE_TREE_CHILDREN,
+      createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
+      initPathNodes: Actions.INIT_PATH_NODES,
+      updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
+    }),
+    ...mapMutations('visualisation', {
+      changeRootId: Mutations.CHANGE_ROOT_ID,
+      changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
+      changeNodes: Mutations.CHANGE_NODES,
+      changeVisitedNodes: Mutations.CHANGE_VISITED_NODES,
+      changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
+      changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
+      changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
+    }),
+    updateVisualisation: function () {
+      this.createHierarchyForTree()
+      this.updateTreeCanvas()
+    },
+    initializeNodes: function () {
+      this.changeRootId(ROOT_ID)
+      this.changeActivePath(undefined)
+      this.changeNodes(createNodes(this.hierarchy, this.labels))
+      this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
+      this.initPathNodes()
+    },
+    handleResize () {
+      this.resizeCanvas({
+        // @ts-ignore
+        height: this.$refs.svg.clientHeight,
+        // @ts-ignore
+        width: this.$refs.svg.clientWidth
+      })
+      this.updateTreeCanvas()
+    },
+    nodeClicked (item: Circle) {
+      if (item.isLeaf) {
+        this.appendNode(item)
+      } else {
+        this.cutChildren(item)
+      }
+    }
+  }
+})
+</script>
+
+<style>
+.circle {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.tree-labels {
+  cursor: pointer;
+  text-anchor: middle;
+  pointer-events: none;
+}
+</style>
