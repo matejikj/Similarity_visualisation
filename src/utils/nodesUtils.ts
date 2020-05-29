@@ -30,8 +30,12 @@ export function addMappingItemToArray (array: Array<ComboboxItem>, item, index: 
 }
 
 export function getNodeLabel (labels: Array<Label>, nodeId: string) {
-  const result = labels !== undefined ? labels[nodeId] : nodeId
-  return result
+  if (labels !== undefined) {
+    if (labels[nodeId] !== undefined) {
+      return labels[nodeId]
+    }
+  }
+  return nodeId
 }
 
 function createNode (labels: Array<Label>, nodeId: string): Node {

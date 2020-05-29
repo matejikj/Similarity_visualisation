@@ -1,6 +1,6 @@
 import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, MappingNode, Label, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '../models'
 import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping } from '../utils/hierarchyUtils'
-import { packNodes, packTreeHierarchy, getNodeByKey, createLabel } from '../utils/nodesUtils'
+import { packNodes, packTreeHierarchy, getNodeByKey, createLabel, getNodeLabel } from '../utils/nodesUtils'
 import { highlightPaths, createPathNodes } from '../utils/pathUtils'
 
 export const STORE_NAME = 'Visualisation'
@@ -257,24 +257,14 @@ function selectPath (context, labels) {
   const activePath: Path = context.getters[Getters.GET_ACTIVE_PATH]
   // const nodes: Array<Node> = context.getters[Getters.GET_NODES]
   const rootId = activePath.vertices[activePath.up]
-  let leftLabel = labels[activePath.vertices[0]]
-  if (leftLabel.label === undefined) {
-    leftLabel = activePath.vertices[0]
-  } else {
-    leftLabel = leftLabel.label
-  }
+  const leftLabel = getNodeLabel(labels, activePath.vertices[0])
   const leftMapping: MappingNode = {
     id: 0,
     name: leftLabel
   }
   leftMapping.nodeID = activePath.vertices[0]
   leftMapping.mapBy = leftLabel
-  let rightLabel = labels[activePath.vertices[activePath.vertices.length - 1]]
-  if (rightLabel.label === undefined) {
-    rightLabel = activePath.vertices[activePath.vertices.length - 1]
-  } else {
-    rightLabel = rightLabel.label
-  }
+  const rightLabel = getNodeLabel(labels, activePath.vertices[activePath.vertices.length - 1])
   const rightMapping: MappingNode = {
     id: 0,
     name: rightLabel
@@ -384,14 +374,14 @@ function addNodeToVisitedNodes (context, { labels, leaf }) {
   const array = Array<Label>()
   array.push({
     id: leaf.id,
-    label: labels[leaf.id]
+    label: getNodeLabel(labels, leaf.id)
   })
   let parent = leaf.parent
   while (parent !== null) {
     if (parent.data.id !== ROOT_ID && parent.parent != null) {
       array.push({
         id: parent.data.id,
-        label: labels[parent.data.id]
+        label: getNodeLabel(labels, parent.data.id)
       })
     }
     parent = parent.parent
