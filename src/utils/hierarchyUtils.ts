@@ -290,6 +290,9 @@ function createMappingNodeWithMap (id: number, name: string, mapBy: string, node
 }
 
 function existLabel (labels: Array<Label>, id: string) {
+  if (labels === undefined) {
+    return false
+  }
   if (labels[id] !== undefined) {
     return true
   } else {

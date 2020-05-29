@@ -20,13 +20,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { Actions, Getters, Mutations } from '../Visualisation.store'
+import * as d3 from 'd3'
 import TreeNode from './TreeNode.vue'
 import TreeLink from './TreeLink.vue'
 import TreeLabel from './TreeLabel.vue'
-import * as d3 from 'd3'
-import { Circle, Position, ROOT_ID, ROOT_LABEL } from '../../models'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { Actions, Getters, Mutations } from '../Visualisation.store'
+import { Circle, Position, ROOT_ID, ROOT_LABEL, Label } from '../../models'
 import { createNodes, createLabel } from '../../utils/nodesUtils'
 
 export default Vue.extend({
@@ -36,7 +36,7 @@ export default Vue.extend({
     TreeLink,
     TreeLabel
   },
-  props: ['rightDataset', 'leftDataset', 'hierarchy', 'labels', 'activeView'],
+  props: ['rightDataset', 'leftDataset', 'activeView'],
   data: () => ({
     left: Position.Left,
     right: Position.Right
@@ -44,7 +44,9 @@ export default Vue.extend({
   computed: {
     ...mapGetters('visualisation', {
       circles: Getters.GET_TREE_NODES,
-      links: Getters.GET_TREE_LINKS
+      links: Getters.GET_TREE_LINKS,
+      labels: Getters.GET_LABELS,
+      hierarchy: Getters.GET_HIERARCHY
     })
   },
   created () {
@@ -75,7 +77,11 @@ export default Vue.extend({
     // 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')'
   },
   watch: {
-    hierarchy () {
+    rightDataset () {
+      this.initializeNodes()
+      this.updateVisualisation()
+    },
+    leftDataset () {
       this.initializeNodes()
       this.updateVisualisation()
     }
@@ -97,7 +103,9 @@ export default Vue.extend({
       changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
       changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
-      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING,
+      changeHierarchy: Mutations.CHANGE_HIERARCHY,
+      changeLabels: Mutations.CHANGE_LABELS
     }),
     updateVisualisation: function () {
       this.createHierarchyForTree()
@@ -106,6 +114,22 @@ export default Vue.extend({
     initializeNodes: function () {
       this.changeRootId(ROOT_ID)
       this.changeActivePath(undefined)
+      let hierarchyArray = []
+      if (this.leftDataset !== undefined) {
+        hierarchyArray = hierarchyArray.concat(this.leftDataset.hierarchy)
+      }
+      if (this.rightDataset !== undefined) {
+        hierarchyArray = hierarchyArray.concat(this.rightDataset.hierarchy)
+      }
+      let labelsArray = {}
+      if (this.leftDataset !== undefined) {
+        labelsArray = { ...labelsArray, ...this.leftDataset.labels }
+      }
+      if (this.rightDataset !== undefined) {
+        labelsArray = { ...labelsArray, ...this.rightDataset.labels }
+      }
+      this.changeHierarchy(hierarchyArray)
+      this.changeLabels(labelsArray)
       this.changeNodes(createNodes(this.hierarchy, this.labels))
       this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
       this.initPathNodes()

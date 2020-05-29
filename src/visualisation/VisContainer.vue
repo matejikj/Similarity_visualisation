@@ -14,15 +14,11 @@
         <circle-visualisation
           v-bind:leftDataset="leftDataset"
           v-bind:rightDataset="rightDataset"
-          v-bind:hierarchy="hierarchy"
-          v-bind:labels="labels"
           v-if="activeView === 1"
         ></circle-visualisation>
         <tree-visualisation
           v-bind:leftDataset="leftDataset"
           v-bind:rightDataset="rightDataset"
-          v-bind:hierarchy="hierarchy"
-          v-bind:labels="labels"
           v-if="activeView === 2"
         ></tree-visualisation>
       </v-col>
@@ -41,9 +37,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { Position, MappingNode } from '../models'
-import { Actions, Mutations } from './Visualisation.store'
+import { Actions, Mutations, Getters } from './Visualisation.store'
 import { addMappingItemToArray } from '../utils/nodesUtils'
 import { createMapping } from '../utils/hierarchyUtils'
 import SideBar from './SideBar.vue'
@@ -57,20 +53,30 @@ export default Vue.extend({
     CircleVisualisation,
     TreeVisualisation
   },
-  props: ['rightDataset', 'leftDataset', 'hierarchy', 'labels', 'activeView'],
+  props: ['rightDataset', 'leftDataset', 'activeView'],
   data: () => ({
     left: Position.Left,
     right: Position.Right,
     leftMappingTree: Array<MappingNode>(),
     rightMappingTree: Array<MappingNode>()
   }),
+  computed: {
+    ...mapGetters('visualisation', {
+      labels: Getters.GET_LABELS
+    })
+  },
+  mounted () {
+    this.createLabelsAndHierarchy()
+  },
   watch: {
     leftDataset () {
+      this.createLabelsAndHierarchy()
       const position = Position.Left
       const dataset = this.leftDataset
       this.updateMappingsCombobox(dataset, position)
     },
     rightDataset () {
+      this.createLabelsAndHierarchy()
       const position = Position.Right
       const dataset = this.rightDataset
       this.updateMappingsCombobox(dataset, position)
@@ -87,7 +93,9 @@ export default Vue.extend({
       changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
       changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
-      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING,
+      changeHierarchy: Mutations.CHANGE_HIERARCHY,
+      changeLabels: Mutations.CHANGE_LABELS
     }),
     updateVisualisation: function () {
       if (this.activeView === 1) {
@@ -96,6 +104,24 @@ export default Vue.extend({
       if (this.activeView === 2) {
         this.updateTreeCanvas()
       }
+    },
+    createLabelsAndHierarchy: function () {
+      let hierarchyArray = []
+      if (this.leftDataset !== undefined) {
+        hierarchyArray = hierarchyArray.concat(this.leftDataset.hierarchy)
+      }
+      if (this.rightDataset !== undefined) {
+        hierarchyArray = hierarchyArray.concat(this.rightDataset.hierarchy)
+      }
+      let labelsArray = {}
+      if (this.leftDataset !== undefined) {
+        labelsArray = { ...labelsArray, ...this.leftDataset.labels }
+      }
+      if (this.rightDataset !== undefined) {
+        labelsArray = { ...labelsArray, ...this.rightDataset.labels }
+      }
+      this.changeHierarchy(hierarchyArray)
+      this.changeLabels(labelsArray)
     },
     mappingChoosed: function (position, id) {
       switch (position) {

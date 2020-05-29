@@ -45,13 +45,14 @@ export default Vue.extend({
     HistoryBar,
     PathBar
   },
-  props: ['rightDataset', 'leftDataset', 'pathsDataset', 'hierarchy', 'labels', 'activeView'],
+  props: ['rightDataset', 'leftDataset', 'pathsDataset', 'activeView'],
   data: () => ({
     paths: undefined
   }),
   computed: {
     ...mapGetters('visualisation', {
-      nodes: Getters.GET_NODES
+      nodes: Getters.GET_NODES,
+      labels: Getters.GET_LABELS
     })
   },
   watch: {
@@ -84,21 +85,6 @@ export default Vue.extend({
       this.pathsVisible = true
       this.paths = createPaths(this.nodes, this.pathsDataset, this.labels)
       this.changeActivePath(undefined)
-    },
-    pathsChanged: function (url) {
-      this.$emit('pathsDatasetChanged', url)
-      this.fab = false
-      this.pathsVisible = true
-    },
-    leftDatasetChanged: async function (url, collection) {
-      this.fab = false
-      this.leftDialogDisplay = false
-      this.$emit('leftDatasetChanged', url, collection)
-    },
-    rightDatasetChanged: async function (url, collection) {
-      this.fab = false
-      this.rightDialogDisplay = false
-      this.$emit('rightDatasetChanged', url, collection)
     },
     cancelClicked: function () {
       this.changeLeftMapping([])

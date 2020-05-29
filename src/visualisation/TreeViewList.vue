@@ -1,7 +1,6 @@
 <template>
   <v-treeview
     v-model="selectedItems"
-    class="overflow-y-auto"
     :items="items"
     selectable
     @input="selectedChanged"

@@ -39,7 +39,9 @@ export const Mutations = {
   CHANGE_TREE_HIERARCHY: 'CHANGE_TREE_HIERARCHY',
   CHANGE_TREE_NODES: 'CHANGE_TREE_NODES',
   CHANGE_TREE_LINKS: 'CHANGE_TREE_LINKS',
-  CHANGE_TREE_HEIGHT: 'CHANGE_TREE_HEIGHT'
+  CHANGE_TREE_HEIGHT: 'CHANGE_TREE_HEIGHT',
+  CHANGE_HIERARCHY: 'CHANGE_HIERARCHY',
+  CHANGE_LABELS: 'CHANGE_LABELS'
 }
 
 export const Getters = {
@@ -62,7 +64,9 @@ export const Getters = {
   GET_PATH_NODES: 'GET_PATH_NODES',
   GET_TREE_HIERARCHY: 'GET_TREE_HIERARCHY',
   GET_TREE_NODES: 'GET_TREE_NODES',
-  GET_TREE_LINKS: 'GET_TREE_LINKS'
+  GET_TREE_LINKS: 'GET_TREE_LINKS',
+  GET_HIERARCHY: 'GET_HIERARCHY',
+  GET_LABELS: 'GET_LABELS'
 }
 
 export default {
@@ -79,6 +83,8 @@ export default {
     leftArrows: Array<Arrow>(),
     rightArrows: Array<Arrow>(),
     rootId: ROOT_ID,
+    hierarchy: [],
+    labels: {},
     circleHierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, 0, undefined, undefined),
     treeHierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, 0, undefined, undefined),
     treeNodes: Array<Circle>(),
@@ -150,6 +156,12 @@ export default {
     },
     [Getters.GET_TREE_LINKS]: (state) => {
       return state.treeLinks
+    },
+    [Getters.GET_LABELS]: (state) => {
+      return state.labels
+    },
+    [Getters.GET_HIERARCHY]: (state) => {
+      return state.hierarchy
     }
   },
   mutations: {
@@ -213,6 +225,12 @@ export default {
     },
     [Mutations.CHANGE_TREE_LINKS] (state, value: Array<Arrow>) {
       state.treeLinks = value
+    },
+    [Mutations.CHANGE_LABELS] (state, value: {}) {
+      state.labels = value
+    },
+    [Mutations.CHANGE_HIERARCHY] (state, value: []) {
+      state.hierarchy = value
     }
   },
   actions: {
@@ -339,7 +357,6 @@ function createCircles (context): Array<Circle> {
 }
 
 function updateCircleCanvas (context) {
-  console.log('UPDATE_CIRCLE')
   context.commit(Mutations.CHANGE_CIRCLES, createCircles(context))
   context.commit(Mutations.CHANGE_LEFT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
     context.state.circles, createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes), Position.Left))
@@ -351,7 +368,6 @@ function updateCircleCanvas (context) {
 }
 
 function updateTreeCanvas (context) {
-  console.log('UPDATE_TERE')
   const result = packTreeHierarchy(context.state.treeHierarchy, context.state.window.width, context.state.treeHeight)
   context.commit(Mutations.CHANGE_TREE_NODES, result.circles)
   context.commit(Mutations.CHANGE_TREE_LINKS, result.links)

@@ -33,10 +33,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import * as d3 from 'd3'
 import CircleNode from './CircleNode.vue'
 import CircleLabel from './CircleLabel.vue'
 import CircleLink from './CircleLink.vue'
-import * as d3 from 'd3'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ROOT_ID, ROOT_LABEL, Position } from '../../models'
 import { Getters, Actions, Mutations } from '../Visualisation.store'
@@ -49,7 +49,7 @@ export default Vue.extend({
     CircleLabel,
     CircleLink
   },
-  props: ['rightDataset', 'leftDataset', 'hierarchy', 'labels'],
+  props: ['rightDataset', 'leftDataset'],
   data: () => ({
     left: Position.Left,
     right: Position.Right
@@ -58,7 +58,9 @@ export default Vue.extend({
     ...mapGetters('visualisation', {
       circles: Getters.GET_CIRCLES,
       leftArrows: Getters.GET_LEFT_ARROWS,
-      rightArrows: Getters.GET_RIGHT_ARROWS
+      rightArrows: Getters.GET_RIGHT_ARROWS,
+      labels: Getters.GET_LABELS,
+      hierarchy: Getters.GET_HIERARCHY
     })
   },
   created () {
@@ -88,7 +90,11 @@ export default Vue.extend({
     /* eslint-enable no-undef */
   },
   watch: {
-    hierarchy () {
+    rightDataset () {
+      this.initializeNodes()
+      this.updateVisualisation()
+    },
+    leftDataset () {
       this.initializeNodes()
       this.updateVisualisation()
     }
