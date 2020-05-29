@@ -14,11 +14,12 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import TreeViewList from './TreeViewList.vue'
-import { ComboboxItem } from '../models/ComboboxItem'
-import { Position } from '../models/Position'
-import { MappingNode } from '../models/MappingNode'
-import store from '../app/store'
+import TreeViewList from '../Layout/TreeViewList.vue'
+import { ComboboxItem } from '../../models/ComboboxItem'
+import { Position } from '../../models/Position'
+import { MappingNode } from '../../models/MappingNode'
+import { STORE_NAME, Getters } from '../Visualisation.store'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default Vue.extend({
   name: 'SideBar',
@@ -30,11 +31,15 @@ export default Vue.extend({
     error: Error()
   }),
   computed: {
+    ...mapGetters(STORE_NAME, {
+      leftList: Getters.GET_LEFT_MAPPING_LIST,
+      rightList: Getters.GET_RIGHT_MAPPING_LIST
+    }),
     selectList: function () {
       if (this.$props.sidebarPosition === Position.Left) {
-        return store.getters['visualisation/GET_LEFT_MAPPING_LIST']
+        return this.leftList
       } else {
-        return store.getters['visualisation/GET_RIGHT_MAPPING_LIST']
+        return this.rightList
       }
     }
   },

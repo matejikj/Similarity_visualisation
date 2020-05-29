@@ -29,14 +29,14 @@
 
 <script>
 import Vue from 'vue'
-import ValueSlider from '../../common-components/ValueSlider.vue'
-import HistoryBar from './HistoryBar.vue'
-import PathBar from './PathBar.vue'
-import { Actions, Mutations, Getters } from '../Visualisation.store'
+import ValueSlider from './Layout/ValueSlider.vue'
+import HistoryBar from './Layout/HistoryBar.vue'
+import PathBar from './Layout/PathBar.vue'
+import { Actions, Mutations, Getters, STORE_NAME } from './Visualisation.store'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import { ROOT_LABEL, ROOT_ID } from '../../models'
-import { createLabel } from '../../utils/nodesUtils'
-import { createPaths } from '../../utils/pathUtils'
+import { ROOT_LABEL, ROOT_ID } from '../models'
+import { createLabel } from '../utils/nodesUtils'
+import { createPaths } from '../utils/pathUtils'
 
 export default Vue.extend({
   name: 'Layout',
@@ -50,7 +50,7 @@ export default Vue.extend({
     paths: undefined
   }),
   computed: {
-    ...mapGetters('visualisation', {
+    ...mapGetters(STORE_NAME, {
       nodes: Getters.GET_NODES,
       labels: Getters.GET_LABELS
     })
@@ -58,22 +58,34 @@ export default Vue.extend({
   watch: {
     pathsDataset () {
       this.updatePaths()
+    },
+    leftDataset () {
+      this.updatePaths()
+    },
+    rightDataset () {
+      this.updatePaths()
     }
   },
   mounted () {
+    if (this.leftDataset !== undefined) {
+      this.updatePaths()
+    }
+    if (this.rightDataset !== undefined) {
+      this.updatePaths()
+    }
     if (this.pathsDataset !== undefined) {
       this.updatePaths()
     }
   },
   methods: {
-    ...mapActions('visualisation', {
+    ...mapActions(STORE_NAME, {
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS,
       selectPath: Actions.SELECT_PATH
     }),
-    ...mapMutations('visualisation', {
+    ...mapMutations(STORE_NAME, {
       changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
       changeRootId: Mutations.CHANGE_ROOT_ID,
       changePathNodes: Mutations.CHANGE_PATH_NODES,

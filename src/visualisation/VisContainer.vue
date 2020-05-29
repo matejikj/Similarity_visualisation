@@ -39,10 +39,10 @@
 import Vue from 'vue'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { Position, MappingNode } from '../models'
-import { Actions, Mutations, Getters } from './Visualisation.store'
+import { Actions, Mutations, Getters, STORE_NAME } from './Visualisation.store'
 import { addMappingItemToArray } from '../utils/nodesUtils'
 import { createMapping } from '../utils/hierarchyUtils'
-import SideBar from './SideBar.vue'
+import SideBar from './Layout/SideBar.vue'
 import CircleVisualisation from './CircleVisualisation/CircleVisualisation.vue'
 import TreeVisualisation from './TreeVisualisation/TreeVisualisation.vue'
 
@@ -61,7 +61,7 @@ export default Vue.extend({
     rightMappingTree: Array<MappingNode>()
   }),
   computed: {
-    ...mapGetters('visualisation', {
+    ...mapGetters(STORE_NAME, {
       labels: Getters.GET_LABELS
     })
   },
@@ -83,13 +83,13 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...mapActions('visualisation', {
+    ...mapActions(STORE_NAME, {
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
     }),
-    ...mapMutations('visualisation', {
+    ...mapMutations(STORE_NAME, {
       changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
       changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,

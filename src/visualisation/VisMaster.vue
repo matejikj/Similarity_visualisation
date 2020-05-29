@@ -2,8 +2,6 @@
   <v-container>
     <v-row>
       <vis-container
-        height="60vh"
-        class="overflow-y-auto"
         v-bind:leftDataset="leftDataset"
         v-bind:rightDataset="rightDataset"
         v-bind:activeView="activeView"
@@ -31,7 +29,7 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import Layout from './Layout/Layout.vue'
+import Layout from './Layout.vue'
 import VisContainer from './VisContainer.vue'
 import axios from 'axios'
 import CustomMenu from './CustomMenu.vue'

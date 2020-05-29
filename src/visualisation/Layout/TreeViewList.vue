@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MappingNode } from '../models/MappingNode'
+import { MappingNode } from '../../models/MappingNode'
 
 export default Vue.extend({
   name: 'TreeViewList',
