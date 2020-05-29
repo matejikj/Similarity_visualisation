@@ -1,5 +1,5 @@
 import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_TREE_DEPTH } from '../models'
-import { getNodeById } from './nodesUtils'
+import { getNodeById, getNodeLabel } from './nodesUtils'
 
 export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
   const layerArray = Array<ArrowData>()
@@ -289,16 +289,6 @@ function createMappingNodeWithMap (id: number, name: string, mapBy: string, node
   return newNode
 }
 
-function existLabel (labels: {}, id: string) {
-  if (labels === undefined) {
-    return false
-  }
-  if (labels[id] !== undefined) {
-    return true
-  } else {
-    return false
-  }
-}
 // eslint-disable-next-line
 export function createMapping (labels: Array<Label>, mapping: any, mappingID: number) {
   const result = Array<MappingNode>()
@@ -308,12 +298,7 @@ export function createMapping (labels: Array<Label>, mapping: any, mappingID: nu
   })
   let counter = 1
   mappingDataArray.forEach(element => {
-    let name
-    if (existLabel(labels, element.id)) {
-      name = labels[element.id]
-    } else {
-      name = element.id
-    }
+    const name = getNodeLabel(labels, element.id)
     if (result.filter(x => x.name === element.group[0]).length === 0) {
       const newChildren = createMappingNodeWithMap(counter, name, element.group[0], element.id)
       counter++

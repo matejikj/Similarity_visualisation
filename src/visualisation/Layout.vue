@@ -94,8 +94,10 @@ export default Vue.extend({
       changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
     }),
     updatePaths: function () {
-      this.pathsVisible = true
-      this.paths = createPaths(this.nodes, this.pathsDataset, this.labels)
+      if (this.pathsDataset !== undefined) {
+        this.pathsVisible = true
+        this.paths = createPaths(this.nodes, this.pathsDataset, this.labels)
+      }
       this.changeActivePath(undefined)
     },
     cancelClicked: function () {
