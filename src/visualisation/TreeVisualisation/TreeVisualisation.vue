@@ -36,7 +36,7 @@ export default Vue.extend({
     TreeLink,
     TreeLabel
   },
-  props: ['rightDataset', 'leftDataset', 'activeView'],
+  props: ['rightDataset', 'leftDataset', 'hierarchy', 'labels'],
   data: () => ({
     left: Position.Left,
     right: Position.Right
@@ -44,9 +44,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters(STORE_NAME, {
       circles: Getters.GET_TREE_NODES,
-      links: Getters.GET_TREE_LINKS,
-      labels: Getters.GET_LABELS,
-      hierarchy: Getters.GET_HIERARCHY
+      links: Getters.GET_TREE_LINKS
     })
   },
   created () {
@@ -103,9 +101,7 @@ export default Vue.extend({
       changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
       changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
-      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING,
-      changeHierarchy: Mutations.CHANGE_HIERARCHY,
-      changeLabels: Mutations.CHANGE_LABELS
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
     }),
     updateVisualisation: function () {
       this.createHierarchyForTree()

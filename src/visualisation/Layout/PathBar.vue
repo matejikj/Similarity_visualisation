@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import { Getters, STORE_NAME } from '../Visualisation.store'
 
 export default Vue.extend({
@@ -59,20 +59,19 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters(STORE_NAME, {
-      pathNodes: Getters.GET_PATH_NODES
+      pathNodes: Getters.GET_PATH_NODES,
+      activePath: Getters.GET_ACTIVE_PATH
     }),
     select: {
       get () {
-        return this.$store.getters['visualisation/GET_ACTIVE_PATH']
+        return this.activePath
       },
       set (value) {
-        this.$store.commit('visualisation/CHANGE_ACTIVE_PATH', value)
+        this.$store.commit(STORE_NAME + '/CHANGE_ACTIVE_PATH', value)
       }
     }
   },
   methods: {
-    ...mapActions(STORE_NAME, {
-    }),
     pathUpdated: function () {
       this.$emit('pathUpdated')
     },

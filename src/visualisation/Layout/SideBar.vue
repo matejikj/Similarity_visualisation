@@ -18,6 +18,8 @@ import TreeViewList from '../Layout/TreeViewList.vue'
 import { ComboboxItem } from '../../models/ComboboxItem'
 import { Position } from '../../models/Position'
 import { MappingNode } from '../../models/MappingNode'
+import { mapGetters } from 'vuex'
+import { STORE_NAME, Getters } from '../Visualisation.store'
 
 export default Vue.extend({
   name: 'SideBar',
@@ -29,11 +31,15 @@ export default Vue.extend({
     error: Error()
   }),
   computed: {
+    ...mapGetters(STORE_NAME, {
+      leftList: Getters.GET_LEFT_MAPPING_LIST,
+      rightList: Getters.GET_RIGHT_MAPPING_LIST
+    }),
     selectList: function () {
       if (this.$props.sidebarPosition === Position.Left) {
-        return this.$store.getters['visualisation/GET_LEFT_MAPPING_LIST']
+        return this.leftList
       } else {
-        return this.$store.getters['visualisation/GET_RIGHT_MAPPING_LIST']
+        return this.rightList
       }
     }
   },

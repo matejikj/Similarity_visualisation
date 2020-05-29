@@ -49,7 +49,7 @@ export default Vue.extend({
     CircleLabel,
     CircleLink
   },
-  props: ['rightDataset', 'leftDataset'],
+  props: ['rightDataset', 'leftDataset', 'hierarchy', 'labels'],
   data: () => ({
     left: Position.Left,
     right: Position.Right
@@ -58,9 +58,7 @@ export default Vue.extend({
     ...mapGetters(STORE_NAME, {
       circles: Getters.GET_CIRCLES,
       leftArrows: Getters.GET_LEFT_ARROWS,
-      rightArrows: Getters.GET_RIGHT_ARROWS,
-      labels: Getters.GET_LABELS,
-      hierarchy: Getters.GET_HIERARCHY
+      rightArrows: Getters.GET_RIGHT_ARROWS
     })
   },
   created () {

@@ -4,14 +4,15 @@
       <vis-container
         v-bind:leftDataset="leftDataset"
         v-bind:rightDataset="rightDataset"
+        v-bind:hierarchy="hierarchy"
+        v-bind:labels="labels"
         v-bind:activeView="activeView"
       >
       </vis-container>
     </v-row>
       <layout
         v-bind:pathsDataset="paths"
-        v-bind:leftDataset="leftDataset"
-        v-bind:rightDataset="rightDataset"
+        v-bind:labels="labels"
         v-bind:activeView="activeView"
       >
     </layout>
@@ -42,6 +43,22 @@ export default Vue.extend({
     VisContainer
   },
   created () {
+    axios.get('hierarchy.json').then(
+      response => {
+        this.hierarchy = response.data.hierarchy
+      },
+      error => {
+        this.error = error
+      }
+    )
+    axios.get('labels.json').then(
+      response => {
+        this.labels = response.data.labels
+      },
+      error => {
+        this.error = error
+      }
+    )
     axios.get('dataset1.json').then(
       response => {
         this.leftDataset = response.data
@@ -72,6 +89,8 @@ export default Vue.extend({
     leftDataset: undefined,
     rightDataset: undefined,
     paths: undefined,
+    labels: undefined,
+    hierarchy: undefined,
     activeView: 1
   }),
   methods: {
