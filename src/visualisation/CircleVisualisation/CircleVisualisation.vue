@@ -39,7 +39,7 @@ import CircleLabel from './CircleLabel.vue'
 import CircleLink from './CircleLink.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ROOT_ID, ROOT_LABEL, Position } from '../../models'
-import { Getters, Actions, Mutations } from '../Visualisation.store'
+import { Getters, Actions, Mutations, STORE_NAME } from '../Visualisation.store'
 import { createNodes, createLabel } from '../../utils/nodesUtils'
 
 export default Vue.extend({
@@ -55,7 +55,7 @@ export default Vue.extend({
     right: Position.Right
   }),
   computed: {
-    ...mapGetters('visualisation', {
+    ...mapGetters(STORE_NAME, {
       circles: Getters.GET_CIRCLES,
       leftArrows: Getters.GET_LEFT_ARROWS,
       rightArrows: Getters.GET_RIGHT_ARROWS,
@@ -83,7 +83,7 @@ export default Vue.extend({
 
     /* eslint-disable no-undef */
     // @ts-ignore
-    const svg = d3.select('#svg')
+    d3.select('#svg')
       .call(d3.zoom().on('zoom', function () {
         g.attr('transform', d3.event.transform)
       }))
@@ -100,14 +100,14 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...mapActions('visualisation', {
+    ...mapActions(STORE_NAME, {
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS,
       resizeCanvas: Actions.RESIZE_CANVAS,
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       initPathNodes: Actions.INIT_PATH_NODES,
       addNodeToVisitedNodes: Actions.ADD_NODE_TO_VISITED_NODES
     }),
-    ...mapMutations('visualisation', {
+    ...mapMutations(STORE_NAME, {
       changeRootId: Mutations.CHANGE_ROOT_ID,
       changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
       changeNodes: Mutations.CHANGE_NODES,

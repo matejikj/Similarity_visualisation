@@ -25,8 +25,8 @@ import TreeNode from './TreeNode.vue'
 import TreeLink from './TreeLink.vue'
 import TreeLabel from './TreeLabel.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { Actions, Getters, Mutations } from '../Visualisation.store'
-import { Circle, Position, ROOT_ID, ROOT_LABEL, Label } from '../../models'
+import { Actions, Getters, Mutations, STORE_NAME } from '../Visualisation.store'
+import { Circle, Position, ROOT_ID, ROOT_LABEL } from '../../models'
 import { createNodes, createLabel } from '../../utils/nodesUtils'
 
 export default Vue.extend({
@@ -42,7 +42,7 @@ export default Vue.extend({
     right: Position.Right
   }),
   computed: {
-    ...mapGetters('visualisation', {
+    ...mapGetters(STORE_NAME, {
       circles: Getters.GET_TREE_NODES,
       links: Getters.GET_TREE_LINKS,
       labels: Getters.GET_LABELS,
@@ -69,7 +69,7 @@ export default Vue.extend({
 
     /* eslint-disable no-undef */
     // @ts-ignore
-    const svg = d3.select('#svg')
+    d3.select('#svg')
       .call(d3.zoom().on('zoom', function () {
         g.attr('transform', d3.event.transform)
       }))
@@ -87,7 +87,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...mapActions('visualisation', {
+    ...mapActions(STORE_NAME, {
       resizeCanvas: Actions.RESIZE_CANVAS,
       appendNode: Actions.APPEND_NODE_TREE,
       cutChildren: Actions.CUT_NODE_TREE_CHILDREN,
@@ -95,7 +95,7 @@ export default Vue.extend({
       initPathNodes: Actions.INIT_PATH_NODES,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
     }),
-    ...mapMutations('visualisation', {
+    ...mapMutations(STORE_NAME, {
       changeRootId: Mutations.CHANGE_ROOT_ID,
       changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
       changeNodes: Mutations.CHANGE_NODES,
@@ -114,22 +114,6 @@ export default Vue.extend({
     initializeNodes: function () {
       this.changeRootId(ROOT_ID)
       this.changeActivePath(undefined)
-      let hierarchyArray = []
-      if (this.leftDataset !== undefined) {
-        hierarchyArray = hierarchyArray.concat(this.leftDataset.hierarchy)
-      }
-      if (this.rightDataset !== undefined) {
-        hierarchyArray = hierarchyArray.concat(this.rightDataset.hierarchy)
-      }
-      let labelsArray = {}
-      if (this.leftDataset !== undefined) {
-        labelsArray = { ...labelsArray, ...this.leftDataset.labels }
-      }
-      if (this.rightDataset !== undefined) {
-        labelsArray = { ...labelsArray, ...this.rightDataset.labels }
-      }
-      this.changeHierarchy(hierarchyArray)
-      this.changeLabels(labelsArray)
       this.changeNodes(createNodes(this.hierarchy, this.labels))
       this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
       this.initPathNodes()

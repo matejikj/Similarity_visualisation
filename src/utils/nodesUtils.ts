@@ -16,7 +16,7 @@ export function createLabel (id: string, label: string) {
   }
 }
 
-export function mapLinks (links: any) {
+export function mapLinks (links) {
   const result: Array<Link> = links.map(item => ({
     parent: item[2],
     child: item[0]
@@ -25,7 +25,7 @@ export function mapLinks (links: any) {
 }
 
 // eslint-disable-next-line
-export function addMappingItemToArray (array: Array<ComboboxItem>, item: any, index: number) {
+export function addMappingItemToArray (array: Array<ComboboxItem>, item, index: number) {
   array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
 }
 
@@ -157,7 +157,7 @@ export function packTreeHierarchy (root: Node, width: number, height: number) {
   // const treemap = d3.tree().size([height, width])
   const treemap = d3.tree().size([d3.max(levelWidth) * 45, height * 200])
 
-  const hierarchyRoot: any = d3.hierarchy(root, function (d) {
+  const hierarchyRoot = d3.hierarchy(root, function (d) {
     return d.children
   })
   hierarchyRoot.x0 = 0

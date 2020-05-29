@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Getters, Actions } from '../Visualisation.store'
+import { Getters, Actions, STORE_NAME } from '../Visualisation.store'
 import { mapGetters, mapActions } from 'vuex'
 import { Label } from '../../models'
 
@@ -33,12 +33,12 @@ export default Vue.extend({
   data: () => ({
   }),
   computed: {
-    ...mapGetters('visualisation', {
+    ...mapGetters(STORE_NAME, {
       visitedNodes: Getters.GET_VISITED_NODES
     })
   },
   methods: {
-    ...mapActions('visualisation', {
+    ...mapActions(STORE_NAME, {
       updatePath: Actions.UPDATE_PATH
     }),
     click: function (data: Label) {

@@ -14,11 +14,10 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import TreeViewList from './TreeViewList.vue'
-import { ComboboxItem } from '../models/ComboboxItem'
-import { Position } from '../models/Position'
-import { MappingNode } from '../models/MappingNode'
-import store from '../app/store'
+import TreeViewList from '../Layout/TreeViewList.vue'
+import { ComboboxItem } from '../../models/ComboboxItem'
+import { Position } from '../../models/Position'
+import { MappingNode } from '../../models/MappingNode'
 
 export default Vue.extend({
   name: 'SideBar',
@@ -32,9 +31,9 @@ export default Vue.extend({
   computed: {
     selectList: function () {
       if (this.$props.sidebarPosition === Position.Left) {
-        return store.getters['visualisation/GET_LEFT_MAPPING_LIST']
+        return this.$store.getters['visualisation/GET_LEFT_MAPPING_LIST']
       } else {
-        return store.getters['visualisation/GET_RIGHT_MAPPING_LIST']
+        return this.$store.getters['visualisation/GET_RIGHT_MAPPING_LIST']
       }
     }
   },

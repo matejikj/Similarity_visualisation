@@ -47,8 +47,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
-import { Getters, Actions } from '../Visualisation.store'
-import store from '../../app/store'
+import { Getters, STORE_NAME } from '../Visualisation.store'
 
 export default Vue.extend({
   name: 'PathBar',
@@ -59,20 +58,20 @@ export default Vue.extend({
     paths: {}
   },
   computed: {
-    ...mapGetters('visualisation', {
+    ...mapGetters(STORE_NAME, {
       pathNodes: Getters.GET_PATH_NODES
     }),
     select: {
       get () {
-        return store.getters['visualisation/GET_ACTIVE_PATH']
+        return this.$store.getters['visualisation/GET_ACTIVE_PATH']
       },
       set (value) {
-        store.commit('visualisation/CHANGE_ACTIVE_PATH', value)
+        this.$store.commit('visualisation/CHANGE_ACTIVE_PATH', value)
       }
     }
   },
   methods: {
-    ...mapActions('visualisation', {
+    ...mapActions(STORE_NAME, {
     }),
     pathUpdated: function () {
       this.$emit('pathUpdated')

@@ -289,7 +289,7 @@ function createMappingNodeWithMap (id: number, name: string, mapBy: string, node
   return newNode
 }
 
-function existLabel (labels: Array<Label>, id: string) {
+function existLabel (labels: {}, id: string) {
   if (labels === undefined) {
     return false
   }

@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { Mutations, Actions, Getters } from '../visualisation/Visualisation.store'
+import { Mutations, Actions, Getters, STORE_NAME } from '../Visualisation.store'
 
 export default Vue.extend({
   name: 'ValueSlider',
@@ -27,16 +27,16 @@ export default Vue.extend({
     color: '#009DFF'
   }),
   computed: {
-    ...mapGetters('visualisation', {
+    ...mapGetters(STORE_NAME, {
       maximum: Getters.GET_MAX_DEPTH,
       depth: Getters.GET_DEPTH
     })
   },
   methods: {
-    ...mapMutations('visualisation', {
+    ...mapMutations(STORE_NAME, {
       changeDepth: Mutations.CHANGE_DEPTH
     }),
-    ...mapActions('visualisation', {
+    ...mapActions(STORE_NAME, {
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS
     }),
