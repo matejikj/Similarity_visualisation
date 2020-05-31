@@ -38,9 +38,10 @@ import CircleNode from './CircleNode.vue'
 import CircleLabel from './CircleLabel.vue'
 import CircleLink from './CircleLink.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { ROOT_ID, ROOT_LABEL, Position } from '../../models'
+import { ROOT_ID, ROOT_LABEL, Position, Circle } from '../../models'
 import { Getters, Actions, Mutations, STORE_NAME } from '../Visualisation.store'
 import { createNodes, createLabel } from '../../utils/nodesUtils'
+import { createLabels, createHierarchy } from '../../utils/hierarchyUtils'
 
 export default Vue.extend({
   name: 'CircleVisualisation',
@@ -49,7 +50,7 @@ export default Vue.extend({
     CircleLabel,
     CircleLink
   },
-  props: ['rightDataset', 'leftDataset'],
+  props: ['rightDataset', 'leftDataset', 'labels'],
   data: () => ({
     left: Position.Left,
     right: Position.Right
@@ -59,8 +60,8 @@ export default Vue.extend({
       circles: Getters.GET_CIRCLES,
       leftArrows: Getters.GET_LEFT_ARROWS,
       rightArrows: Getters.GET_RIGHT_ARROWS,
-      labels: Getters.GET_LABELS,
-      hierarchy: Getters.GET_HIERARCHY
+      hierarchy: Getters.GET_HIERARCHY,
+      nodes: Getters.GET_NODES
     })
   },
   created () {
@@ -70,20 +71,21 @@ export default Vue.extend({
     window.removeEventListener('resize', this.handleResize)
   },
   mounted () {
+    if (this.rightDataset !== undefined || this.leftDataset !== undefined) {
+      this.initNodes()
+    }
     this.resizeCanvas({
       // @ts-ignore
       height: this.$refs.svg.clientHeight,
       // @ts-ignore
       width: this.$refs.svg.clientWidth
     })
-
     this.updateVisualisation()
-
     const g = d3.selectAll('g')
-
     /* eslint-disable no-undef */
     // @ts-ignore
     d3.select('#svg')
+      // @ts-ignore
       .call(d3.zoom().on('zoom', function () {
         g.attr('transform', d3.event.transform)
       }))
@@ -91,11 +93,9 @@ export default Vue.extend({
   },
   watch: {
     rightDataset () {
-      this.initializeNodes()
       this.updateVisualisation()
     },
     leftDataset () {
-      this.initializeNodes()
       this.updateVisualisation()
     }
   },
@@ -108,14 +108,10 @@ export default Vue.extend({
       addNodeToVisitedNodes: Actions.ADD_NODE_TO_VISITED_NODES
     }),
     ...mapMutations(STORE_NAME, {
-      changeRootId: Mutations.CHANGE_ROOT_ID,
-      changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
-      changeNodes: Mutations.CHANGE_NODES,
-      changeVisitedNodes: Mutations.CHANGE_VISITED_NODES,
-      changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
-      changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
-      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING,
+      changeNodes: Mutations.CHANGE_NODES,
+      changeHierarchy: Mutations.CHANGE_HIERARCHY
     }),
     updateVisualisation: function () {
       this.createHierarchyForCircles()
@@ -130,18 +126,15 @@ export default Vue.extend({
       })
       this.updateCircleCanvas()
     },
-    initializeNodes: function () {
-      this.changeRootId(ROOT_ID)
-      this.changeActivePath(undefined)
-      this.changeNodes(createNodes(this.hierarchy, this.labels))
-      this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
-      this.initPathNodes()
-    },
-    circleClicked: function (leaf) {
+    circleClicked: function (leaf: Circle) {
       const labels = this.labels
       this.addNodeToVisitedNodes({ labels, leaf })
       this.createHierarchyForCircles()
       this.updateCircleCanvas()
+    },
+    initNodes: function () {
+      this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
+      this.changeNodes(createNodes(this.hierarchy, this.labels))
     }
   }
 })

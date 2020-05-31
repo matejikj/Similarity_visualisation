@@ -1,6 +1,28 @@
 import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_TREE_DEPTH } from '../models'
 import { getNodeById, getNodeLabel } from './nodesUtils'
 
+export function createHierarchy (leftDataset: any, rightDataset: any) {
+  let hierarchyArray: any = []
+  if (leftDataset !== undefined) {
+    hierarchyArray = hierarchyArray.concat(leftDataset.hierarchy)
+  }
+  if (rightDataset !== undefined) {
+    hierarchyArray = hierarchyArray.concat(rightDataset.hierarchy)
+  }
+  return hierarchyArray
+}
+
+export function createLabels (leftDataset: any, rightDataset: any) {
+  let labelsArray = {}
+  if (leftDataset !== undefined) {
+    labelsArray = { ...labelsArray, ...leftDataset.labels }
+  }
+  if (rightDataset !== undefined) {
+    labelsArray = { ...labelsArray, ...rightDataset.labels }
+  }
+  return labelsArray
+}
+
 export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
   const layerArray = Array<ArrowData>()
   for (let i = 0; i < urls.length; i++) {
@@ -293,7 +315,7 @@ function createMappingNodeWithMap (id: number, name: string, mapBy: string, node
 export function createMapping (labels: Array<Label>, mapping: any, mappingID: number) {
   const result = Array<MappingNode>()
   const mappingDataArray = Array<MappingData>()
-  mapping.mappings[mappingID].data.forEach(item => {
+  mapping.mappings[mappingID].data.forEach((item: any) => {
     mappingDataArray.push(createMappingData(item.id, item.metadata.group, item.metadata.size, item.metadata.shared))
   })
   let counter = 1

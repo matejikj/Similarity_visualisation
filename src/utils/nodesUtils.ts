@@ -16,8 +16,8 @@ export function createLabel (id: string, label: string) {
   }
 }
 
-export function mapLinks (links) {
-  const result: Array<Link> = links.map(item => ({
+export function mapLinks (links: any) {
+  const result: Array<Link> = links.map((item: any) => ({
     parent: item[2],
     child: item[0]
   }))
@@ -25,11 +25,11 @@ export function mapLinks (links) {
 }
 
 // eslint-disable-next-line
-export function addMappingItemToArray (array: Array<ComboboxItem>, item, index: number) {
+export function addMappingItemToArray (array: Array<ComboboxItem>, item: any, index: number) {
   array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
 }
 
-export function getNodeLabel (labels: Array<Label>, nodeId: string) {
+export function getNodeLabel (labels: any, nodeId: string) {
   if (labels !== undefined) {
     if (labels[nodeId] !== undefined) {
       return labels[nodeId]
@@ -68,7 +68,7 @@ export function getNodeByKey (nodes: Array<Node>, key: number) {
   return nodes.filter(x => x.key === key)[0]
 }
 
-export function createNodes (hierarchy, labels: Array<Label>) {
+export function createNodes (hierarchy: any, labels: any) {
   const links: Array<Link> = mapLinks(hierarchy)
   const result = new Array<Node>()
   const visitedNodes = new Array<string>()
@@ -94,7 +94,7 @@ export function createNodes (hierarchy, labels: Array<Label>) {
   })
 
   const NodesWithNoParent = result.filter(x => x.parents.length === 0)
-  let root
+  let root: Node
   if (!containsNode(result, ROOT_ID)) {
     root = createNode(labels, ROOT_ID)
   } else {
@@ -116,13 +116,13 @@ export function packNodes (height: number, width: number, root: Node, maxDepth: 
   packChart.size([width - margin, height - margin])
   packChart.padding(7)
   const treeRoot = d3.hierarchy(root)
-    .sum(d => Math.sqrt(d.value))
+    .sum((d: any) => Math.sqrt(d.value))
 
-  const output = packChart(treeRoot).descendants()
-  const interpolate = d3.scaleSequential([1, 0], d3.interpolateCool)
+  const output: any = packChart(treeRoot).descendants()
+  const interpolate = function (i: number) { return d3.interpolateCool(i) }
 
   for (let i = 0; i < output.length; i++) {
-    const color = interpolate(output[i].data.depth / maxDepth)
+    const color: any = interpolate(output[i].data.depth / maxDepth)
     const n: Circle = {
       key: output[i].data.key,
       fill: color,
@@ -145,13 +145,13 @@ export function packTreeHierarchy (root: Node, width: number, height: number) {
   const links = Array<Arrow>()
 
   const levelWidth = [1]
-  const childCount = function (level, n) {
+  const childCount = function (level: any, n: any) {
     if (n.children && n.children.length > 0) {
       if (levelWidth.length <= level + 1) {
         levelWidth.push(0)
       }
       levelWidth[level + 1] += n.children.length
-      n.children.forEach(function (d) {
+      n.children.forEach(function (d: any) {
         childCount(level + 1, d)
       })
     }
@@ -159,19 +159,20 @@ export function packTreeHierarchy (root: Node, width: number, height: number) {
   childCount(0, root)
 
   // const treemap = d3.tree().size([height, width])
-  const treemap = d3.tree().size([d3.max(levelWidth) * 45, height * 200])
+  const max: any = d3.max(levelWidth)
+  const treemap = d3.tree().size([max * 45, height * 200])
 
-  const hierarchyRoot = d3.hierarchy(root, function (d) {
+  const hierarchyRoot: any = d3.hierarchy(root, function (d: any) {
     return d.children
   })
   hierarchyRoot.x0 = 0
   hierarchyRoot.y0 = width / 2
 
   const radius = TREE_CIRCLE_RADIUS
-  const interpolate = d3.scaleSequential([1, 0], d3.interpolateCool)
+  const interpolate = function (i: number) { return d3.interpolateCool(i) }
 
   const treeData = treemap(hierarchyRoot)
-  treeData.descendants().forEach(element => {
+  treeData.descendants().forEach((element: any) => {
     const color = interpolate(element.data.depth / height)
     const n: Circle = {
       key: element.data.key,
@@ -187,7 +188,7 @@ export function packTreeHierarchy (root: Node, width: number, height: number) {
     }
     circles.push(n)
   })
-  treeData.links().forEach((element, index) => {
+  treeData.links().forEach((element: any, index: number) => {
     const n: Arrow = {
       id: index,
       r: 10,

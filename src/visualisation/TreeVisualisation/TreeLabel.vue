@@ -28,7 +28,7 @@ export default Vue.extend({
   },
   methods: {
     /** @param {MouseEvent} event */
-    emit (event) {
+    emit (event: any) {
       this.$emit('labelClicked', event)
     },
     // eslint-disable-next-line

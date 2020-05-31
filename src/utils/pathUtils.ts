@@ -4,10 +4,7 @@ import { getNodeById, getNodeLabel } from './nodesUtils'
 
 export function createPathNodes (nodes: Array<Node>, activePath: Path) {
   const pathNodes = Array<Node>()
-  const pathColor = d3.scaleLinear()
-    .domain([0, activePath.height])
-    .range(['#ff8d92', '#ff0000'])
-    .interpolate(d3.interpolateCubehelix)
+  const pathColor = function (i: number) { return d3.interpolateOrRd(i / activePath.height) }
 
   for (let i = 0; i < activePath.vertices.length; i++) {
     const node: Node = getNodeById(nodes, activePath.vertices[i])
@@ -58,10 +55,7 @@ export function createPaths (nodes: Array<Node>, paths: any, labels: Array<Label
 
 export function highlightPaths (circles: Array<Circle>, activePath: Path) {
   if (activePath !== undefined) {
-    const pathColor = d3.scaleLinear()
-      .domain([0, activePath.height])
-      .range(['#ff8d92', '#ff0000'])
-      .interpolate(d3.interpolateCubehelix)
+    const pathColor = function (i: number) { return d3.interpolateOrRd(i / activePath.height) }
     for (let i = 0; i < activePath.vertices.length; i++) {
       const circle: Circle = circles.filter(y => y.id === activePath.vertices[i])[0]
       const number = Math.abs(i - activePath.up)

@@ -2,6 +2,7 @@ import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, MappingNode, Label, Node, Circle, Arrow
 import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping } from '../utils/hierarchyUtils'
 import { packNodes, packTreeHierarchy, getNodeByKey, createLabel, getNodeLabel } from '../utils/nodesUtils'
 import { highlightPaths, createPathNodes } from '../utils/pathUtils'
+import { Store } from 'vuex'
 
 export const STORE_NAME = 'Visualisation'
 
@@ -40,8 +41,7 @@ export const Mutations = {
   CHANGE_TREE_NODES: 'CHANGE_TREE_NODES',
   CHANGE_TREE_LINKS: 'CHANGE_TREE_LINKS',
   CHANGE_TREE_HEIGHT: 'CHANGE_TREE_HEIGHT',
-  CHANGE_HIERARCHY: 'CHANGE_HIERARCHY',
-  CHANGE_LABELS: 'CHANGE_LABELS'
+  CHANGE_HIERARCHY: 'CHANGE_HIERARCHY'
 }
 
 export const Getters = {
@@ -65,8 +65,7 @@ export const Getters = {
   GET_TREE_HIERARCHY: 'GET_TREE_HIERARCHY',
   GET_TREE_NODES: 'GET_TREE_NODES',
   GET_TREE_LINKS: 'GET_TREE_LINKS',
-  GET_HIERARCHY: 'GET_HIERARCHY',
-  GET_LABELS: 'GET_LABELS'
+  GET_HIERARCHY: 'GET_HIERARCHY'
 }
 
 export default {
@@ -84,7 +83,6 @@ export default {
     rightArrows: Array<Arrow>(),
     rootId: ROOT_ID,
     hierarchy: [],
-    labels: {},
     circleHierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, 0, undefined, undefined),
     treeHierarchy: new Node(ROOT_LABEL, Array<Node>(), Array<Node>(), ROOT_ID, 0, undefined, undefined),
     treeNodes: Array<Circle>(),
@@ -100,136 +98,130 @@ export default {
     error: Error
   },
   getters: {
-    [Getters.GET_MAX_DEPTH]: (state) => {
+    [Getters.GET_MAX_DEPTH]: (state: any) => {
       return state.maxDepth
     },
-    [Getters.GET_TREE_HEIGHT]: (state) => {
+    [Getters.GET_TREE_HEIGHT]: (state: any) => {
       return state.treeHeight
     },
-    [Getters.GET_DEPTH]: (state) => {
+    [Getters.GET_DEPTH]: (state: any) => {
       return state.depth
     },
-    [Getters.GET_CIRCLE_HIERARCHY]: (state) => {
+    [Getters.GET_CIRCLE_HIERARCHY]: (state: any) => {
       return state.circleHierarchy
     },
-    [Getters.GET_LEFT_MAPPING_LIST]: (state) => {
+    [Getters.GET_LEFT_MAPPING_LIST]: (state: any) => {
       return state.leftMappingList
     },
-    [Getters.GET_RIGHT_MAPPING_LIST]: (state) => {
+    [Getters.GET_RIGHT_MAPPING_LIST]: (state: any) => {
       return state.rightMappingList
     },
-    [Getters.GET_ACTIVE_PATH]: (state) => {
+    [Getters.GET_ACTIVE_PATH]: (state: any) => {
       return state.activePath
     },
-    [Getters.GET_LEFT_MAPPING]: (state) => {
+    [Getters.GET_LEFT_MAPPING]: (state: any) => {
       return state.leftMapping
     },
-    [Getters.GET_RIGHT_MAPPING]: (state) => {
+    [Getters.GET_RIGHT_MAPPING]: (state: any) => {
       return state.rightMapping
     },
-    [Getters.GET_VISITED_NODES]: (state) => {
+    [Getters.GET_VISITED_NODES]: (state: any) => {
       return state.visitedNodes
     },
-    [Getters.GET_NODES]: (state) => {
+    [Getters.GET_NODES]: (state: any) => {
       return state.nodes
     },
-    [Getters.GET_ROOT_ID]: (state) => {
+    [Getters.GET_ROOT_ID]: (state: any) => {
       return state.rootId
     },
-    [Getters.GET_CIRCLES]: (state) => {
+    [Getters.GET_CIRCLES]: (state: any) => {
       return state.circles
     },
-    [Getters.GET_RIGHT_ARROWS]: (state) => {
+    [Getters.GET_RIGHT_ARROWS]: (state: any) => {
       return state.rightArrows
     },
-    [Getters.GET_LEFT_ARROWS]: (state) => {
+    [Getters.GET_LEFT_ARROWS]: (state: any) => {
       return state.leftArrows
     },
-    [Getters.GET_PATH_NODES]: (state) => {
+    [Getters.GET_PATH_NODES]: (state: any) => {
       return state.pathNodes
     },
-    [Getters.GET_TREE_HIERARCHY]: (state) => {
+    [Getters.GET_TREE_HIERARCHY]: (state: any) => {
       return state.treeHierarchy
     },
-    [Getters.GET_TREE_NODES]: (state) => {
+    [Getters.GET_TREE_NODES]: (state: any) => {
       return state.treeNodes
     },
-    [Getters.GET_TREE_LINKS]: (state) => {
+    [Getters.GET_TREE_LINKS]: (state: any) => {
       return state.treeLinks
     },
-    [Getters.GET_LABELS]: (state) => {
-      return state.labels
-    },
-    [Getters.GET_HIERARCHY]: (state) => {
+    [Getters.GET_HIERARCHY]: (state: any) => {
       return state.hierarchy
     }
   },
   mutations: {
-    [Mutations.CHANGE_ACTIVE_PATH] (state, value: Path) {
+    [Mutations.CHANGE_ACTIVE_PATH] (state: any, value: Path) {
       state.activePath = value
     },
-    [Mutations.CHANGE_LEFT_MAPPING] (state, value: Array<MappingNode>) {
+    [Mutations.CHANGE_LEFT_MAPPING] (state: any, value: Array<MappingNode>) {
       state.leftMapping = value
     },
-    [Mutations.CHANGE_RIGHT_MAPPING] (state, value: Array<MappingNode>) {
+    [Mutations.CHANGE_RIGHT_MAPPING] (state: any, value: Array<MappingNode>) {
       state.rightMapping = value
     },
-    [Mutations.CHANGE_LEFT_MAPPING_LIST] (state, value: Array<ComboboxItem>) {
+    [Mutations.CHANGE_LEFT_MAPPING_LIST] (state: any, value: Array<ComboboxItem>) {
       state.leftMappingList = value
     },
-    [Mutations.CHANGE_RIGHT_MAPPING_LIST] (state, value: Array<ComboboxItem>) {
+    [Mutations.CHANGE_RIGHT_MAPPING_LIST] (state: any, value: Array<ComboboxItem>) {
       state.rightMappingList = value
     },
-    [Mutations.CHANGE_DEPTH] (state, value: number) {
+    [Mutations.CHANGE_DEPTH] (state: any, value: number) {
       state.depth = value
     },
-    [Mutations.CHANGE_MAX_DEPTH] (state, value: number) {
+    [Mutations.CHANGE_MAX_DEPTH] (state: any, value: number) {
       state.maxDepth = value
     },
-    [Mutations.CHANGE_NODES] (state, value: Array<Node>) {
+    [Mutations.CHANGE_NODES] (state: any, value: Array<Node>) {
       state.nodes = value
     },
-    [Mutations.CHANGE_VISITED_NODES] (state, value: Array<Label>) {
+    [Mutations.CHANGE_VISITED_NODES] (state: any, value: Array<Label>) {
       state.visitedNodes = value
     },
-    [Mutations.CHANGE_WINDOW] (state, value: {width: number; height: number}) {
+    [Mutations.CHANGE_WINDOW] (state: any, value: {width: number; height: number}) {
       state.window.height = value.height
       state.window.width = value.width
     },
-    [Mutations.CHANGE_CIRCLES] (state, value: Array<Circle>) {
+    [Mutations.CHANGE_CIRCLES] (state: any, value: Array<Circle>) {
       state.circles = value
     },
-    [Mutations.CHANGE_LEFT_ARROWS] (state, value: Array<Arrow>) {
+    [Mutations.CHANGE_LEFT_ARROWS] (state: any, value: Array<Arrow>) {
       state.leftArrows = value
     },
-    [Mutations.CHANGE_RIGHT_ARROWS] (state, value: Array<Arrow>) {
+    [Mutations.CHANGE_RIGHT_ARROWS] (state: any, value: Array<Arrow>) {
       state.rightArrows = value
     },
-    [Mutations.CHANGE_CIRCLE_HIERARCHY] (state, value: Node) {
+    [Mutations.CHANGE_CIRCLE_HIERARCHY] (state: any, value: Node) {
       state.circleHierarchy = value
     },
-    [Mutations.CHANGE_ROOT_ID] (state, value: string) {
+    [Mutations.CHANGE_ROOT_ID] (state: any, value: string) {
       state.rootId = value
     },
-    [Mutations.CHANGE_PATH_NODES] (state, value: Array<Node>) {
+    [Mutations.CHANGE_PATH_NODES] (state: any, value: Array<Node>) {
       state.pathNodes = value
     },
-    [Mutations.CHANGE_TREE_HIERARCHY] (state, value: Node) {
+    [Mutations.CHANGE_TREE_HIERARCHY] (state: any, value: Node) {
       state.treeHierarchy = value
     },
-    [Mutations.CHANGE_TREE_NODES] (state, value: Array<Circle>) {
+    [Mutations.CHANGE_TREE_NODES] (state: any, value: Array<Circle>) {
       state.treeNodes = value
     },
-    [Mutations.CHANGE_TREE_HEIGHT] (state, value: number) {
+    [Mutations.CHANGE_TREE_HEIGHT] (state: any, value: number) {
       state.treeHeight = value
     },
-    [Mutations.CHANGE_TREE_LINKS] (state, value: Array<Arrow>) {
+    [Mutations.CHANGE_TREE_LINKS] (state: any, value: Array<Arrow>) {
       state.treeLinks = value
     },
-    [Mutations.CHANGE_LABELS] (state, value: {}) {
-      state.labels = value
-    },
-    [Mutations.CHANGE_HIERARCHY] (state, value: []) {
+    [Mutations.CHANGE_HIERARCHY] (state: any, value: []) {
       state.hierarchy = value
     }
   },
@@ -248,15 +240,15 @@ export default {
   }
 }
 
-function initPathNodes (context) {
+function initPathNodes (context: any) {
   context.commit(Mutations.CHANGE_PATH_NODES, Array<Node>())
 }
 
 // UPRAVIT KOD
-function selectPath (context, labels) {
+function selectPath (context: any, labels: any) {
   const activePath: Path = context.getters[Getters.GET_ACTIVE_PATH]
   // const nodes: Array<Node> = context.getters[Getters.GET_NODES]
-  const rootId = activePath.vertices[activePath.up]
+  const rootId: any = activePath.vertices[activePath.up]
   const leftLabel = getNodeLabel(labels, activePath.vertices[0])
   const leftMapping: MappingNode = {
     id: 0,
@@ -279,14 +271,12 @@ function selectPath (context, labels) {
   // context.commit(Mutations.)
 }
 
-function updatePath (context, value: number) {
+function updatePath (context: any, value: number) {
   context.commit(Mutations.CHANGE_ROOT_ID, context.state.visitedNodes[value].id)
   context.commit(Mutations.CHANGE_VISITED_NODES, context.state.visitedNodes.slice(0, value + 1))
-  context.dispatch(Actions.CREATE_HIERARCHY_FOR_CIRCLES)
-  context.dispatch(Actions.UPDATE_CIRCLE_CANVAS)
 }
 
-function createHierarchyForCircles (context) {
+function createHierarchyForCircles (context: any) {
   if (context.state.nodes.length === 0) {
     return undefined
   } else {
@@ -299,11 +289,19 @@ function createHierarchyForCircles (context) {
     } else {
       context.commit(Mutations.CHANGE_CIRCLE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, context.state.depth))
     }
-    context.commit(Mutations.CHANGE_MAX_DEPTH, maxDepth)
+    if (maxDepth === 0) {
+      context.commit(Mutations.CHANGE_MAX_DEPTH, 1)
+      context.commit(Mutations.CHANGE_DEPTH, 1)
+    } else {
+      if (maxDepth < context.state.depth) {
+        context.commit(Mutations.CHANGE_DEPTH, maxDepth)
+      }
+      context.commit(Mutations.CHANGE_MAX_DEPTH, maxDepth)
+    }
   }
 }
 
-function cutNodeTreeChildren (context, circle: Circle) {
+function cutNodeTreeChildren (context: any, circle: Circle) {
   if (context.state.nodes.length === 0) {
     return undefined
   } else {
@@ -315,7 +313,7 @@ function cutNodeTreeChildren (context, circle: Circle) {
   }
 }
 
-function appendNodeTree (context, circle: Circle) {
+function appendNodeTree (context: any, circle: Circle) {
   if (context.state.nodes.length === 0) {
     return undefined
   } else {
@@ -329,7 +327,7 @@ function appendNodeTree (context, circle: Circle) {
   }
 }
 
-function createHierarchyForTree (context) {
+function createHierarchyForTree (context: any) {
   if (context.state.nodes.length === 0) {
     return undefined
   } else {
@@ -338,18 +336,18 @@ function createHierarchyForTree (context) {
   }
 }
 
-function resizeCanvas (context, value: {width: number; height: number}) {
+function resizeCanvas (context: any, value: {width: number; height: number}) {
   context.commit(Mutations.CHANGE_WINDOW, value)
 }
 
-function createCircles (context): Array<Circle> {
+function createCircles (context: any): Array<Circle> {
   return packNodes(context.state.window.height, context.state.window.width, context.state.circleHierarchy, context.state.maxDepth)
 }
 
-function updateCircleCanvas (context) {
+function updateCircleCanvas (context: any) {
   context.commit(Mutations.CHANGE_CIRCLES, createCircles(context))
   context.commit(Mutations.CHANGE_LEFT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
-    context.state.circles, createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes), Position.Left))
+    context.state.circles, createLayer(context.state.leftMapping, context.state.nodes), Position.Left))
   context.commit(Mutations.CHANGE_RIGHT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
     context.state.circles, createLayer(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes), Position.Right))
   if (context.state.activePath !== undefined) {
@@ -357,7 +355,7 @@ function updateCircleCanvas (context) {
   }
 }
 
-function updateTreeCanvas (context) {
+function updateTreeCanvas (context: any) {
   const result = packTreeHierarchy(context.state.treeHierarchy, context.state.window.width, context.state.treeHeight)
   context.commit(Mutations.CHANGE_TREE_NODES, result.circles)
   context.commit(Mutations.CHANGE_TREE_LINKS, result.links)
@@ -369,19 +367,19 @@ function updateTreeCanvas (context) {
   }
 }
 
-function addNodeToVisitedNodes (context, { labels, leaf }) {
-  context.commit(Mutations.CHANGE_ROOT_ID, leaf.id)
+function addNodeToVisitedNodes (context: any, data: { labels: any; leaf: any }) {
+  context.commit(Mutations.CHANGE_ROOT_ID, data.leaf.id)
   const array = Array<Label>()
   array.push({
-    id: leaf.id,
-    label: getNodeLabel(labels, leaf.id)
+    id: data.leaf.id,
+    label: getNodeLabel(data.labels, data.leaf.id)
   })
-  let parent = leaf.parent
+  let parent = data.leaf.parent
   while (parent !== null) {
     if (parent.data.id !== ROOT_ID && parent.parent != null) {
       array.push({
         id: parent.data.id,
-        label: getNodeLabel(labels, parent.data.id)
+        label: getNodeLabel(data.labels, parent.data.id)
       })
     }
     parent = parent.parent

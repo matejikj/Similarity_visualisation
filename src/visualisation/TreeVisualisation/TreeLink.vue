@@ -25,12 +25,12 @@ export default Vue.extend({
   computed: {
     pathText: function () {
       // @ts-ignore
-      const leftx = this.linkData.lx
-      const lefty = this.linkData.ly
-      const rightx = this.linkData.rx
-      const righty = this.linkData.ry
-      const left = [leftx, lefty]
-      const right = [rightx, righty]
+      const leftx: number = this.linkData.lx
+      const lefty: number = this.linkData.ly
+      const rightx: number = this.linkData.rx
+      const righty: number = this.linkData.ry
+      const left: any = [leftx, lefty]
+      const right: any = [rightx, righty]
       return d3.linkVertical()({
         // @ts-ignore
         source: left,

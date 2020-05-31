@@ -33,7 +33,7 @@ export default Vue.extend({
         }
       })
       const result = Array<MappingNode>()
-      data.forEach(element => {
+      data.forEach((element: any) => {
         const node = array.filter(x => x.id === element)[0]
         if (node !== undefined) {
           result.push(node)

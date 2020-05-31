@@ -28,6 +28,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { Actions, Getters, Mutations, STORE_NAME } from '../Visualisation.store'
 import { Circle, Position, ROOT_ID, ROOT_LABEL } from '../../models'
 import { createNodes, createLabel } from '../../utils/nodesUtils'
+import { createLabels, createHierarchy } from '../../utils/hierarchyUtils'
 
 export default Vue.extend({
   name: 'TreeVisualisation',
@@ -36,7 +37,7 @@ export default Vue.extend({
     TreeLink,
     TreeLabel
   },
-  props: ['rightDataset', 'leftDataset', 'activeView'],
+  props: ['rightDataset', 'leftDataset', 'activeView', 'labels'],
   data: () => ({
     left: Position.Left,
     right: Position.Right
@@ -45,8 +46,8 @@ export default Vue.extend({
     ...mapGetters(STORE_NAME, {
       circles: Getters.GET_TREE_NODES,
       links: Getters.GET_TREE_LINKS,
-      labels: Getters.GET_LABELS,
-      hierarchy: Getters.GET_HIERARCHY
+      hierarchy: Getters.GET_HIERARCHY,
+      nodes: Getters.GET_NODES
     })
   },
   created () {
@@ -56,6 +57,9 @@ export default Vue.extend({
     window.removeEventListener('resize', this.handleResize)
   },
   mounted () {
+    if (this.rightDataset !== undefined || this.leftDataset !== undefined) {
+      this.initNodes()
+    }
     this.resizeCanvas({
       // @ts-ignore
       height: this.$refs.svg.clientHeight,
@@ -70,6 +74,7 @@ export default Vue.extend({
     /* eslint-disable no-undef */
     // @ts-ignore
     d3.select('#svg')
+      // @ts-ignore
       .call(d3.zoom().on('zoom', function () {
         g.attr('transform', d3.event.transform)
       }))
@@ -78,11 +83,9 @@ export default Vue.extend({
   },
   watch: {
     rightDataset () {
-      this.initializeNodes()
       this.updateVisualisation()
     },
     leftDataset () {
-      this.initializeNodes()
       this.updateVisualisation()
     }
   },
@@ -92,31 +95,17 @@ export default Vue.extend({
       appendNode: Actions.APPEND_NODE_TREE,
       cutChildren: Actions.CUT_NODE_TREE_CHILDREN,
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
-      initPathNodes: Actions.INIT_PATH_NODES,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
     }),
     ...mapMutations(STORE_NAME, {
-      changeRootId: Mutations.CHANGE_ROOT_ID,
-      changeActivePath: Mutations.CHANGE_ACTIVE_PATH,
-      changeNodes: Mutations.CHANGE_NODES,
-      changeVisitedNodes: Mutations.CHANGE_VISITED_NODES,
-      changeLeftMappingList: Mutations.CHANGE_LEFT_MAPPING_LIST,
-      changeRightMappingList: Mutations.CHANGE_RIGHT_MAPPING_LIST,
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
       changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING,
-      changeHierarchy: Mutations.CHANGE_HIERARCHY,
-      changeLabels: Mutations.CHANGE_LABELS
+      changeNodes: Mutations.CHANGE_NODES,
+      changeHierarchy: Mutations.CHANGE_HIERARCHY
     }),
     updateVisualisation: function () {
       this.createHierarchyForTree()
       this.updateTreeCanvas()
-    },
-    initializeNodes: function () {
-      this.changeRootId(ROOT_ID)
-      this.changeActivePath(undefined)
-      this.changeNodes(createNodes(this.hierarchy, this.labels))
-      this.changeVisitedNodes([createLabel(ROOT_ID, ROOT_LABEL)])
-      this.initPathNodes()
     },
     handleResize () {
       this.resizeCanvas({
@@ -133,6 +122,10 @@ export default Vue.extend({
       } else {
         this.cutChildren(item)
       }
+    },
+    initNodes: function () {
+      this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
+      this.changeNodes(createNodes(this.hierarchy, this.labels))
     }
   }
 })

@@ -5,6 +5,7 @@
         v-bind:leftDataset="leftDataset"
         v-bind:rightDataset="rightDataset"
         v-bind:activeView="activeView"
+        v-bind:labels="labels"
       >
       </vis-container>
     </v-row>
@@ -12,6 +13,7 @@
         v-bind:pathsDataset="paths"
         v-bind:leftDataset="leftDataset"
         v-bind:rightDataset="rightDataset"
+        v-bind:labels="labels"
         v-bind:activeView="activeView"
       >
     </layout>
@@ -72,7 +74,8 @@ export default Vue.extend({
     leftDataset: undefined,
     rightDataset: undefined,
     paths: undefined,
-    activeView: 1
+    activeView: 1,
+    labels: undefined
   }),
   methods: {
     leftDatasetChanged: function () {
