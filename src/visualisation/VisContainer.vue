@@ -91,66 +91,14 @@ export default Vue.extend({
       rightMappingTree: Getters.GET_RIGHT_MAPPING_TREE_LIST
     })
   },
-  created () {
-    if (this.leftDataset !== undefined) {
-      const position = Position.Left
-      const dataset = this.leftDataset
-      this.updateMappingsCombobox(dataset, position)
-      this.changeLeftMapping(Array<MappingNode>())
-      this.leftInfo = {
-        title: this.leftDataset.metadata.title,
-        description: this.leftDataset.metadata.description,
-        url: this.leftDataset.url,
-        keywords: this.leftDataset.metadata.keywords,
-        collection: this.leftDataset.collection
-      }
-    }
-    if (this.rightDataset !== undefined) {
-      const position = Position.Right
-      const dataset = this.rightDataset
-      this.updateMappingsCombobox(dataset, position)
-      this.changeRightMapping(Array<MappingNode>())
-      this.rightInfo = {
-        title: this.rightDataset.metadata.title,
-        description: this.rightDataset.metadata.description,
-        url: this.rightDataset.url,
-        keywords: this.rightDataset.metadata.keywords,
-        collection: this.rightDataset.collection
-      }
-    }
-  },
   mounted () {
-    if (this.leftDataset !== undefined) {
-      this.initializeVisualisation()
-      const position = Position.Left
-      const dataset = this.leftDataset
-      this.updateMappingsCombobox(dataset, position)
-      this.changeLeftMapping(Array<MappingNode>())
-      this.leftInfo = {
-        title: this.leftDataset.metadata.title,
-        description: this.leftDataset.metadata.description,
-        url: this.leftDataset.url,
-        keywords: this.leftDataset.metadata.keywords,
-        collection: this.leftDataset.collection
-      }
-    }
-    if (this.rightDataset !== undefined) {
-      this.initializeVisualisation()
-      const position = Position.Right
-      const dataset = this.rightDataset
-      this.updateMappingsCombobox(dataset, position)
-      this.changeRightMapping(Array<MappingNode>())
-      this.rightInfo = {
-        title: this.rightDataset.metadata.title,
-        description: this.rightDataset.metadata.description,
-        url: this.rightDataset.url,
-        keywords: this.rightDataset.metadata.keywords,
-        collection: this.rightDataset.collection
-      }
-    }
+    this.initNodes()
+    this.initializeVisualisation()
   },
   watch: {
     leftDataset () {
+      this.initNodes()
+      this.initializeVisualisation()
       const position = Position.Left
       const dataset = this.leftDataset
       this.updateMappingsCombobox(dataset, position)
@@ -164,6 +112,8 @@ export default Vue.extend({
       }
     },
     rightDataset () {
+      this.initNodes()
+      this.initializeVisualisation()
       const position = Position.Right
       const dataset = this.rightDataset
       this.updateMappingsCombobox(dataset, position)
@@ -192,13 +142,19 @@ export default Vue.extend({
       changeVisitedNodes: Mutations.CHANGE_VISITED_NODES,
       initPathNodes: Mutations.CHANGE_PATH_NODES,
       changeLeftMappingTreeList: Mutations.CHANGE_LEFT_MAPPING_TREE_LIST,
-      changeRightMappingTreeList: Mutations.CHANGE_RIGHT_MAPPING_TREE_LIST
+      changeRightMappingTreeList: Mutations.CHANGE_RIGHT_MAPPING_TREE_LIST,
+      changeNodes: Mutations.CHANGE_NODES,
+      changeHierarchy: Mutations.CHANGE_HIERARCHY
     }),
     initializeVisualisation: function () {
       this.changeRootId(ROOT_ID)
       this.changeActivePath(undefined)
       this.changeVisitedNodes([createVisitedNode(ROOT_ID, ROOT_LABEL)])
       this.initPathNodes()
+    },
+    initNodes: function () {
+      this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
+      this.changeNodes(createNodes(this.hierarchy, this.labels))
     },
     updateVisualisation: function () {
       if (this.activeView === 1) {

@@ -83,9 +83,6 @@ export default Vue.extend({
     window.removeEventListener('resize', this.handleResize)
   },
   mounted () {
-    if (this.rightDataset !== undefined || this.leftDataset !== undefined) {
-      this.initNodes()
-    }
     this.resizeCanvas({
       // @ts-ignore
       height: this.$refs.svg.clientHeight,

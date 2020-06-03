@@ -44,7 +44,7 @@ export default Vue.extend({
     VisContainer
   },
   created () {
-    axios.get('dataset1.json').then(
+    axios.get('example.json').then(
       response => {
         this.leftDataset = response.data
       },
@@ -52,7 +52,7 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('dataset2.json').then(
+    axios.get('example.json').then(
       response => {
         this.rightDataset = response.data
       },
@@ -60,7 +60,7 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('paths-shortest.json').then(
+    axios.get('paths.json').then(
       response => {
         this.paths = response.data.paths
       },

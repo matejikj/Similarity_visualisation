@@ -58,9 +58,6 @@ export default Vue.extend({
     window.removeEventListener('resize', this.handleResize)
   },
   mounted () {
-    if (this.rightDataset !== undefined || this.leftDataset !== undefined) {
-      this.initNodes()
-    }
     this.resizeCanvas({
       // @ts-ignore
       height: this.$refs.svg.clientHeight,
@@ -102,9 +99,7 @@ export default Vue.extend({
     }),
     ...mapMutations(STORE_NAME, {
       changeLeftMapping: Mutations.CHANGE_LEFT_MAPPING,
-      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING,
-      changeNodes: Mutations.CHANGE_NODES,
-      changeHierarchy: Mutations.CHANGE_HIERARCHY
+      changeRightMapping: Mutations.CHANGE_RIGHT_MAPPING
     }),
     updateVisualisation: function () {
       this.createHierarchyForTree(MAX_TREE_DEPTH)
@@ -125,10 +120,6 @@ export default Vue.extend({
       } else {
         this.cutChildren(item)
       }
-    },
-    initNodes: function () {
-      this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
-      this.changeNodes(createNodes(this.hierarchy, this.labels))
     },
     zoomed: function () {
       d3.selectAll('g')
