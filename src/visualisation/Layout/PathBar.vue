@@ -2,6 +2,9 @@
   <v-container>
     <v-row>
       <v-select
+        v-if="labelsVisible"
+        clearable
+        @click:clear="cancelClicked"
         v-model="select"
         :items="paths"
         label="Select"
@@ -9,21 +12,29 @@
         @change="pathUpdated"
       >
         <template slot="selection" slot-scope="data">
-          {{ data.item.from }} to {{ data.item.to }}
+          {{ data.item.from }} → {{ data.item.to }}
         </template>
         <template slot="item" slot-scope="data">
-          {{ data.item.from }} to {{ data.item.to }}
+          {{ data.item.from }} → {{ data.item.to }}
         </template>
       </v-select>
-      <v-btn
-        fab
-        small
-        relative
-        bottom
-        @click="cancelClicked"
+      <v-select
+        v-if="!labelsVisible"
+        clearable
+        @click:clear="cancelClicked"
+        v-model="select"
+        :items="paths"
+        label="Select"
+        return-object
+        @change="pathUpdated"
       >
-        <v-icon>mdi-close-circle</v-icon>
-      </v-btn>
+        <template slot="selection" slot-scope="data">
+          {{ data.item.leftKeywords }} → {{ data.item.rightKeywords }}
+        </template>
+        <template slot="item" slot-scope="data">
+          {{ data.item.leftKeywords }} → {{ data.item.rightKeywords }}
+        </template>
+      </v-select>
     </v-row>
     <p>Path nodes</p>
     <template v-for="(c, index) in pathNodes">
@@ -36,11 +47,14 @@
         v-bind:key="index"
         class="btn-help ma-2"
         fab
+        @click="pathNodeClicked(c)"
         v-bind:color="c.color"
       >
         {{ c.label.length > 5 ? c.label.substring(0, 5) + ".." : c.label }}
       </v-btn>
+      <v-icon v-bind:key="'arrow' + index">{{ activePath.arrows[index] }}</v-icon>
     </template>
+    <v-switch v-model="labelsVisible" :label="labelsVisible === true ? `Labels displayed` : `Keywords displayed`"></v-switch>
   </v-container>
 </template>
 
@@ -53,6 +67,8 @@ export default Vue.extend({
   name: 'PathBar',
 
   data: () => ({
+    keywordsVisible: true,
+    labelsVisible: true
   }),
   props: {
     paths: {}
@@ -77,6 +93,9 @@ export default Vue.extend({
     },
     cancelClicked: function () {
       this.$emit('cancelClicked')
+    },
+    pathNodeClicked: function (data: Node) {
+      this.$emit('pathNodeClicked', data)
     }
   }
 })

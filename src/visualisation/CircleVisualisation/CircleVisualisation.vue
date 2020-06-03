@@ -1,34 +1,46 @@
 <template>
-  <svg id="svg" ref="svg" width="100%" height="50vh">
-    <defs>
-      <!-- arrowhead marker definition -->
-      <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
-          markerWidth="6" markerHeight="6"
-          orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" />
-      </marker>
-    </defs>
-    <g>
-      <template v-for="(c, index) in circles">
-        <circle-node @nodeClicked='circleClicked' v-bind:key="index" v-bind:nodeData="c"></circle-node>
-      </template>
-    </g>
-    <g>
-      <template v-for="(c, index) in circles">
-        <circle-label @labelClicked='circleClicked' v-bind:key="index" v-bind:labelData="c"></circle-label>
-      </template>
-    </g>
-    <g>
-      <template v-for="(c, index) in leftArrows">
-        <circle-link v-bind:key="index" v-bind:linkData="c"></circle-link>
-      </template>
-    </g>
-    <g>
-      <template v-for="(c, index) in rightArrows">
-        <circle-link v-bind:key="index" v-bind:linkData="c"></circle-link>
-      </template>
-    </g>
-  </svg>
+  <v-container fluid>
+    <v-btn
+      color="green"
+      absolute
+      dark
+      fab
+      small
+      @click="center"
+    >
+      <v-icon>mdi-image-filter-center-focus-strong-outline</v-icon>
+    </v-btn>
+    <svg id="svg" ref="svg" width="100%" height="90vh">
+      <defs>
+        <!-- arrowhead marker definition -->
+        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="6" markerHeight="6"
+            orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" />
+        </marker>
+      </defs>
+      <g>
+        <template v-for="(c, index) in circles">
+          <circle-node @nodeClicked='circleClicked' v-bind:key="index" v-bind:nodeData="c"></circle-node>
+        </template>
+      </g>
+      <g>
+        <template v-for="(c, index) in circles">
+          <circle-label @labelClicked='circleClicked' v-bind:key="index" v-bind:labelData="c"></circle-label>
+        </template>
+      </g>
+      <g>
+        <template v-for="(c, index) in leftArrows">
+          <circle-link v-bind:key="index" v-bind:linkData="c"></circle-link>
+        </template>
+      </g>
+      <g>
+        <template v-for="(c, index) in rightArrows">
+          <circle-link v-bind:key="index" v-bind:linkData="c"></circle-link>
+        </template>
+      </g>
+    </svg>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -40,7 +52,7 @@ import CircleLink from './CircleLink.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ROOT_ID, ROOT_LABEL, Position, Circle } from '../../models'
 import { Getters, Actions, Mutations, STORE_NAME } from '../Visualisation.store'
-import { createNodes, createLabel } from '../../utils/nodesUtils'
+import { createNodes } from '../../utils/nodesUtils'
 import { createLabels, createHierarchy } from '../../utils/hierarchyUtils'
 
 export default Vue.extend({
@@ -81,15 +93,12 @@ export default Vue.extend({
       width: this.$refs.svg.clientWidth
     })
     this.updateVisualisation()
+
     const g = d3.selectAll('g')
-    /* eslint-disable no-undef */
-    // @ts-ignore
     d3.select('#svg')
-      // @ts-ignore
       .call(d3.zoom().on('zoom', function () {
         g.attr('transform', d3.event.transform)
       }))
-    /* eslint-enable no-undef */
   },
   watch: {
     rightDataset () {
@@ -135,6 +144,17 @@ export default Vue.extend({
     initNodes: function () {
       this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
       this.changeNodes(createNodes(this.hierarchy, this.labels))
+    },
+    zoomed: function () {
+      d3.selectAll('g')
+        .attr('transform', d3.event.transform)
+    },
+    center: function () {
+      const zoom = d3.zoom().on('zoom', this.zoomed)
+      d3.select('#svg')
+        .transition()
+        .duration(750)
+        .call(zoom.transform, d3.zoomIdentity)
     }
   }
 })
@@ -149,5 +169,9 @@ export default Vue.extend({
   cursor: pointer;
   text-anchor: middle;
   pointer-events: none;
+}
+
+#svg {
+  border: 1px solid gray;
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
   <v-container>
-    <p>Level of descendants in the view</p>
+    <p
+      v-if="minimum !== maximum"
+    >Level of descendants in the view</p>
     <v-slider
       v-if="minimum !== maximum"
       v-bind:min="minimum"
@@ -42,7 +44,7 @@ export default Vue.extend({
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS
     }),
     // eslint-disable-next-line
-    handleDepthChange: function (data: any) {
+    handleDepthChange: function (data: number) {
       this.changeDepth(data)
       this.createHierarchyForCircles()
       this.updateCircleCanvas()

@@ -1,7 +1,7 @@
-import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Label, MappingData, MAX_TREE_DEPTH } from '../models'
+import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Labels, MAX_TREE_DEPTH } from '../models'
 import { getNodeById, getNodeLabel } from './nodesUtils'
 
-export function createHierarchy (leftDataset: any, rightDataset: any) {
+export function createHierarchy (leftDataset: {hierarchy: [string, string, string]}, rightDataset: {hierarchy: [string, string, string]}) {
   let hierarchyArray: any = []
   if (leftDataset !== undefined) {
     hierarchyArray = hierarchyArray.concat(leftDataset.hierarchy)
@@ -12,8 +12,8 @@ export function createHierarchy (leftDataset: any, rightDataset: any) {
   return hierarchyArray
 }
 
-export function createLabels (leftDataset: any, rightDataset: any) {
-  let labelsArray = {}
+export function createLabels (leftDataset: {labels: Labels}, rightDataset: {labels: Labels}) {
+  let labelsArray: Labels = {}
   if (leftDataset !== undefined) {
     labelsArray = { ...labelsArray, ...leftDataset.labels }
   }
@@ -260,7 +260,7 @@ export function packMappingArrows (height: number, width: number, circles: Array
       mapTo: viewDepthLevel[i].label,
       lx: position === Position.Left ? 0 : width,
       ly: height / 2,
-      rx: position === Position.Left ? targetNode.x - targetNode.r * 10 / 10 : targetNode.x + targetNode.r * 10 / 10,
+      rx: position === Position.Left ? targetNode.x - targetNode.r : targetNode.x + targetNode.r,
       ry: targetNode.y,
       r: targetNode.r
     }
@@ -273,23 +273,18 @@ export function packMappingArrows (height: number, width: number, circles: Array
 export function highlightTreeMapping (circles: Array<Circle>, leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
   for (let i = 0; i < leftMappingNodes.length; i++) {
     const targetCircle = getCircleById(circles, leftMappingNodes[i].id)
-    targetCircle.fill = 'red'
-    targetCircle.r += 2
+    if (targetCircle !== undefined) {
+      targetCircle.fill = 'red'
+      targetCircle.r += 2
+    }
   }
   for (let i = 0; i < rightMappingNodes.length; i++) {
     const targetCircle = getCircleById(circles, rightMappingNodes[i].id)
-    targetCircle.fill = 'red'
-    targetCircle.r += 2
+    if (targetCircle !== undefined) {
+      targetCircle.fill = 'red'
+      targetCircle.r += 2
+    }
   }
-}
-
-function createMappingData (id: string, group: string, size: number, shared: number) {
-  return new MappingData(
-    id,
-    group,
-    shared,
-    size
-  )
 }
 
 function createMappingNodeWithChildren (id: number, name: string, children: MappingNode[]) {
@@ -311,29 +306,70 @@ function createMappingNodeWithMap (id: number, name: string, mapBy: string, node
   return newNode
 }
 
-// eslint-disable-next-line
-export function createMapping (labels: Array<Label>, mapping: any, mappingID: number) {
-  const result = Array<MappingNode>()
-  const mappingDataArray = Array<MappingData>()
-  mapping.mappings[mappingID].data.forEach((item: any) => {
-    mappingDataArray.push(createMappingData(item.id, item.metadata.group, item.metadata.size, item.metadata.shared))
+export function createPathLabels (mapping: any) {
+  const mapArray: {[key: string]: string[]} = {}
+  let datas: any = []
+  mapping.mappings.forEach((element: any) => {
+    datas = datas.concat(element.data)
   })
-  let counter = 1
-  mappingDataArray.forEach(element => {
-    const name = getNodeLabel(labels, element.id)
-    if (result.filter(x => x.name === element.group[0]).length === 0) {
-      const newChildren = createMappingNodeWithMap(counter, name, element.group[0], element.id)
-      counter++
-      const newNode = createMappingNodeWithChildren(counter, element.group[0], [newChildren])
-      counter++
-      result.push(newNode)
-    } else {
-      const node = result.filter(x => x.name === element.group[0])[0]
-      const newChildren = createMappingNodeWithMap(counter, name, element.group[0], element.id)
-      counter++
-      if (node.children !== undefined) {
-        node.children.push(newChildren)
+  datas.forEach((item: any) => {
+    item.metadata.group.forEach((element: string) => {
+      if (mapArray[item.id] === undefined) {
+        mapArray[item.id] = Array<string>()
       }
+      mapArray[item.id].push(element)
+    })
+  })
+  return mapArray
+}
+
+export function createMapping (labels: Labels, mapping: any, mappingID: number) {
+  const result = Array<MappingNode>()
+  const mapArray: {[key: string]: string[]} = {}
+  let datas: any = []
+  if (mappingID >= mapping.mappings.length) {
+    mapping.mappings.forEach((element: any) => {
+      datas = datas.concat(element.data)
+    })
+  } else {
+    datas = mapping.mappings[mappingID].data
+  }
+  datas.forEach((item: any) => {
+    const name: string = item.id
+    item.metadata.group.forEach((element: string) => {
+      if (mapArray[element] === undefined) {
+        mapArray[element] = Array<string>()
+      }
+      if (!mapArray[element].includes(name)) {
+        mapArray[element].push(name)
+      }
+    })
+  })
+  let counter = 0
+  for (const item in mapArray) {
+    const nodes = mapArray[item]
+    const mappingNodes: Array<MappingNode> = []
+    nodes.forEach((element: string) => {
+      const name = getNodeLabel(labels, element)
+      mappingNodes.push(createMappingNodeWithMap(counter++, name, item, element))
+    })
+    result.push(createMappingNodeWithChildren(counter++, item, mappingNodes))
+  }
+  return result
+}
+
+export function chooseItemFromMapping (mapping: Array<MappingNode>, id: string) {
+  const result: number[] = []
+  const childrens: Array<MappingNode> = []
+  mapping.forEach((item: MappingNode) => {
+    // eslint-disable-next-line
+    item.children?.forEach((children: MappingNode) => {
+      childrens.push(children)
+    })
+  })
+  childrens.forEach((children: MappingNode) => {
+    if (children.nodeID === id) {
+      result.push(children.id)
     }
   })
   return result

@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-content fluid height class="text-center">
     <p>Visited nodes</p>
     <template v-for="(c, index) in visitedNodes">
       <v-btn
@@ -25,7 +25,8 @@
 import Vue from 'vue'
 import { Getters, Actions, STORE_NAME } from '../Visualisation.store'
 import { mapGetters, mapActions, Store } from 'vuex'
-import { Label } from '../../models'
+import { VisitedNode } from '../../models/VisitedNode'
+import { MAX_TREE_DEPTH } from '../../models'
 
 export default Vue.extend({
   name: 'HistoryBar',
@@ -46,14 +47,14 @@ export default Vue.extend({
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
     }),
-    click: function (data: Label) {
+    click: function (data: VisitedNode) {
       this.updatePath(data)
       if (this.activeView === 1) {
         this.createHierarchyForCircles()
         this.updateCircleCanvas()
       }
       if (this.activeView === 2) {
-        this.createHierarchyForTree()
+        this.createHierarchyForTree(MAX_TREE_DEPTH)
         this.updateTreeCanvas()
       }
     }

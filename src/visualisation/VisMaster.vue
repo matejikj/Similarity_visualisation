@@ -68,6 +68,14 @@ export default Vue.extend({
         this.error = error
       }
     )
+    axios.get('labels.json').then(
+      response => {
+        this.labels = response.data.labels
+      },
+      error => {
+        this.error = error
+      }
+    )
   },
   data: () => ({
     error: Error(),
