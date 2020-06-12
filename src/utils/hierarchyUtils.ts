@@ -308,6 +308,9 @@ function createMappingNodeWithMap (id: number, name: string, mapBy: string, node
 
 export function createPathLabels (mapping: any) {
   const mapArray: {[key: string]: string[]} = {}
+  if (mapping === undefined) {
+    return mapArray
+  }
   let datas: any = []
   mapping.mappings.forEach((element: any) => {
     datas = datas.concat(element.data)

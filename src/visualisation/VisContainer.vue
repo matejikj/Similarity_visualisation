@@ -52,7 +52,7 @@ import Vue from 'vue'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { Position, MappingNode, ROOT_ID, ROOT_LABEL, ComboboxItem } from '../models'
 import { Actions, Mutations, Getters, STORE_NAME } from './Visualisation.store'
-import { addMappingItemToArray, createNodes, createVisitedNode } from '../utils/nodesUtils'
+import { createNodes, createVisitedNode } from '../utils/nodesUtils'
 import { createMapping, createLabels, createHierarchy } from '../utils/hierarchyUtils'
 import SideBar from './Layout/SideBar.vue'
 import CircleVisualisation from './CircleVisualisation/CircleVisualisation.vue'
@@ -188,7 +188,7 @@ export default Vue.extend({
     updateMappingsCombobox: function (dataset: any, position: Position) {
       const result: Array<ComboboxItem> = []
       dataset.mappings.forEach((element: {data: []; metadata: {from: string; title: string; input: []}}, i: number) => {
-        addMappingItemToArray(result, element, i)
+        result.push(new ComboboxItem(element.metadata.title + '/' + element.metadata.from, i))
       })
       result.push(new ComboboxItem('All', result.length))
       switch (position) {

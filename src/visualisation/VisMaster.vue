@@ -35,6 +35,8 @@ import Layout from './Layout.vue'
 import VisContainer from './VisContainer.vue'
 import axios from 'axios'
 import CustomMenu from './CustomMenu.vue'
+import { prepareLabels } from '../utils/nodesUtils'
+import { Labels } from '@/models'
 
 export default Vue.extend({
   name: 'VisMaster',
@@ -44,7 +46,7 @@ export default Vue.extend({
     VisContainer
   },
   created () {
-    axios.get('example.json').then(
+    axios.get('bohumin.json').then(
       response => {
         this.leftDataset = response.data
       },
@@ -52,7 +54,7 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('example.json').then(
+    axios.get('divadlo.json').then(
       response => {
         this.rightDataset = response.data
       },
@@ -60,7 +62,7 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('paths.json').then(
+    axios.get('bohumin-divadlo-similarity-default.json').then(
       response => {
         this.paths = response.data.paths
       },
@@ -68,9 +70,9 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('labels.json').then(
+    axios.get('labels-bohumin-divadlo.json').then(
       response => {
-        this.labels = response.data.labels
+        this.labels = prepareLabels(response.data.labels)
       },
       error => {
         this.error = error
@@ -83,7 +85,7 @@ export default Vue.extend({
     rightDataset: undefined,
     paths: undefined,
     activeView: 1,
-    labels: undefined
+    labels: {}
   }),
   methods: {
     leftDatasetChanged: function () {

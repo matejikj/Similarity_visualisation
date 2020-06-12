@@ -34,10 +34,7 @@ export default {
 
   data: () => ({
     collectionItems:
-      ['hierarchy.v1',
-        'hierarchy.v2',
-        'hierarchy.v3',
-        'hierarchy.v3.reduced'
+      ['hierarchy.v1'
       ],
     collection: 'hierarchy.v1',
     selectedMappingItems: [],

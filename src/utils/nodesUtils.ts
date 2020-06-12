@@ -1,32 +1,30 @@
 import { ROOT_ID, Node, Link, Circle, Arrow, TREE_CIRCLE_RADIUS, ComboboxItem, Labels } from '../models'
 import * as d3 from 'd3'
 
-function stringArrayContainsNodeById (array: Array<string>, id: string) {
-  if (array.includes(id)) {
-    return true
-  } else {
-    return false
-  }
+export function prepareLabels (labels: {id: string; label: string}[]) {
+  const result: Labels = {}
+  labels.forEach((item) => {
+    result[item.id] = item.label
+  })
+  return result
 }
 
 export function createVisitedNode (id: string, label: string) {
   return {
-    id: id,
-    label: label
+    id: id !== undefined ? id : 'Q0',
+    label: label !== undefined ? label : 'undefined'
   }
 }
 
 export function mapLinks (hierarchy: Array<[string, string, string]>) {
-  const result: Array<Link> = hierarchy.map((item: [string, string, string]) => ({
-    parent: item[2],
-    child: item[0]
-  }))
+  let result = Array<Link>()
+  if (hierarchy !== undefined) {
+    result = hierarchy.map((item: [string, string, string]) => ({
+      parent: item[2],
+      child: item[0]
+    }))
+  }
   return result
-}
-
-// eslint-disable-next-line
-export function addMappingItemToArray (array: Array<ComboboxItem>, item: {data: [], metadata: {from: string, title: string, input: []}}, index: number) {
-  array.push(new ComboboxItem(item.metadata.title + '/' + item.metadata.from, index))
 }
 
 export function getNodeLabel (labels: Labels, nodeId: string) {
@@ -73,11 +71,11 @@ export function createNodes (hierarchy: any, labels: Labels) {
   const result = new Array<Node>()
   const visitedNodes = new Array<string>()
   links.forEach(link => {
-    if (!stringArrayContainsNodeById(visitedNodes, link.child)) {
+    if (!visitedNodes.includes(link.child)) {
       visitedNodes.push(link.child)
       result.push(createNode(labels, link.child))
     }
-    if (!stringArrayContainsNodeById(visitedNodes, link.parent)) {
+    if (!visitedNodes.includes(link.parent)) {
       visitedNodes.push(link.parent)
       result.push(createNode(labels, link.parent))
     }
