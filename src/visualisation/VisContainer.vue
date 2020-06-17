@@ -52,8 +52,8 @@ import Vue from 'vue'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { Position, MappingNode, ROOT_ID, ROOT_LABEL, ComboboxItem } from '../models'
 import { Actions, Mutations, Getters, STORE_NAME } from './Visualisation.store'
-import { createNodes, createVisitedNode } from '../utils/nodesUtils'
-import { createMapping, createLabels, createHierarchy } from '../utils/hierarchyUtils'
+import { initalizeNodes, createVisitedNode } from '../utils/nodesUtils'
+import { createMapping, createHierarchy } from '../utils/hierarchyUtils'
 import SideBar from './Layout/SideBar.vue'
 import CircleVisualisation from './CircleVisualisation/CircleVisualisation.vue'
 import TreeVisualisation from './TreeVisualisation/TreeVisualisation.vue'
@@ -154,7 +154,7 @@ export default Vue.extend({
     },
     initNodes: function () {
       this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
-      this.changeNodes(createNodes(this.hierarchy, this.labels))
+      this.changeNodes(initalizeNodes(this.hierarchy, this.labels))
     },
     updateVisualisation: function () {
       if (this.activeView === 1) {

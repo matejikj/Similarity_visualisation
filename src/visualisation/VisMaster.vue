@@ -46,7 +46,7 @@ export default Vue.extend({
     VisContainer
   },
   created () {
-    axios.get('bohumin.json').then(
+    axios.get('dev-example.json').then(
       response => {
         this.leftDataset = response.data
       },
@@ -54,7 +54,7 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('divadlo.json').then(
+    axios.get('dev-example.json').then(
       response => {
         this.rightDataset = response.data
       },
@@ -62,7 +62,7 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('bohumin-divadlo-similarity-default.json').then(
+    axios.get('dev-paths.json').then(
       response => {
         this.paths = response.data.paths
       },
@@ -70,7 +70,7 @@ export default Vue.extend({
         this.error = error
       }
     )
-    axios.get('labels-bohumin-divadlo.json').then(
+    axios.get('dev-labels.json').then(
       response => {
         this.labels = prepareLabels(response.data.labels)
       },

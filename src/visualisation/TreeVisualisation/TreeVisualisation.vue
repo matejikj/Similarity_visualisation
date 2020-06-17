@@ -27,8 +27,7 @@ import TreeLabel from './TreeLabel.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { Actions, Getters, Mutations, STORE_NAME } from '../Visualisation.store'
 import { Circle, Position, ROOT_ID, ROOT_LABEL, MAX_TREE_DEPTH } from '../../models'
-import { createNodes } from '../../utils/nodesUtils'
-import { createLabels, createHierarchy } from '../../utils/hierarchyUtils'
+import { createHierarchy } from '../../utils/hierarchyUtils'
 
 export default Vue.extend({
   name: 'TreeVisualisation',

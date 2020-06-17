@@ -1,7 +1,7 @@
 import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Labels, MAX_TREE_DEPTH } from '../models'
 import { getNodeById, getNodeLabel } from './nodesUtils'
 
-export function createHierarchy (leftDataset: {hierarchy: [string, string, string]}, rightDataset: {hierarchy: [string, string, string]}) {
+export function createHierarchy (leftDataset: {hierarchy: [string, string, string][]}, rightDataset: {hierarchy: [string, string, string][]}) {
   let hierarchyArray: any = []
   if (leftDataset !== undefined) {
     hierarchyArray = hierarchyArray.concat(leftDataset.hierarchy)
@@ -10,17 +10,6 @@ export function createHierarchy (leftDataset: {hierarchy: [string, string, strin
     hierarchyArray = hierarchyArray.concat(rightDataset.hierarchy)
   }
   return hierarchyArray
-}
-
-export function createLabels (leftDataset: {labels: Labels}, rightDataset: {labels: Labels}) {
-  let labelsArray: Labels = {}
-  if (leftDataset !== undefined) {
-    labelsArray = { ...labelsArray, ...leftDataset.labels }
-  }
-  if (rightDataset !== undefined) {
-    labelsArray = { ...labelsArray, ...rightDataset.labels }
-  }
-  return labelsArray
 }
 
 export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {

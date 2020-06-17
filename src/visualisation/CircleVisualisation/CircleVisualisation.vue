@@ -52,8 +52,8 @@ import CircleLink from './CircleLink.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ROOT_ID, ROOT_LABEL, Position, Circle } from '../../models'
 import { Getters, Actions, Mutations, STORE_NAME } from '../Visualisation.store'
-import { createNodes } from '../../utils/nodesUtils'
-import { createLabels, createHierarchy } from '../../utils/hierarchyUtils'
+import { initalizeNodes } from '../../utils/nodesUtils'
+import { createHierarchy } from '../../utils/hierarchyUtils'
 
 export default Vue.extend({
   name: 'CircleVisualisation',
@@ -140,7 +140,7 @@ export default Vue.extend({
     },
     initNodes: function () {
       this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
-      this.changeNodes(createNodes(this.hierarchy, this.labels))
+      this.changeNodes(initalizeNodes(this.hierarchy, this.labels))
     },
     zoomed: function () {
       d3.selectAll('g')
