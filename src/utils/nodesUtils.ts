@@ -1,5 +1,6 @@
 import { ROOT_ID, Node, Link, Circle, Arrow, TREE_CIRCLE_RADIUS, Labels } from '../models'
 import * as d3 from 'd3'
+import { createArrayFromHierarchy } from './hierarchyUtils'
 
 export function prepareLabels (labels: {id: string; label: string}[]) {
   const result: Labels = {}
@@ -160,7 +161,10 @@ export function packNodes (height: number, width: number, root: Node, maxDepth: 
   const margin = 0
   const packChart = d3.pack()
   packChart.size([width - margin, height - margin])
-  packChart.padding(7)
+  const arrayOfNodes = createArrayFromHierarchy(root)
+  let padding = 0
+  arrayOfNodes.length < 6 ? arrayOfNodes.length === 2 ? padding = 200 : padding = 40 : padding = 7
+  packChart.padding(padding)
   const treeRoot = d3.hierarchy(root)
     .sum((d: any) => Math.sqrt(d.value))
   const chartItems: any = packChart(treeRoot).descendants()
