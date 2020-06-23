@@ -3,6 +3,8 @@ export class Circle {
     key: number;
     fill?: string;
     pathNr?: number;
+    strokewidth?: string;
+    stroke?: string;
     label: string;
     isLeaf: boolean;
     depth: number;
