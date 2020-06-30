@@ -12,48 +12,51 @@ export function createHierarchy (leftDataset: {hierarchy: [string, string, strin
   return hierarchyArray
 }
 
-export function createLayer (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
-  const layerArray = Array<ArrowData>()
-  for (let i = 0; i < urls.length; i++) {
-    const n = nodes.filter(y => y.id === urls[i].nodeID)[0]
-    if (n === undefined) {
-      continue
-    }
-    const stack = Array<Node>()
-    stack.push(n)
-    const visitedArray = Array<string>()
-    while (stack.length !== 0) {
-      const parent = stack.pop()
-      if (parent !== undefined) {
-        if (parent.id === ROOT_ID) {
-          continue
-        }
-        if (parent.parents === null) {
-          continue
-        }
-        if (parent.depth == null) {
-          if (parent.parents != null) {
-            for (let i = 0; i < parent.parents.length; i++) {
-              if (!visitedArray.includes(parent.parents[i].id)) {
-                visitedArray.push(parent.parents[i].id)
-                stack.push(parent.parents[i])
-              }
+function findNodePredecesorsInActualView (node: Node, url: MappingNode) {
+  const result = Array<ArrowData>()
+  const stack = Array<Node>()
+  stack.push(node)
+  const visitedArray = Array<string>()
+  while (stack.length !== 0) {
+    const parent = stack.pop()
+    if (parent !== undefined) {
+      if (parent.id === ROOT_ID || parent.parents === null) {
+        continue
+      }
+      if (parent.depth == null) {
+        if (parent.parents != null) {
+          for (let i = 0; i < parent.parents.length; i++) {
+            if (!visitedArray.includes(parent.parents[i].id)) {
+              visitedArray.push(parent.parents[i].id)
+              stack.push(parent.parents[i])
             }
           }
-        } else {
-          if (layerArray.filter(p => p.id === parent.id).length === 0) {
-            const n: ArrowData = {
-              id: parent.id,
-              label: urls[i].name,
-              word: urls[i].mapBy
-            }
-            layerArray.push(n)
+        }
+      } else {
+        if (!result.some(p => p.id === parent.id)) {
+          const newArrow: ArrowData = {
+            id: parent.id,
+            label: url.name,
+            word: url.mapBy
           }
+          result.push(newArrow)
         }
       }
     }
   }
-  return layerArray
+  return result
+}
+
+export function mapUrlsToActiveView (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
+  let predecessors = Array<ArrowData>()
+  urls.forEach((url: MappingNode) => {
+    const node = nodes.filter(y => y.id === url.nodeID)[0]
+    if (node !== undefined) {
+      const nodePredecesors = findNodePredecesorsInActualView(node, url)
+      predecessors = predecessors.concat(nodePredecesors)
+    }
+  })
+  return predecessors
 }
 
 export function createArrayFromHierarchy (root: Node) {
@@ -76,7 +79,7 @@ export function createArrayFromHierarchy (root: Node) {
 
 export function createArrows (root: Node, position: Position, ids: Array<MappingNode>, nodes: Array<Node>): void {
   if (ids !== null && ids !== undefined) {
-    packMappingArrows(1000, 1000, Array<Circle>(), createLayer(ids, nodes), position)
+    packMappingArrows(1000, 1000, Array<Circle>(), mapUrlsToActiveView(ids, nodes), position)
   }
 }
 

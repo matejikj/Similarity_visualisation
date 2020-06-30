@@ -1,5 +1,5 @@
 import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, MappingNode, Labels, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '../models'
-import { createTree, createLayer, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping, collapseIrrelevantSubtrees } from '../utils/hierarchyUtils'
+import { createTree, mapUrlsToActiveView, getMaxTreeDepth, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping, collapseIrrelevantSubtrees } from '../utils/hierarchyUtils'
 import { packNodes, packTreeHierarchy, getNodeByKey, createVisitedNode, getNodeLabel } from '../utils/nodesUtils'
 import { highlightPaths, createPathNodes } from '../utils/pathUtils'
 import { VisitedNode } from '../models/VisitedNode'
@@ -403,9 +403,9 @@ function createCircles (context: any): Array<Circle> {
 function updateCircleCanvas (context: any) {
   context.commit(Mutations.CHANGE_CIRCLES, createCircles(context))
   context.commit(Mutations.CHANGE_LEFT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
-    context.state.circles, createLayer(context.state.leftMapping, context.state.nodes), Position.Left))
+    context.state.circles, mapUrlsToActiveView(context.state.leftMapping, context.state.nodes), Position.Left))
   context.commit(Mutations.CHANGE_RIGHT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
-    context.state.circles, createLayer(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes), Position.Right))
+    context.state.circles, mapUrlsToActiveView(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes), Position.Right))
   if (context.state.activePath !== undefined) {
     context.commit(Mutations.CHANGE_CIRCLES, highlightPaths(context.state.circles, context.state.activePath))
   }
@@ -416,8 +416,8 @@ function updateTreeCanvas (context: any) {
   context.commit(Mutations.CHANGE_TREE_NODES, result.circles)
   context.commit(Mutations.CHANGE_TREE_LINKS, result.links)
   highlightTreeMapping(context.state.treeNodes,
-    createLayer(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes),
-    createLayer(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes))
+    mapUrlsToActiveView(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes),
+    mapUrlsToActiveView(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes))
   if (context.state.activePath !== undefined) {
     context.commit(Mutations.CHANGE_TREE_NODES, highlightPaths(context.state.treeNodes, context.state.activePath))
   }
