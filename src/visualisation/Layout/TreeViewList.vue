@@ -1,6 +1,6 @@
 <template>
   <v-treeview
-    style="overflow-y: auto; height: 70vh"
+    style="overflow-y: auto; height: 40vh"
     v-model="selectedItems"
     :items="items"
     selectable

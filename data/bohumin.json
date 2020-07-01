@@ -1,15 +1,15 @@
 {
-  "@id": "https://data.gov.cz/zdroj/datové-sady/Bohumin/3384768",
+  "@id": "https://data.gov.cz/zdroj/datov\u00e9-sady/Bohumin/3384768",
   "metadata": {
     "title": "Co, kdy, kde",
-    "description": "Přehled kulturních a sportovních akci v Bohumíně.",
+    "description": "P\u0159ehled kulturn\u00edch a sportovn\u00edch akci v Bohum\u00edn\u011b.",
     "keywords": [
       "kultura",
       "sport",
-      "volný čas",
-      "sportovní akce",
-      "Bohumín",
-      "kulturní akce"
+      "voln\u00fd \u010das",
+      "sportovn\u00ed akce",
+      "Bohum\u00edn",
+      "kulturn\u00ed akce"
     ]
   },
   "mappings": [

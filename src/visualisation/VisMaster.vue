@@ -20,9 +20,7 @@
     <v-row>
     </v-row>
     <custom-menu
-      @leftDatasetChanged="leftDatasetChanged"
-      @rightDatasetChanged="rightDatasetChanged"
-      @pathsDatasetChanged="pathsDatasetChanged"
+      @datasetChanged="datasetChanged"
       @setTreeView="setTreeView"
       @setCircleView="setCircleView"
     ></custom-menu>
@@ -37,6 +35,7 @@ import axios from 'axios'
 import CustomMenu from './CustomMenu.vue'
 import { prepareLabels } from '../utils/nodesUtils'
 import { Labels } from '@/models'
+import { getDataset, datasets } from '../utils/dataset-api'
 
 export default Vue.extend({
   name: 'VisMaster',
@@ -45,42 +44,7 @@ export default Vue.extend({
     Layout,
     VisContainer
   },
-  created () {
-    axios.get('bohumin.json').then(
-      response => {
-        this.leftDataset = response.data
-      },
-      error => {
-        this.error = error
-      }
-    )
-    axios.get('divadlo.json').then(
-      response => {
-        this.rightDataset = response.data
-      },
-      error => {
-        this.error = error
-      }
-    )
-    axios.get('bohumin-divadlo-similarity-default.json').then(
-      response => {
-        this.paths = response.data.paths
-      },
-      error => {
-        this.error = error
-      }
-    )
-    axios.get('labels-bohumin-divadlo.json').then(
-      response => {
-        this.labels = prepareLabels(response.data.labels)
-      },
-      error => {
-        this.error = error
-      }
-    )
-  },
   data: () => ({
-    error: Error(),
     leftDataset: undefined,
     rightDataset: undefined,
     paths: undefined,
@@ -88,11 +52,13 @@ export default Vue.extend({
     labels: {}
   }),
   methods: {
-    leftDatasetChanged: function () {
-      this.$emit('leftDatasetChanged')
-    },
-    rightDatasetChanged: function () {
-      this.$emit('rightDatasetChanged')
+    datasetChanged: async function (label: string) {
+      const dataset = await getDataset(label)
+      console.log(dataset)
+      this.labels = prepareLabels(dataset.labels.labels)
+      this.leftDataset = dataset.left
+      this.rightDataset = dataset.right
+      this.paths = dataset.defaultPath.paths
     },
     pathsDatasetChanged: function () {
       this.$emit('pathsDatasetChanged')

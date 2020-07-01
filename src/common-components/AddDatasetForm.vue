@@ -3,7 +3,7 @@
       <v-card-title>
         <span class="headline">Add dataset</span>
       </v-card-title>
-      <p>dataset1.json and dataset2.json are available</p>
+      <p>Choose between two pairs ready for this demo or visit <a href="http://skoda.projekty.ms.mff.cuni.cz/dataset-similarity/#/visualisation">ODIN</a></p>
       <v-card-text>
         <v-container>
           <v-row>
@@ -14,9 +14,11 @@
             />
           </v-row>
           <v-row>
-            <v-col cols="12" sm="8" md="12">
-              <v-text-field v-model="datasetUrl" label="URL" hint="Url of dataset"></v-text-field>
-            </v-col>
+            <v-combobox
+              v-model="dataset"
+              :items="datasetItems"
+              label="Collection"
+            />
           </v-row>
         </v-container>
       </v-card-text>
@@ -29,21 +31,27 @@
 </template>
 
 <script>
+import { datasets } from '../utils/dataset-api'
+
 export default {
   name: 'AddDatasetForm',
 
+  computed: {
+    datasetItems: function () {
+      return datasets.map(item => item.label)
+    }
+  },
   data: () => ({
     collectionItems:
-      ['hierarchy.v1'
+      ['v1'
       ],
-    collection: 'hierarchy.v1',
-    selectedMappingItems: [],
-    datasetUrl: ''
+    collection: 'v1',
+    dataset: ''
   }),
   methods: {
     datasetChanged: function () {
       this.dialog = false
-      this.$emit('datasetChanged', this.datasetUrl, this.collection)
+      this.$emit('datasetChanged', this.dataset, this.collection)
     },
     dialogClosed: function () {
       this.$emit('dialogClosed')

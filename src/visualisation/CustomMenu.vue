@@ -17,39 +17,24 @@
       </v-btn>
     </template>
     <add-path-dialog @pathsDatasetChanged="pathsDatasetChanged"></add-path-dialog>
-    <v-dialog v-model="leftDialogDisplay" persistent max-width="600px">
+    <v-dialog v-model="dialogDisplay" persistent max-width="600px">
       <template v-slot:activator="{ on }">
         <v-btn
           fab
           small
           color="primary"
           v-on="on"
-          v-bind:content="`Change left dataset`"
+          v-bind:content="`Change datasets`"
           v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
         >
-          <v-icon>mdi-set-left</v-icon>
+          <v-icon>mdi-database-plus</v-icon>
       </v-btn>
       </template>
       <add-dataset-form
-        @datasetChanged="leftDatasetChanged"
+        @datasetChanged="datasetChanged"
         @dialogClosed="dialogClosed"
       >
       </add-dataset-form>
-    </v-dialog>
-    <v-dialog v-model="rightDialogDisplay" persistent max-width="600px">
-      <template v-slot:activator="{ on }">
-        <v-btn
-          fab
-          small
-          color="primary"
-          v-on="on"
-          v-bind:content="`Change right dataset`"
-          v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
-        >
-          <v-icon>mdi-set-right</v-icon>
-      </v-btn>
-      </template>
-      <add-dataset-form @datasetChanged="rightDatasetChanged" @dialogClosed="dialogClosed"></add-dataset-form>
     </v-dialog>
     <v-btn
       v-bind:content="`Switch to tree view`"
@@ -90,29 +75,29 @@ export default Vue.extend({
     Tutorial
   },
   data: () => ({
-    leftDialogDisplay: false,
-    rightDialogDisplay: false,
+    dialogDisplay: false,
     floatingActionBtnVisible: false
   }),
   methods: {
-    leftDatasetChanged: function (url: string) {
-      this.$emit('leftDatasetChanged', url)
-    },
-    rightDatasetChanged: function (url: string) {
-      this.$emit('rightDatasetChanged', url)
+    datasetChanged: function (url: string) {
+      this.dialogDisplay = false
+      this.floatingActionBtnVisible = false
+      this.$emit('datasetChanged', url)
     },
     pathsDatasetChanged: function (url: string) {
       this.$emit('pathsDatasetChanged', url)
+      this.floatingActionBtnVisible = false
     },
     viewCircles: function () {
       this.$emit('setCircleView')
+      this.floatingActionBtnVisible = false
     },
     viewTree: function () {
       this.$emit('setTreeView')
+      this.floatingActionBtnVisible = false
     },
     dialogClosed: function () {
-      this.rightDialogDisplay = false
-      this.leftDialogDisplay = false
+      this.dialogDisplay = false
     }
   }
 })

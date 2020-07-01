@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent max-width="600px">
     <template v-slot:activator="{ on }">
       <v-btn
-        v-bind:content="`Add paths file`"
+        v-bind:content="`Change paths`"
         v-tippy='{interactive : true, animateFill: false, placement:"right", animation:"shift-toward", delay:100, arrow : true}'
         fab
         dark
@@ -10,7 +10,7 @@
         v-on="on"
         color="indigo"
       >
-        <v-icon>mdi-set-center</v-icon>
+        <v-icon>mdi-graphql</v-icon>
       </v-btn>
     </template>
     <v-card>

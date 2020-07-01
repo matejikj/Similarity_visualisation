@@ -1,10 +1,10 @@
 {
-  "@id": "https://data.gov.cz/zdroj/datové-sady/https---opendata.ostrava.cz-api-3-action-package_show-id-program-narodniho-divadla-moravskoslezskeho",
+  "@id": "https://data.gov.cz/zdroj/datov\u00e9-sady/https---opendata.ostrava.cz-api-3-action-package_show-id-program-narodniho-divadla-moravskoslezskeho",
   "metadata": {
-    "title": "Program Národního divadla moravskoslezského",
-    "description": "datová sada obsahuje údaje o programu Národního divadla moravskoslezského",
+    "title": "Program N\u00e1rodn\u00edho divadla moravskoslezsk\u00e9ho",
+    "description": "datov\u00e1 sada obsahuje \u00fadaje o programu N\u00e1rodn\u00edho divadla moravskoslezsk\u00e9ho",
     "keywords": [
-      "představení",
+      "p\u0159edstaven\u00ed",
       "program",
       "divadlo"
     ]

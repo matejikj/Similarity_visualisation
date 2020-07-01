@@ -1,0 +1,1791 @@
+{
+  "labels": [
+    {
+      "id": "Q3245975"
+    },
+    {
+      "id": "Q1496967"
+    },
+    {
+      "id": "Q15401930"
+    },
+    {
+      "id": "Q28786318"
+    },
+    {
+      "id": "Q27166344"
+    },
+    {
+      "id": "Q336",
+      "label": "věda"
+    },
+    {
+      "id": "Q23009675"
+    },
+    {
+      "id": "Q52948",
+      "label": "interakce"
+    },
+    {
+      "id": "Q1093580",
+      "label": "čínské příjmení"
+    },
+    {
+      "id": "Q33283501",
+      "label": "příjmení se specifickým původem"
+    },
+    {
+      "id": "Q20817253"
+    },
+    {
+      "id": "Q4173967"
+    },
+    {
+      "id": "Q4372150"
+    },
+    {
+      "id": "Q230788",
+      "label": "Grant (účelový dar)"
+    },
+    {
+      "id": "Q1799794"
+    },
+    {
+      "id": "Q22698",
+      "label": "park"
+    },
+    {
+      "id": "Q22652",
+      "label": "veřejná zeleň"
+    },
+    {
+      "id": "Q2311958"
+    },
+    {
+      "id": "Q1144560"
+    },
+    {
+      "id": "Q40634",
+      "label": "filologie"
+    },
+    {
+      "id": "Q944537"
+    },
+    {
+      "id": "Q48522"
+    },
+    {
+      "id": "Q36205316"
+    },
+    {
+      "id": "Q2097994"
+    },
+    {
+      "id": "Q3266850"
+    },
+    {
+      "id": "Q188619",
+      "label": "hierarchie"
+    },
+    {
+      "id": "Q4354683"
+    },
+    {
+      "id": "Q1774041"
+    },
+    {
+      "id": "Q1322323"
+    },
+    {
+      "id": "Q205895",
+      "label": "pevnina"
+    },
+    {
+      "id": "Q23958852"
+    },
+    {
+      "id": "Q56668826"
+    },
+    {
+      "id": "Q4121104"
+    },
+    {
+      "id": "Q3284399"
+    },
+    {
+      "id": "Q15916540"
+    },
+    {
+      "id": "Q28314507"
+    },
+    {
+      "id": "Q23958946"
+    },
+    {
+      "id": "Q39875001"
+    },
+    {
+      "id": "Q8027727"
+    },
+    {
+      "id": "Q192161",
+      "label": "formální jazyk"
+    },
+    {
+      "id": "Q649732",
+      "label": "formální systém"
+    },
+    {
+      "id": "Q1146011"
+    },
+    {
+      "id": "Q1454188"
+    },
+    {
+      "id": "Q1235196",
+      "label": "dokumentalistika"
+    },
+    {
+      "id": "Q1499548",
+      "label": "peněžní hodnota"
+    },
+    {
+      "id": "Q194112",
+      "label": "hodnota"
+    },
+    {
+      "id": "Q211364",
+      "label": "princip"
+    },
+    {
+      "id": "Q17376908",
+      "label": "languoid"
+    },
+    {
+      "id": "Q159954",
+      "label": "kaldera"
+    },
+    {
+      "id": "Q29025902"
+    },
+    {
+      "id": "Q5469988"
+    },
+    {
+      "id": "Q4393498"
+    },
+    {
+      "id": "Q11946645",
+      "label": "vysokoškolský ústav"
+    },
+    {
+      "id": "Q1664720",
+      "label": "institut"
+    },
+    {
+      "id": "Q3247505"
+    },
+    {
+      "id": "Q80083",
+      "label": "humanitní vědy"
+    },
+    {
+      "id": "Q2225692",
+      "label": "obec v Indonésii"
+    },
+    {
+      "id": "Q1434505",
+      "label": "Administrativní dělení Indonésie"
+    },
+    {
+      "id": "Q7887142"
+    },
+    {
+      "id": "Q618299"
+    },
+    {
+      "id": "Q15642541"
+    },
+    {
+      "id": "Q28728771"
+    },
+    {
+      "id": "Q56876011"
+    },
+    {
+      "id": "Q37930",
+      "label": "poštovní známka"
+    },
+    {
+      "id": "Q15964794",
+      "label": "papírový produkt"
+    },
+    {
+      "id": "Q36214810"
+    },
+    {
+      "id": "Q1444571",
+      "label": "frankování"
+    },
+    {
+      "id": "Q49845",
+      "label": "pošta"
+    },
+    {
+      "id": "Q699405",
+      "label": "obydlí"
+    },
+    {
+      "id": "Q352618"
+    },
+    {
+      "id": "Q28732711"
+    },
+    {
+      "id": "Q2063340"
+    },
+    {
+      "id": "Q24034552"
+    },
+    {
+      "id": "Q22272508"
+    },
+    {
+      "id": "Q2990593"
+    },
+    {
+      "id": "Q5915039"
+    },
+    {
+      "id": "Q58416391"
+    },
+    {
+      "id": "Q58415929"
+    },
+    {
+      "id": "Q48907157"
+    },
+    {
+      "id": "Q194980"
+    },
+    {
+      "id": "Q23009552"
+    },
+    {
+      "id": "Q1414816"
+    },
+    {
+      "id": "Q2198779"
+    },
+    {
+      "id": "Q6031064"
+    },
+    {
+      "id": "Q9143",
+      "label": "programovací jazyk"
+    },
+    {
+      "id": "Q629206"
+    },
+    {
+      "id": "Q1401131"
+    },
+    {
+      "id": "Q38033430",
+      "label": "třída ocenění"
+    },
+    {
+      "id": "Q846537"
+    },
+    {
+      "id": "Q29651519"
+    },
+    {
+      "id": "Q29651224"
+    },
+    {
+      "id": "Q79529",
+      "label": "látka"
+    },
+    {
+      "id": "Q2385804",
+      "label": "vzdělávací instituce"
+    },
+    {
+      "id": "Q11344",
+      "label": "chemický prvek"
+    },
+    {
+      "id": "Q216353",
+      "label": "titul"
+    },
+    {
+      "id": "Q15141321"
+    },
+    {
+      "id": "Q165436",
+      "label": "jazyk symbolických adres"
+    },
+    {
+      "id": "Q28922854"
+    },
+    {
+      "id": "Q7551384"
+    },
+    {
+      "id": "Q4502142"
+    },
+    {
+      "id": "Q332624"
+    },
+    {
+      "id": "Q15042037"
+    },
+    {
+      "id": "Q15709883"
+    },
+    {
+      "id": "Q31464082"
+    },
+    {
+      "id": "Q104567",
+      "label": "chalkogeny"
+    },
+    {
+      "id": "Q15916867"
+    },
+    {
+      "id": "Q43460564"
+    },
+    {
+      "id": "Q188913",
+      "label": "plantáž"
+    },
+    {
+      "id": "Q131596",
+      "label": "statek"
+    },
+    {
+      "id": "Q34669510"
+    },
+    {
+      "id": "Q2659904"
+    },
+    {
+      "id": "Q207628",
+      "label": "hudební skladba"
+    },
+    {
+      "id": "Q19793988"
+    },
+    {
+      "id": "Q33274034"
+    },
+    {
+      "id": "Q236371",
+      "label": "sad"
+    },
+    {
+      "id": "Q1786828"
+    },
+    {
+      "id": "Q7194062"
+    },
+    {
+      "id": "Q23847174"
+    },
+    {
+      "id": "Q1311670"
+    },
+    {
+      "id": "Q517966"
+    },
+    {
+      "id": "Q23009459"
+    },
+    {
+      "id": "Q7978115"
+    },
+    {
+      "id": "Q34770",
+      "label": "jazyk"
+    },
+    {
+      "id": "Q7366",
+      "label": "píseň"
+    },
+    {
+      "id": "Q733541"
+    },
+    {
+      "id": "Q760120"
+    },
+    {
+      "id": "Q240673",
+      "label": "náklad"
+    },
+    {
+      "id": "Q427581"
+    },
+    {
+      "id": "Q4120621"
+    },
+    {
+      "id": "Q24017414"
+    },
+    {
+      "id": "Q17538690"
+    },
+    {
+      "id": "Q26898117"
+    },
+    {
+      "id": "Q5341295"
+    },
+    {
+      "id": "Q11024",
+      "label": "dorozumívání"
+    },
+    {
+      "id": "Q921513"
+    },
+    {
+      "id": "Q23005223"
+    },
+    {
+      "id": "Q2204117"
+    },
+    {
+      "id": "Q670",
+      "label": "křemík"
+    },
+    {
+      "id": "Q19596",
+      "label": "polokov"
+    },
+    {
+      "id": "Q15621286"
+    },
+    {
+      "id": "Q838123"
+    },
+    {
+      "id": "Q1325769"
+    },
+    {
+      "id": "Q981351"
+    },
+    {
+      "id": "Q106693",
+      "label": "tetrely"
+    },
+    {
+      "id": "Q3258231"
+    },
+    {
+      "id": "Q755707",
+      "label": "samosprávné obce Norska"
+    },
+    {
+      "id": "Q281801"
+    },
+    {
+      "id": "Q23729754"
+    },
+    {
+      "id": "Q7631075"
+    },
+    {
+      "id": "Q631147"
+    },
+    {
+      "id": "Q12562330"
+    },
+    {
+      "id": "Q2091629"
+    },
+    {
+      "id": "Q2324993"
+    },
+    {
+      "id": "Q1200750"
+    },
+    {
+      "id": "Q321839"
+    },
+    {
+      "id": "Q774228"
+    },
+    {
+      "id": "Q1725664",
+      "label": "terminologie"
+    },
+    {
+      "id": "Q28980086"
+    },
+    {
+      "id": "Q23649976"
+    },
+    {
+      "id": "Q211331",
+      "label": "prvek 3. periody"
+    },
+    {
+      "id": "Q190429",
+      "label": "proláklina"
+    },
+    {
+      "id": "Q55659167"
+    },
+    {
+      "id": "Q8162",
+      "label": "lingvistika"
+    },
+    {
+      "id": "Q28129886"
+    },
+    {
+      "id": "Q10389811"
+    },
+    {
+      "id": "Q52511956"
+    },
+    {
+      "id": "Q24229398"
+    },
+    {
+      "id": "Q2944660"
+    },
+    {
+      "id": "Q23683472"
+    },
+    {
+      "id": "Q11081619"
+    },
+    {
+      "id": "Q30892871"
+    },
+    {
+      "id": "Q18340964"
+    },
+    {
+      "id": "Q1125239"
+    },
+    {
+      "id": "Q1937453"
+    },
+    {
+      "id": "Q33005760",
+      "label": "vyprávění"
+    },
+    {
+      "id": "Q4189293",
+      "label": "titul"
+    },
+    {
+      "id": "Q23960977"
+    },
+    {
+      "id": "Q13582682"
+    },
+    {
+      "id": "Q23959932"
+    },
+    {
+      "id": "Q4184950"
+    },
+    {
+      "id": "Q28555911"
+    },
+    {
+      "id": "Q20026918"
+    },
+    {
+      "id": "Q22294683"
+    },
+    {
+      "id": "Q30060700"
+    },
+    {
+      "id": "Q23009538"
+    },
+    {
+      "id": "Q629",
+      "label": "kyslík"
+    },
+    {
+      "id": "Q6005984"
+    },
+    {
+      "id": "Q28921572"
+    },
+    {
+      "id": "Q22269697"
+    },
+    {
+      "id": "Q1921834"
+    },
+    {
+      "id": "Q3257686",
+      "label": "lokalita"
+    },
+    {
+      "id": "Q15640612"
+    },
+    {
+      "id": "Q48204",
+      "label": "spolek"
+    },
+    {
+      "id": "Q21143058"
+    },
+    {
+      "id": "Q218005",
+      "label": "sumace"
+    },
+    {
+      "id": "Q813912"
+    },
+    {
+      "id": "Q533309"
+    },
+    {
+      "id": "Q11879590",
+      "label": "ženské křestní jméno"
+    },
+    {
+      "id": "Q19600",
+      "label": "nekov"
+    },
+    {
+      "id": "Q616622",
+      "label": "Ich-forma"
+    },
+    {
+      "id": "Q207712",
+      "label": "prvek 2. periody"
+    },
+    {
+      "id": "Q188507",
+      "label": "byt"
+    },
+    {
+      "id": "Q1554231"
+    },
+    {
+      "id": "Q18336849"
+    },
+    {
+      "id": "Q618779",
+      "label": "ocenění"
+    },
+    {
+      "id": "Q81163",
+      "label": "polymer"
+    },
+    {
+      "id": "Q1047113"
+    },
+    {
+      "id": "Q3062125"
+    },
+    {
+      "id": "Q146439",
+      "label": "silikon"
+    },
+    {
+      "id": "Q3387041"
+    },
+    {
+      "id": "Q2916486"
+    },
+    {
+      "id": "Q1529096",
+      "label": "köy"
+    },
+    {
+      "id": "Q35825432"
+    },
+    {
+      "id": "Q35145263"
+    },
+    {
+      "id": "Q203872",
+      "label": "bytí"
+    },
+    {
+      "id": "Q3302947"
+    },
+    {
+      "id": "Q859031",
+      "label": "Stimulace"
+    },
+    {
+      "id": "Q2006324"
+    },
+    {
+      "id": "Q21162272"
+    },
+    {
+      "id": "Q17164790"
+    },
+    {
+      "id": "Q7893853"
+    },
+    {
+      "id": "Q208218",
+      "label": "aktualizace"
+    },
+    {
+      "id": "Q1381898"
+    },
+    {
+      "id": "Q28829877"
+    },
+    {
+      "id": "Q15229207",
+      "label": "sportovní ocenění"
+    },
+    {
+      "id": "Q11426",
+      "label": "kovy"
+    },
+    {
+      "id": "Q214609",
+      "label": "materiál"
+    },
+    {
+      "id": "Q208469",
+      "label": "odvozená jednotka SI"
+    },
+    {
+      "id": "Q3245975"
+    },
+    {
+      "id": "Q17489659",
+      "label": "skupina děl"
+    },
+    {
+      "id": "Q334166",
+      "label": "dopravní prostředek"
+    },
+    {
+      "id": "Q21146257",
+      "label": "typ"
+    },
+    {
+      "id": "Q1496967"
+    },
+    {
+      "id": "Q46737",
+      "label": "aktivum"
+    },
+    {
+      "id": "Q1554231"
+    },
+    {
+      "id": "Q15401930"
+    },
+    {
+      "id": "Q836672",
+      "label": "kazašské oblasti"
+    },
+    {
+      "id": "Q28786318"
+    },
+    {
+      "id": "Q16391167",
+      "label": "plavidlo"
+    },
+    {
+      "id": "Q15079663",
+      "label": "linka metra"
+    },
+    {
+      "id": "Q728937",
+      "label": "železniční trať"
+    },
+    {
+      "id": "Q20817253"
+    },
+    {
+      "id": "Q4173967"
+    },
+    {
+      "id": "Q2311958"
+    },
+    {
+      "id": "Q105420",
+      "label": "antologie"
+    },
+    {
+      "id": "Q6498684",
+      "label": "vlastnictví"
+    },
+    {
+      "id": "Q7748",
+      "label": "právo"
+    },
+    {
+      "id": "Q1144560"
+    },
+    {
+      "id": "Q48522"
+    },
+    {
+      "id": "Q36205316"
+    },
+    {
+      "id": "Q11460",
+      "label": "oděv"
+    },
+    {
+      "id": "Q2097994"
+    },
+    {
+      "id": "Q3266850"
+    },
+    {
+      "id": "Q41298",
+      "label": "časopis"
+    },
+    {
+      "id": "Q1002697",
+      "label": "periodikum"
+    },
+    {
+      "id": "Q3565868",
+      "label": "kolejová doprava"
+    },
+    {
+      "id": "Q4354683"
+    },
+    {
+      "id": "Q1774041"
+    },
+    {
+      "id": "Q1067164",
+      "label": "linka"
+    },
+    {
+      "id": "Q1322323"
+    },
+    {
+      "id": "Q1229765",
+      "label": "plavidlo"
+    },
+    {
+      "id": "Q10374501",
+      "label": "Administrativní dělení Bulharska"
+    },
+    {
+      "id": "Q15916867"
+    },
+    {
+      "id": "Q21092339",
+      "label": "matematická značka"
+    },
+    {
+      "id": "Q6498784",
+      "label": "matematický výraz"
+    },
+    {
+      "id": "Q11578774",
+      "label": "pořad"
+    },
+    {
+      "id": "Q23958852"
+    },
+    {
+      "id": "Q167270",
+      "label": "ochranná známka"
+    },
+    {
+      "id": "Q200726",
+      "label": "rozdělení pravděpodobnosti"
+    },
+    {
+      "id": "Q3284399"
+    },
+    {
+      "id": "Q15916540"
+    },
+    {
+      "id": "Q43263",
+      "label": "administrativní dělení Ruska"
+    },
+    {
+      "id": "Q5164076"
+    },
+    {
+      "id": "Q752870",
+      "label": "motorové vozidlo"
+    },
+    {
+      "id": "Q244982",
+      "label": "prvek 5. periody"
+    },
+    {
+      "id": "Q101843",
+      "label": "perioda"
+    },
+    {
+      "id": "Q28314507"
+    },
+    {
+      "id": "Q52511956"
+    },
+    {
+      "id": "Q8142",
+      "label": "měna"
+    },
+    {
+      "id": "Q11105360"
+    },
+    {
+      "id": "Q5",
+      "label": "člověk"
+    },
+    {
+      "id": "Q23958946"
+    },
+    {
+      "id": "Q6881511",
+      "label": "podnik"
+    },
+    {
+      "id": "Q4120621"
+    },
+    {
+      "id": "Q39875001"
+    },
+    {
+      "id": "Q222910",
+      "label": "kompilační album"
+    },
+    {
+      "id": "Q7930989"
+    },
+    {
+      "id": "Q2217301",
+      "label": "sborník"
+    },
+    {
+      "id": "Q1146011"
+    },
+    {
+      "id": "Q780687",
+      "label": "subjektivní právo"
+    },
+    {
+      "id": "Q350783",
+      "label": "dráha"
+    },
+    {
+      "id": "Q5398426",
+      "label": "televizní seriál"
+    },
+    {
+      "id": "Q431289",
+      "label": "obchodní značka"
+    },
+    {
+      "id": "Q7725634",
+      "label": "literární dílo"
+    },
+    {
+      "id": "Q216042",
+      "label": "čárka"
+    },
+    {
+      "id": "Q181767",
+      "label": "Přízvuk"
+    },
+    {
+      "id": "Q391371",
+      "label": "alternativní rozdělení"
+    },
+    {
+      "id": "Q185547",
+      "label": "binomické rozdělení"
+    },
+    {
+      "id": "Q451553",
+      "label": "vizualizace"
+    },
+    {
+      "id": "Q5469988"
+    },
+    {
+      "id": "Q4393498"
+    },
+    {
+      "id": "Q54050",
+      "label": "kopec"
+    },
+    {
+      "id": "Q14524493",
+      "label": "krajina"
+    },
+    {
+      "id": "Q7887142"
+    },
+    {
+      "id": "Q1640628",
+      "label": "síťová služba"
+    },
+    {
+      "id": "Q146923"
+    },
+    {
+      "id": "Q618299"
+    },
+    {
+      "id": "Q15642541"
+    },
+    {
+      "id": "Q35758",
+      "label": "hmota"
+    },
+    {
+      "id": "Q28728771"
+    },
+    {
+      "id": "Q1589009",
+      "label": "soukromá společnost"
+    },
+    {
+      "id": "Q56876011"
+    },
+    {
+      "id": "Q14502790"
+    },
+    {
+      "id": "Q2520520",
+      "label": "administrativní dělení Maďarska"
+    },
+    {
+      "id": "Q16744570",
+      "label": "tabulka"
+    },
+    {
+      "id": "Q36214810"
+    },
+    {
+      "id": "Q7397",
+      "label": "software"
+    },
+    {
+      "id": "Q202444",
+      "label": "rodné jméno"
+    },
+    {
+      "id": "Q1668024",
+      "label": "internetová služba"
+    },
+    {
+      "id": "Q1065579"
+    },
+    {
+      "id": "Q362200"
+    },
+    {
+      "id": "Q29175",
+      "label": "derivace"
+    },
+    {
+      "id": "Q28732711"
+    },
+    {
+      "id": "Q2063340"
+    },
+    {
+      "id": "Q24034552"
+    },
+    {
+      "id": "Q154954",
+      "label": "fyzická osoba"
+    },
+    {
+      "id": "Q5915039"
+    },
+    {
+      "id": "Q58416391"
+    },
+    {
+      "id": "Q58415929"
+    },
+    {
+      "id": "Q7406919",
+      "label": "služba"
+    },
+    {
+      "id": "Q15072596",
+      "label": "Administrativní dělení Kazachstánu"
+    },
+    {
+      "id": "Q186165",
+      "label": "internetový portál"
+    },
+    {
+      "id": "Q271669",
+      "label": "povrchový tvar"
+    },
+    {
+      "id": "Q194980"
+    },
+    {
+      "id": "Q614112",
+      "label": "hodnota"
+    },
+    {
+      "id": "Q2198779"
+    },
+    {
+      "id": "Q19549",
+      "label": "chemická skupina"
+    },
+    {
+      "id": "Q10617810",
+      "label": "interpunkční znaménko"
+    },
+    {
+      "id": "Q1668151"
+    },
+    {
+      "id": "Q14296",
+      "label": "doména nejvyššího řádu"
+    },
+    {
+      "id": "Q32635",
+      "label": "internetová doména"
+    },
+    {
+      "id": "Q1401131"
+    },
+    {
+      "id": "Q11446",
+      "label": "loď"
+    },
+    {
+      "id": "Q451967",
+      "label": "jednání"
+    },
+    {
+      "id": "Q223642",
+      "label": "mezilidský vztah"
+    },
+    {
+      "id": "Q3769299",
+      "label": "lidské chování"
+    },
+    {
+      "id": "Q838795",
+      "label": "strip"
+    },
+    {
+      "id": "Q1004",
+      "label": "komiks"
+    },
+    {
+      "id": "Q846537"
+    },
+    {
+      "id": "Q20031543"
+    },
+    {
+      "id": "Q1875621",
+      "label": "typ letadla"
+    },
+    {
+      "id": "Q29651519"
+    },
+    {
+      "id": "Q29651224"
+    },
+    {
+      "id": "Q1322005",
+      "label": "přírodní jev"
+    },
+    {
+      "id": "Q3961002",
+      "label": "děleno"
+    },
+    {
+      "id": "Q7725310",
+      "label": "seriál"
+    },
+    {
+      "id": "Q131257",
+      "label": "duševní vlastnictví"
+    },
+    {
+      "id": "Q209824",
+      "label": "bulharské oblasti"
+    },
+    {
+      "id": "Q18615777",
+      "label": "vlastnost Wikidat určující polohu"
+    },
+    {
+      "id": "Q15141321"
+    },
+    {
+      "id": "Q332624"
+    },
+    {
+      "id": "Q15042037"
+    },
+    {
+      "id": "Q15709883"
+    },
+    {
+      "id": "Q4502142"
+    },
+    {
+      "id": "Q7551384"
+    },
+    {
+      "id": "Q31464082"
+    },
+    {
+      "id": "Q835714",
+      "label": "Oblasti Ruské federace"
+    },
+    {
+      "id": "Q51049922",
+      "label": "vesnice"
+    },
+    {
+      "id": "Q19588",
+      "label": "přechodný kov"
+    },
+    {
+      "id": "Q34669510"
+    },
+    {
+      "id": "Q2659904"
+    },
+    {
+      "id": "Q79913",
+      "label": "nestátní nezisková organizace"
+    },
+    {
+      "id": "Q163740",
+      "label": "nezisková organizace"
+    },
+    {
+      "id": "Q496946",
+      "label": "tabulka"
+    },
+    {
+      "id": "Q845734",
+      "label": "informační grafika"
+    },
+    {
+      "id": "Q19793988"
+    },
+    {
+      "id": "Q1786828"
+    },
+    {
+      "id": "Q7194062"
+    },
+    {
+      "id": "Q1311670"
+    },
+    {
+      "id": "Q517966",
+      "label": "Struktura"
+    },
+    {
+      "id": "Q23009459"
+    },
+    {
+      "id": "Q722",
+      "label": "vanad"
+    },
+    {
+      "id": "Q193276",
+      "label": "5. skupina"
+    },
+    {
+      "id": "Q3449014",
+      "label": "Domácí partnerství"
+    },
+    {
+      "id": "Q171308",
+      "label": "oblast"
+    },
+    {
+      "id": "Q57955292"
+    },
+    {
+      "id": "Q13218690",
+      "label": "město v Maďarsku"
+    },
+    {
+      "id": "Q7978115"
+    },
+    {
+      "id": "Q1110794",
+      "label": "deník"
+    },
+    {
+      "id": "Q7278",
+      "label": "politická strana"
+    },
+    {
+      "id": "Q633466",
+      "label": "÷"
+    },
+    {
+      "id": "Q733541"
+    },
+    {
+      "id": "Q15709880",
+      "label": "rozhlasový nebo televizní seriál"
+    },
+    {
+      "id": "Q427581"
+    },
+    {
+      "id": "Q24017414"
+    },
+    {
+      "id": "Q17538690"
+    },
+    {
+      "id": "Q26898117"
+    },
+    {
+      "id": "Q18647519",
+      "label": "asymetrická vlastnost"
+    },
+    {
+      "id": "Q12562330"
+    },
+    {
+      "id": "Q2204117"
+    },
+    {
+      "id": "Q865811",
+      "label": "distribuce"
+    },
+    {
+      "id": "Q170084",
+      "label": "generalizace"
+    },
+    {
+      "id": "Q15621286"
+    },
+    {
+      "id": "Q1756157",
+      "label": "právní odvětví"
+    },
+    {
+      "id": "Q554774",
+      "label": "škoda"
+    },
+    {
+      "id": "Q481609",
+      "label": "újma"
+    },
+    {
+      "id": "Q372222"
+    },
+    {
+      "id": "Q532",
+      "label": "vesnice"
+    },
+    {
+      "id": "Q175185",
+      "label": "venkov"
+    },
+    {
+      "id": "Q486902",
+      "label": "matematický model"
+    },
+    {
+      "id": "Q838123"
+    },
+    {
+      "id": "Q35127",
+      "label": "internetová stránka"
+    },
+    {
+      "id": "Q1186952"
+    },
+    {
+      "id": "Q1325769"
+    },
+    {
+      "id": "Q981351"
+    },
+    {
+      "id": "Q3258231"
+    },
+    {
+      "id": "Q7631075"
+    },
+    {
+      "id": "Q2091629"
+    },
+    {
+      "id": "Q174565",
+      "label": "závorky"
+    },
+    {
+      "id": "Q239825",
+      "label": "prvek 4. periody"
+    },
+    {
+      "id": "Q5185279",
+      "label": "báseň"
+    },
+    {
+      "id": "Q482",
+      "label": "poezie"
+    },
+    {
+      "id": "Q15416",
+      "label": "televizní pořad"
+    },
+    {
+      "id": "Q2324993"
+    },
+    {
+      "id": "Q1318295",
+      "label": "vyprávění"
+    },
+    {
+      "id": "Q188790",
+      "label": "konkubinát"
+    },
+    {
+      "id": "Q1200750"
+    },
+    {
+      "id": "Q402092",
+      "label": "motorová loď"
+    },
+    {
+      "id": "Q728646",
+      "label": "partnerství"
+    },
+    {
+      "id": "Q1485500",
+      "label": "zboží"
+    },
+    {
+      "id": "Q321839"
+    },
+    {
+      "id": "Q18608871",
+      "label": "vlastnost Wikidat pro položky o lidech"
+    },
+    {
+      "id": "Q774228"
+    },
+    {
+      "id": "Q18608993",
+      "label": "vlastnost Wikidat pro položky o organizacích"
+    },
+    {
+      "id": "Q21818626",
+      "label": "vlastnost Wikidat související se sportem"
+    },
+    {
+      "id": "Q22984545"
+    },
+    {
+      "id": "Q1714118"
+    },
+    {
+      "id": "Q21572908"
+    },
+    {
+      "id": "Q28980086"
+    },
+    {
+      "id": "Q23649976"
+    },
+    {
+      "id": "Q83306",
+      "label": "skupina"
+    },
+    {
+      "id": "Q16686022",
+      "label": "přírodní fyzický předmět"
+    },
+    {
+      "id": "Q1799794"
+    },
+    {
+      "id": "Q42032",
+      "label": "internetová doména nejvyššího řádu"
+    },
+    {
+      "id": "Q1076968"
+    },
+    {
+      "id": "Q349047",
+      "label": "Myšlenka"
+    },
+    {
+      "id": "Q55659167"
+    },
+    {
+      "id": "Q355304",
+      "label": "vodní tok"
+    },
+    {
+      "id": "Q11032",
+      "label": "noviny"
+    },
+    {
+      "id": "Q28129886"
+    },
+    {
+      "id": "Q10389811"
+    },
+    {
+      "id": "Q941",
+      "label": "yttrium"
+    },
+    {
+      "id": "Q108307",
+      "label": "3. skupina"
+    },
+    {
+      "id": "Q24229398"
+    },
+    {
+      "id": "Q2944660"
+    },
+    {
+      "id": "Q23683472"
+    },
+    {
+      "id": "Q1189842",
+      "label": "koruna"
+    },
+    {
+      "id": "Q30892871"
+    },
+    {
+      "id": "Q18340964"
+    },
+    {
+      "id": "Q1125239"
+    },
+    {
+      "id": "Q1937453"
+    },
+    {
+      "id": "Q627436",
+      "label": "zaměření"
+    },
+    {
+      "id": "Q131016",
+      "label": "koruna česká"
+    },
+    {
+      "id": "Q23960977"
+    },
+    {
+      "id": "Q47657",
+      "label": "krevní skupina"
+    },
+    {
+      "id": "Q13582682"
+    },
+    {
+      "id": "Q23959932"
+    },
+    {
+      "id": "Q4184950"
+    },
+    {
+      "id": "Q555911",
+      "label": "soukromé vlastnictví"
+    },
+    {
+      "id": "Q863944",
+      "label": "povrchová voda"
+    },
+    {
+      "id": "Q43749575",
+      "label": "veřejná obchodní společnost"
+    },
+    {
+      "id": "Q646164",
+      "label": "veřejná obchodní společnost"
+    },
+    {
+      "id": "Q3409032",
+      "label": "obourodé jméno"
+    },
+    {
+      "id": "Q28555911"
+    },
+    {
+      "id": "Q146768",
+      "label": "middleware"
+    },
+    {
+      "id": "Q20026918"
+    },
+    {
+      "id": "Q4022",
+      "label": "řeka"
+    },
+    {
+      "id": "Q30060700"
+    },
+    {
+      "id": "Q23009538"
+    },
+    {
+      "id": "Q9332",
+      "label": "chování"
+    },
+    {
+      "id": "Q6005984"
+    },
+    {
+      "id": "Q28921572"
+    },
+    {
+      "id": "Q12766313",
+      "label": "geomorfologická jednotka"
+    },
+    {
+      "id": "Q19831450",
+      "label": "lidská krevní skupina"
+    },
+    {
+      "id": "Q1921834"
+    },
+    {
+      "id": "Q4254715",
+      "label": "Gourdou-Leseurre A"
+    },
+    {
+      "id": "Q15324",
+      "label": "vodstvo"
+    },
+    {
+      "id": "Q499094",
+      "label": "Majetek"
+    },
+    {
+      "id": "Q15640612"
+    },
+    {
+      "id": "Q21143058"
+    },
+    {
+      "id": "Q930933",
+      "label": "vztah"
+    },
+    {
+      "id": "Q813912"
+    },
+    {
+      "id": "Q52514469"
+    },
+    {
+      "id": "Q676202",
+      "label": "systémový software"
+    },
+    {
+      "id": "Q28106586",
+      "label": "vlastnost Wikidat související se sportovními událostmi"
+    },
+    {
+      "id": "Q18336849"
+    },
+    {
+      "id": "Q853725"
+    },
+    {
+      "id": "Q9420",
+      "label": "myšlení"
+    },
+    {
+      "id": "Q3711325",
+      "label": "velikost rychlosti"
+    },
+    {
+      "id": "Q1047113"
+    },
+    {
+      "id": "Q814196",
+      "label": "Tabulky"
+    },
+    {
+      "id": "Q6985603"
+    },
+    {
+      "id": "Q3387041"
+    },
+    {
+      "id": "Q28746712"
+    },
+    {
+      "id": "Q35825432"
+    },
+    {
+      "id": "Q134556",
+      "label": "singl"
+    },
+    {
+      "id": "Q3302947"
+    },
+    {
+      "id": "Q2006324"
+    },
+    {
+      "id": "Q20719696",
+      "label": "fyzickogeografický objekt"
+    },
+    {
+      "id": "Q44606558"
+    },
+    {
+      "id": "Q44606430"
+    },
+    {
+      "id": "Q208569",
+      "label": "studiové album"
+    },
+    {
+      "id": "Q21162272"
+    },
+    {
+      "id": "Q17164790"
+    },
+    {
+      "id": "Q6504956",
+      "label": "vizualizace dat"
+    },
+    {
+      "id": "Q7893853"
+    },
+    {
+      "id": "Q50380212"
+    },
+    {
+      "id": "Q2301218"
+    },
+    {
+      "id": "Q15720608",
+      "label": "vymezení"
+    },
+    {
+      "id": "Q22964231",
+      "label": "vlastnost Wikidat pro lidské vztahy"
+    }
+  ]
+}

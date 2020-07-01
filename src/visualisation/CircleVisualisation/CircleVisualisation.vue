@@ -10,7 +10,7 @@
     >
       <v-icon>mdi-image-filter-center-focus-strong-outline</v-icon>
     </v-btn>
-    <svg id="svg" ref="svg" width="100%" height="90vh">
+    <svg id="svg" ref="svg" width="100%" height="60vh">
       <defs>
         <!-- arrowhead marker definition -->
         <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"

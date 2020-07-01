@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "datasets": [
+      "https://data.gov.cz/zdroj/datov\u00e9-sady/Bohumin/3384768",
+      "https://data.gov.cz/zdroj/datov\u00e9-sady/https---opendata.ostrava.cz-api-3-action-package_show-id-program-narodniho-divadla-moravskoslezskeho"
+    ],
+    "method": "distance",
+    "resultPathCount": 1,
+    "totalPathCount": 70
+  },
+  "paths": [
+    {
+      "nodes": [
+        "Q1656682",
+        "Q35140"
+      ],
+      "shared": "Q1656682"
+    }
+  ],
+  "similarity": {
+    "average": 0.0,
+    "max": 0,
+    "min": 0,
+    "sum": 0
+  }
+}
