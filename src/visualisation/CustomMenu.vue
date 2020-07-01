@@ -85,7 +85,7 @@ export default Vue.extend({
       this.$emit('datasetChanged', url)
     },
     pathsDatasetChanged: function (url: string) {
-      this.$emit('pathsDatasetChanged', url)
+      this.$emit('pathsChanged', url)
       this.floatingActionBtnVisible = false
     },
     viewCircles: function () {

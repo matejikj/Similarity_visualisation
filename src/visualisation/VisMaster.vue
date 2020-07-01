@@ -10,7 +10,7 @@
       </vis-container>
     </v-row>
       <layout
-        v-bind:pathsDataset="paths"
+        v-bind:pathsDataset="selectedPath"
         v-bind:leftDataset="leftDataset"
         v-bind:rightDataset="rightDataset"
         v-bind:labels="labels"
@@ -21,6 +21,7 @@
     </v-row>
     <custom-menu
       @datasetChanged="datasetChanged"
+      @pathsChanged="pathsDatasetChanged"
       @setTreeView="setTreeView"
       @setCircleView="setCircleView"
     ></custom-menu>
@@ -47,27 +48,60 @@ export default Vue.extend({
   data: () => ({
     leftDataset: undefined,
     rightDataset: undefined,
-    paths: undefined,
+    paths: {
+      defaultPath: undefined,
+      rulePath: undefined,
+      directedPath: undefined,
+      finalPath: undefined
+    },
+    selectedPath: undefined,
     activeView: 1,
-    labels: {}
+    labels: {},
+    datasetAdded: false,
+    pathsChoice: 'default'
   }),
   methods: {
     datasetChanged: async function (label: string) {
       const dataset = await getDataset(label)
-      console.log(dataset)
       this.labels = prepareLabels(dataset.labels.labels)
       this.leftDataset = dataset.left
       this.rightDataset = dataset.right
-      this.paths = dataset.defaultPath.paths
+      this.paths = {
+        defaultPath: dataset.defaultPath.paths,
+        rulePath: dataset.rulePath.paths,
+        directedPath: dataset.directedPath.paths,
+        finalPath: dataset.finalPath.paths
+      }
+      this.changePath()
+      this.datasetAdded = true
     },
-    pathsDatasetChanged: function () {
-      this.$emit('pathsDatasetChanged')
+    pathsDatasetChanged: function (label: string) {
+      this.pathsChoice = label
+      if (this.datasetAdded) {
+        this.changePath()
+      }
     },
     setTreeView: function () {
       this.activeView = 2
     },
     setCircleView: function () {
       this.activeView = 1
+    },
+    changePath: function () {
+      switch (this.pathsChoice) {
+        case 'default':
+          this.selectedPath = this.paths.defaultPath
+          break
+        case 'default + rule':
+          this.selectedPath = this.paths.rulePath
+          break
+        case 'default + rule + directed':
+          this.selectedPath = this.paths.directedPath
+          break
+        case 'default + rule + directed + max length':
+          this.selectedPath = this.paths.finalPath
+          break
+      }
     }
   }
 })

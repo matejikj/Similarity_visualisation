@@ -20,16 +20,18 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" sm="8" md="12">
-              <v-text-field v-model="pathsUrl" label="URL" hint="Url of paths"></v-text-field>
-            </v-col>
+            <v-combobox
+              v-model="collection"
+              :items="collectionItems"
+              label="Collection"
+            />
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="changePaths">Add</v-btn>
+        <v-btn color="blue darken-1" text @click="changePaths">Change</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -43,16 +45,23 @@ export default Vue.extend({
 
   data: () => ({
     selectedMappingItems: [],
-    pathsUrl: 'paths-shortest.json',
     dialog: false,
-    display: true
+    display: true,
+    collectionItems:
+      [
+        'default',
+        'default + rule',
+        'default + rule + directed',
+        'default + rule + directed + max length'
+      ],
+    collection: ''
   }),
   computed: {
   },
   methods: {
     changePaths: function () {
       this.dialog = false
-      this.$emit('pathsDatasetChanged', this.pathsUrl)
+      this.$emit('pathsDatasetChanged', this.collection)
     }
   }
 })
