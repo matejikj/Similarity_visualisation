@@ -127,15 +127,7 @@ export function collapseIrrelevantSubtrees (root: Node, vertices: string[]) {
   return root
 }
 
-export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
-  resetNodeDepths(nodes)
-  const root = getNodeById(nodes, rootId)
-  const rootCopy = copyNode(root)
-  let keyCounter = 0
-  rootCopy.key = keyCounter
-  keyCounter++
-  root.depth = 0
-  rootCopy.depth = 0
+function nodesBFS () {
   let maxDepth = 0
   const queue = [rootCopy]
   while (queue.length !== 0) {
@@ -169,7 +161,18 @@ export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
       })
     }
   }
-  return rootCopy
+  return { rootCopy, maxDepth }
+}
+
+export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
+  resetNodeDepths(nodes)
+  const root = getNodeById(nodes, rootId)
+  const rootCopy = copyNode(root)
+  let keyCounter = 0
+  rootCopy.key = keyCounter
+  keyCounter++
+  root.depth = 0
+  rootCopy.depth = 0
 }
 
 export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, treeHeight: number) {
@@ -213,48 +216,7 @@ export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, tree
       })
     }
   }
-
   return { rootCopy, maxDepth }
-}
-
-export function getMaxTreeDepth (rootId: string, nodes: Array<Node>, depth: number) {
-  resetNodeDepths(nodes)
-  const root = getNodeById(nodes, rootId)
-  const rootCopy = copyNode(root)
-  root.depth = 0
-  rootCopy.depth = 0
-  let maxDepth = 0
-  const queue = [rootCopy]
-  while (queue.length !== 0) {
-    const node = queue.shift()
-    if (node === undefined) { continue }
-    const children = getNodeById(nodes, node.id).children
-    if (children === undefined) { continue }
-    if (children.length === 0) {
-      setNodeAsLeaf(node)
-    } else {
-      children.forEach(child => {
-        const childCopy = copyNode(child)
-        node.children.push(childCopy)
-        if (node.depth !== undefined) {
-          const childDepth = node.depth + 1
-          childCopy.depth = childDepth
-          child.depth = childDepth
-          if (maxDepth < childDepth) {
-            maxDepth = childDepth
-          }
-          if (childDepth < depth) {
-            queue.push(childCopy)
-          } else {
-            if (childDepth === depth) {
-              setNodeAsLeaf(childCopy)
-            }
-          }
-        }
-      })
-    }
-  }
-  return maxDepth
 }
 
 function getCircleById (circles: Array<Circle>, id: string) {
