@@ -10,6 +10,11 @@ export const datasets = [
     leftDataset: 'controls',
     rightDataset: 'trademarks',
     label: 'Controls in the field of intellectual property rights + National trademarks'
+  },
+  {
+    leftDataset: 'test',
+    rightDataset: 'test',
+    label: 'Test + test'
   }
 ]
 

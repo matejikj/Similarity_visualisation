@@ -1,6 +1,6 @@
 import { createVisitedNode, prepareLabels, mapLinks, getNodeLabel, createNode, containsNode, getNodeById, getUniqueNodes, getNodeByKey, createNodesWithRelationships, initalizeNodes } from '@/utils/nodesUtils'
 import { Labels, Node, Link } from '@/models'
-import { createHierarchy } from '@/utils/hierarchyUtils'
+import { createHierarchy, copyNode, resetNodeDepths, setNodeAsLeaf, visitChildren } from '@/utils/hierarchyUtils'
 
 describe('Create visited node', () => {
   test('it should create node', () => {
@@ -830,22 +830,274 @@ describe('Create hierarchy', () => {
   })
 })
 
-describe('Create relationships', () => {
+describe('Copy node', () => {
+  test('copy node', () => {
+    const node = new Node('Q35120', [], [], 'Q35120', 0, undefined, undefined)
+
+    expect(copyNode(node)).toEqual(node)
+  })
+})
+
+describe('Set node as leaf', () => {
+  test('node leaf', () => {
+    const node = new Node('Q35120', [], [], 'Q35120', 0, undefined, undefined)
+    const leaf = setNodeAsLeaf(node)
+
+    expect(setNodeAsLeaf(node)).toEqual(leaf)
+  })
+})
+
+describe('Reset nodes', () => {
   test('it doesn\'t contains', () => {
-    const links: Array<Link> = [
-      {
-        parent: 'E1',
-        child: 'E2'
-      }
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E4',
+        'subclass',
+        'E2'
+      ],
+      [
+        'E5',
+        'subclass',
+        'E2'
+      ],
+      [
+        'E6',
+        'subclass',
+        'E2'
+      ],
+      [
+        'E7',
+        'subclass',
+        'E3'
+      ]
     ]
     const labels: Labels = {
       E1: 'a',
-      E2: 'b'
+      E2: 'b',
+      E3: 'c',
+      E4: 'd',
+      E5: 'e',
+      E6: 'f',
+      E7: 'g',
+      Q35120: 'Q35120'
     }
     const node1 = new Node('a', [], [], 'E1', 0, undefined, undefined)
     const node2 = new Node('b', [], [], 'E2', 0, undefined, undefined)
+    const node3 = new Node('c', [], [], 'E3', 0, undefined, undefined)
+    const node4 = new Node('d', [], [], 'E4', 0, undefined, undefined)
+    const node5 = new Node('e', [], [], 'E5', 0, undefined, undefined)
+    const node6 = new Node('f', [], [], 'E6', 0, undefined, undefined)
+    const node7 = new Node('g', [], [], 'E7', 0, undefined, undefined)
+    const node0 = new Node('Q35120', [], [], 'Q35120', 0, undefined, undefined)
     node1.children.push(node2)
     node2.parents.push(node1)
-    expect(createNodesWithRelationships(links, getUniqueNodes(links, labels))).toEqual([node2, node1])
+
+    node1.children.push(node3)
+    node3.parents.push(node1)
+
+    node2.children.push(node4)
+    node4.parents.push(node2)
+
+    node2.children.push(node5)
+    node5.parents.push(node2)
+
+    node2.children.push(node6)
+    node6.parents.push(node2)
+
+    node3.children.push(node7)
+    node7.parents.push(node3)
+
+    node0.children.push(node1)
+    node1.parents.push(node0)
+
+    node1.depth = 1
+    node2.depth = 1
+    node3.depth = 1
+    node4.depth = 1
+    node5.depth = 1
+    node6.depth = 1
+    node7.depth = 1
+    node0.depth = 1
+
+    const resetedNodes = [node0, node2, node1, node3, node4, node5, node6, node7]
+    resetNodeDepths(resetedNodes)
+
+    expect(resetedNodes).toEqual(initalizeNodes(hierarchy, labels))
+  })
+})
+
+describe('Build tree', () => {
+  test('test visit root', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const node1 = new Node('a', [], Array<Node>(), 'E1', 1, undefined, undefined)
+    const node2 = new Node('b', [], Array<Node>(), 'E2', 2, undefined, undefined)
+    const node3 = new Node('c', [], Array<Node>(), 'E3', 3, undefined, undefined)
+    const node0 = new Node('Q35120', [], Array<Node>(), 'Q35120', 0, undefined, undefined)
+    node1.children.push(node2)
+    node2.parents.push(node1)
+
+    node1.children.push(node3)
+    node3.parents.push(node1)
+
+    node0.children.push(node1)
+    node1.parents.push(node0)
+
+    node0.depth = 0
+    node1.depth = 1
+    node2.depth = 2
+    node3.depth = 2
+
+    node1.children = []
+    node1.value = 1
+    node1.isLeaf = true
+
+    node2.children = []
+    node2.value = 1
+    node2.isLeaf = true
+
+    node3.children = []
+    node3.value = 1
+    node3.isLeaf = true
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    const rootCopy = copyNode(node0)
+    rootCopy.depth = 0
+    let keyCounter = 0
+    rootCopy.key = keyCounter
+    keyCounter++
+    const maxDepth = 1
+
+    const children1 = copyNode(node1)
+    children1.key = keyCounter
+    keyCounter++
+    rootCopy.children.push(children1)
+    children1.depth = 1
+
+    const children2 = copyNode(node2)
+    children2.key = keyCounter
+    keyCounter++
+    children1.children.push(children2)
+    children2.depth = 2
+    setNodeAsLeaf(children2)
+
+    const children3 = copyNode(node3)
+    children3.key = keyCounter
+    keyCounter++
+    children1.children.push(children3)
+    children3.depth = 2
+    setNodeAsLeaf(children3)
+
+    expect(visitChildren(rootCopy, maxDepth, 2, keyCounter, nodes).root).toEqual(rootCopy)
+  })
+})
+
+describe('Build tree', () => {
+  test('test visit maxDepth', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const node1 = new Node('a', [], Array<Node>(), 'E1', 1, undefined, undefined)
+    const node2 = new Node('b', [], Array<Node>(), 'E2', 2, undefined, undefined)
+    const node3 = new Node('c', [], Array<Node>(), 'E3', 3, undefined, undefined)
+    const node0 = new Node('Q35120', [], Array<Node>(), 'Q35120', 0, undefined, undefined)
+    node1.children.push(node2)
+    node2.parents.push(node1)
+
+    node1.children.push(node3)
+    node3.parents.push(node1)
+
+    node0.children.push(node1)
+    node1.parents.push(node0)
+
+    node0.depth = 0
+    node1.depth = 1
+    node2.depth = 2
+    node3.depth = 2
+
+    node1.children = []
+    node1.value = 1
+    node1.isLeaf = true
+
+    node2.children = []
+    node2.value = 1
+    node2.isLeaf = true
+
+    node3.children = []
+    node3.value = 1
+    node3.isLeaf = true
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    const rootCopy = copyNode(node0)
+    rootCopy.depth = 0
+    let keyCounter = 0
+    rootCopy.key = keyCounter
+    keyCounter++
+    const maxDepth = 1
+
+    const children1 = copyNode(node1)
+    children1.key = keyCounter
+    keyCounter++
+    rootCopy.children.push(children1)
+    children1.depth = 1
+
+    const children2 = copyNode(node2)
+    children2.key = keyCounter
+    keyCounter++
+    children1.children.push(children2)
+    children2.depth = 2
+    setNodeAsLeaf(children2)
+
+    const children3 = copyNode(node3)
+    children3.key = keyCounter
+    keyCounter++
+    children1.children.push(children3)
+    children3.depth = 2
+    setNodeAsLeaf(children3)
+
+    expect(visitChildren(rootCopy, maxDepth, 4, keyCounter, nodes).maxDepth).toEqual(2)
   })
 })

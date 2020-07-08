@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "datasets": [
+      "test",
+      "test"
+    ],
+    "method": "distance",
+    "resultPathCount": 1,
+    "totalPathCount": 70
+  },
+  "paths": [
+    {
+      "nodes": [
+        "E1",
+        "E2"
+      ],
+      "shared": "E1"
+    }
+  ],
+  "similarity": {
+    "average": 0.0,
+    "max": 0,
+    "min": 0,
+    "sum": 0
+  }
+}

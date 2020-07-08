@@ -285,7 +285,7 @@ function createPathHierarchyForTree (context: any) {
   } else {
     if (activePath !== undefined) {
       context.commit(Mutations.CHANGE_TREE_HIERARCHY, collapseIrrelevantSubtrees(createTree(context.state.rootId,
-        context.state.nodes, activePath.height).rootCopy, activePath.vertices))
+        context.state.nodes, activePath.height).root, activePath.vertices))
       context.commit(Mutations.CHANGE_TREE_HEIGHT, activePath.height)
     } else {
       context.commit(Mutations.CHANGE_TREE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, MAX_TREE_DEPTH))
@@ -341,9 +341,9 @@ function createHierarchyForCircles (context: any) {
     }
     const maxDepth = createTree(context.getters[Getters.GET_ROOT_ID], context.state.nodes, MAX_DEPTH).maxDepth
     if (maxDepth < context.state.depth) {
-      context.commit(Mutations.CHANGE_CIRCLE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, maxDepth).rootCopy)
+      context.commit(Mutations.CHANGE_CIRCLE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, maxDepth).root)
     } else {
-      context.commit(Mutations.CHANGE_CIRCLE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, context.state.depth).rootCopy)
+      context.commit(Mutations.CHANGE_CIRCLE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, context.state.depth).root)
     }
     if (maxDepth === 0) {
       context.commit(Mutations.CHANGE_MAX_DEPTH, 1)
@@ -376,7 +376,7 @@ function appendNodeTree (context: any, circle: Circle) {
     const hierarchyArray = createArrayFromHierarchy(context.state.treeHierarchy)
     const root = getNodeByKey(hierarchyArray, circle.key)
     const result = appendNode(root, context.state.nodes, hierarchyArray.length - 1, context.state.treeHeight)
-    root.children = result.rootCopy.children
+    root.children = result.root.children
     root.isLeaf = false
     context.commit(Mutations.CHANGE_TREE_HEIGHT, result.maxDepth)
     context.dispatch(Actions.UPDATE_TREE_CANVAS)
