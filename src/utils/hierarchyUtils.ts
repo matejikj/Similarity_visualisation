@@ -51,6 +51,7 @@ export function visitChildren (root: Node, maxDepth: number, depth: number, coun
       })
     }
   }
+  console.log(root)
   return { root, maxDepth }
 }
 
@@ -86,7 +87,6 @@ export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
 }
 
 export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, treeHeight: number) {
-  resetNodeDepths(nodes)
   const rootCopy = copyNode(root)
   let keyCounter = maxKey
   rootCopy.key = keyCounter
@@ -160,12 +160,6 @@ export function createArrayFromHierarchy (root: Node) {
     }
   }
   return result
-}
-
-export function createArrows (root: Node, position: Position, ids: Array<MappingNode>, nodes: Array<Node>): void {
-  if (ids !== null && ids !== undefined) {
-    packMappingArrows(1000, 1000, Array<Circle>(), mapUrlsToActiveView(ids, nodes), position)
-  }
 }
 
 export function collapseIrrelevantSubtrees (root: Node, vertices: string[]) {

@@ -1,6 +1,6 @@
 import { createVisitedNode, prepareLabels, mapLinks, getNodeLabel, createNode, containsNode, getNodeById, getUniqueNodes, getNodeByKey, createNodesWithRelationships, initalizeNodes } from '@/utils/nodesUtils'
 import { Labels, Node, Link } from '@/models'
-import { createHierarchy, copyNode, resetNodeDepths, setNodeAsLeaf, visitChildren } from '@/utils/hierarchyUtils'
+import { createHierarchy, copyNode, resetNodeDepths, createTree, appendNode, setNodeAsLeaf, visitChildren } from '@/utils/hierarchyUtils'
 
 describe('Create visited node', () => {
   test('it should create node', () => {
@@ -1099,5 +1099,173 @@ describe('Build tree', () => {
     setNodeAsLeaf(children3)
 
     expect(visitChildren(rootCopy, maxDepth, 4, keyCounter, nodes).maxDepth).toEqual(2)
+  })
+})
+
+describe('Creating tree', () => {
+  test('test root', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const node1 = new Node('a', [], Array<Node>(), 'E1', 0, undefined, undefined)
+    const node2 = new Node('b', [], Array<Node>(), 'E2', 0, undefined, undefined)
+    const node3 = new Node('c', [], Array<Node>(), 'E3', 0, undefined, undefined)
+    const node0 = new Node('Q35120', [], Array<Node>(), 'Q35120', 0, undefined, undefined)
+    node1.children.push(node2)
+    node2.parents.push(node1)
+
+    node1.children.push(node3)
+    node3.parents.push(node1)
+
+    node0.children.push(node1)
+    node1.parents.push(node0)
+
+    node0.depth = 0
+    node1.depth = 1
+    node2.depth = 2
+    node3.depth = 2
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    console.log(nodes)
+    const rootCopy = copyNode(node0)
+    rootCopy.depth = 0
+    let keyCounter = 0
+    rootCopy.key = keyCounter
+    keyCounter++
+    const maxDepth = 1
+
+    const children1 = copyNode(node1)
+    children1.key = keyCounter
+    keyCounter++
+    rootCopy.children.push(children1)
+    children1.depth = 1
+
+    const children2 = copyNode(node2)
+    children2.key = keyCounter
+    keyCounter++
+    children1.children.push(children2)
+    children2.depth = 2
+    setNodeAsLeaf(children2)
+
+    const children3 = copyNode(node3)
+    children3.key = keyCounter
+    keyCounter++
+    children1.children.push(children3)
+    children3.depth = 2
+    setNodeAsLeaf(children3)
+
+    expect(createTree('Q35120', nodes, 2).root).toEqual(rootCopy)
+  })
+})
+
+describe('Append node', () => {
+  test('append node', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const root1 = new Node('a', [], Array<Node>(), 'E1', 0, undefined, undefined)
+    const root0 = new Node('Q35120', [], Array<Node>(), 'Q35120', 0, undefined, undefined)
+
+    root1.children.push(root0)
+    root0.parents.push(root1)
+
+    root0.depth = 0
+    root1.depth = 1
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    console.log(nodes)
+    const root = copyNode(root0)
+    root.depth = 0
+    let keyCounter = 0
+    root.key = keyCounter
+    keyCounter++
+
+    const children = copyNode(root1)
+    children.key = keyCounter
+    keyCounter++
+    root.children.push(children)
+    children.depth = 1
+    setNodeAsLeaf(children)
+
+    const node1 = new Node('a', [], Array<Node>(), 'E1', 0, undefined, undefined)
+    const node2 = new Node('b', [], Array<Node>(), 'E2', 0, undefined, undefined)
+    const node3 = new Node('c', [], Array<Node>(), 'E3', 0, undefined, undefined)
+    const node0 = new Node('Q35120', [], Array<Node>(), 'Q35120', 0, undefined, undefined)
+    node1.children.push(node2)
+    node2.parents.push(node1)
+
+    node1.children.push(node3)
+    node3.parents.push(node1)
+
+    node0.children.push(node1)
+    node1.parents.push(node0)
+
+    // node0.depth = 0
+    // node1.depth = 1
+    node2.depth = 2
+    node3.depth = 2
+
+    const rootCopy = copyNode(node0)
+    rootCopy.depth = 0
+    keyCounter = 0
+    rootCopy.key = keyCounter
+    keyCounter++
+    const maxDepth = 1
+
+    const children1 = copyNode(node1)
+    children1.parents = Array<Node>()
+    children1.key = keyCounter
+    keyCounter++
+    rootCopy.children.push(children1)
+    children1.depth = 1
+
+    const children2 = copyNode(node2)
+    children2.key = keyCounter
+    keyCounter++
+    children1.children.push(children2)
+    children2.depth = 2
+    setNodeAsLeaf(children2)
+
+    const children3 = copyNode(node3)
+    children3.key = keyCounter
+    keyCounter++
+    children1.children.push(children3)
+    children3.depth = 2
+    setNodeAsLeaf(children3)
+
+    console.log(appendNode(children, nodes, 1, 1).root)
+    expect(appendNode(children, nodes, 1, 1).root).toEqual(children1)
   })
 })

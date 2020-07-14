@@ -387,8 +387,9 @@ function createHierarchyForTree (context: any, depth: number) {
   if (context.state.nodes.length === 0) {
     return undefined
   } else {
-    context.commit(Mutations.CHANGE_TREE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, depth))
-    context.commit(Mutations.CHANGE_TREE_HEIGHT, depth)
+    const result = createTree(context.state.rootId, context.state.nodes, depth)
+    context.commit(Mutations.CHANGE_TREE_HIERARCHY, result.root)
+    context.commit(Mutations.CHANGE_TREE_HEIGHT, result.maxDepth)
   }
 }
 
