@@ -1,6 +1,6 @@
 import { createVisitedNode, prepareLabels, mapLinks, getNodeLabel, createNode, containsNode, getNodeById, getUniqueNodes, getNodeByKey, createNodesWithRelationships, initalizeNodes } from '@/utils/nodesUtils'
-import { Labels, Node, Link } from '@/models'
-import { createHierarchy, copyNode, resetNodeDepths, createTree, appendNode, setNodeAsLeaf, visitChildren } from '@/utils/hierarchyUtils'
+import { Labels, Node, Link, MappingNode, ArrowData } from '@/models'
+import { createHierarchy, copyNode, resetNodeDepths, createTree, appendNode, findNodePredecesorsInActualView, setNodeAsLeaf, visitChildren, mapUrlsToActiveView, createArrayFromHierarchy } from '@/utils/hierarchyUtils'
 
 describe('Create visited node', () => {
   test('it should create node', () => {
@@ -1142,7 +1142,6 @@ describe('Creating tree', () => {
     node3.depth = 2
 
     const nodes = initalizeNodes(hierarchy, labels)
-    console.log(nodes)
     const rootCopy = copyNode(node0)
     rootCopy.depth = 0
     let keyCounter = 0
@@ -1205,7 +1204,6 @@ describe('Append node', () => {
     root1.depth = 1
 
     const nodes = initalizeNodes(hierarchy, labels)
-    console.log(nodes)
     const root = copyNode(root0)
     root.depth = 0
     let keyCounter = 0
@@ -1265,7 +1263,246 @@ describe('Append node', () => {
     children3.depth = 2
     setNodeAsLeaf(children3)
 
-    console.log(appendNode(children, nodes, 1, 1).root)
     expect(appendNode(children, nodes, 1, 1).root).toEqual(children1)
+  })
+})
+
+describe('Creating tree', () => {
+  test('test root', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const node1 = new Node('a', [], Array<Node>(), 'E1', 0, undefined, undefined)
+    const node2 = new Node('b', [], Array<Node>(), 'E2', 0, undefined, undefined)
+    const node3 = new Node('c', [], Array<Node>(), 'E3', 0, undefined, undefined)
+    const node0 = new Node('Q35120', [], Array<Node>(), 'Q35120', 0, undefined, undefined)
+    node1.children.push(node2)
+    node2.parents.push(node1)
+
+    node1.children.push(node3)
+    node3.parents.push(node1)
+
+    node0.children.push(node1)
+    node1.parents.push(node0)
+
+    node0.depth = 0
+    node1.depth = 1
+    node2.depth = 2
+    node3.depth = 2
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    const rootCopy = copyNode(node0)
+    rootCopy.depth = 0
+    let keyCounter = 0
+    rootCopy.key = keyCounter
+    keyCounter++
+    const maxDepth = 1
+
+    const children1 = copyNode(node1)
+    children1.key = keyCounter
+    keyCounter++
+    rootCopy.children.push(children1)
+    children1.depth = 1
+
+    const children2 = copyNode(node2)
+    children2.key = keyCounter
+    keyCounter++
+    children1.children.push(children2)
+    children2.depth = 2
+    setNodeAsLeaf(children2)
+
+    const children3 = copyNode(node3)
+    children3.key = keyCounter
+    keyCounter++
+    children1.children.push(children3)
+    children3.depth = 2
+    setNodeAsLeaf(children3)
+
+    expect(createTree('Q35120', nodes, 2).root).toEqual(rootCopy)
+  })
+})
+
+describe('Finding predeccesors', () => {
+  test('test root', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const newNode: MappingNode = {
+      id: 0,
+      name: 'c',
+      mapBy: 'example',
+      nodeID: 'E3'
+    }
+
+    const newArrow: ArrowData = {
+      id: 'E1',
+      label: 'c',
+      word: 'example'
+    }
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    const tree = createTree('Q35120', nodes, 1).root
+    const child = tree.children[0]
+
+    expect(findNodePredecesorsInActualView(child, newNode)).toEqual([newArrow])
+  })
+})
+
+describe('Finding predeccesors', () => {
+  test('test root', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const newNode1: MappingNode = {
+      id: 0,
+      name: 'c',
+      mapBy: 'example1',
+      nodeID: 'E3'
+    }
+
+    const newNode2: MappingNode = {
+      id: 0,
+      name: 'b',
+      mapBy: 'example2',
+      nodeID: 'E2'
+    }
+
+    const newArrow1: ArrowData = {
+      id: 'E1',
+      label: 'c',
+      word: 'example1'
+    }
+
+    const newArrow2: ArrowData = {
+      id: 'E1',
+      label: 'b',
+      word: 'example2'
+    }
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    const tree = createTree('Q35120', nodes, 1).root
+    const child = tree.children[0]
+
+    expect(mapUrlsToActiveView([newNode1, newNode2], nodes)).toEqual([newArrow1, newArrow2])
+  })
+})
+
+describe('Hierarchy to array', () => {
+  test('test root', () => {
+    const hierarchy: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ]
+    ]
+    const labels: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      Q35120: 'Q35120'
+    }
+
+    const node1 = new Node('a', [], Array<Node>(), 'E1', 0, undefined, undefined)
+    const node2 = new Node('b', [], Array<Node>(), 'E2', 0, undefined, undefined)
+    const node3 = new Node('c', [], Array<Node>(), 'E3', 0, undefined, undefined)
+    const node0 = new Node('Q35120', [], Array<Node>(), 'Q35120', 0, undefined, undefined)
+    node1.children.push(node2)
+    node2.parents.push(node1)
+
+    node1.children.push(node3)
+    node3.parents.push(node1)
+
+    node0.children.push(node1)
+    node1.parents.push(node0)
+
+    node0.depth = 0
+    node1.depth = 1
+    node2.depth = 2
+    node3.depth = 2
+
+    const nodes = initalizeNodes(hierarchy, labels)
+    const rootCopy = copyNode(node0)
+    rootCopy.depth = 0
+    let keyCounter = 0
+    rootCopy.key = keyCounter
+    keyCounter++
+    const maxDepth = 4
+
+    const children1 = copyNode(node1)
+    children1.key = keyCounter
+    keyCounter++
+    rootCopy.children.push(children1)
+    children1.depth = 1
+
+    const children2 = copyNode(node2)
+    children2.key = keyCounter
+    keyCounter++
+    children1.children.push(children2)
+    children2.depth = 2
+    setNodeAsLeaf(children2)
+
+    const children3 = copyNode(node3)
+    children3.key = keyCounter
+    keyCounter++
+    children1.children.push(children3)
+    children3.depth = 2
+    setNodeAsLeaf(children3)
+
+    const root = createTree('Q35120', nodes, 2).root
+    expect(createArrayFromHierarchy(root)).toEqual([rootCopy, children1, children2, children3])
   })
 })

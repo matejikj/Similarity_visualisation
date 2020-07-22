@@ -2,7 +2,7 @@ export const MAX_DEPTH = 6
 export const ROOT_LABEL = 'something'
 export const ROOT_ID = 'Q35120'
 export const TREE_CIRCLE_RADIUS = 12
-export const MAX_TREE_DEPTH = 1
+export const MAX_TREE_DEPTH = 4
 
 export { Arrow } from './Arrow'
 export { ArrowData } from './ArrowData'

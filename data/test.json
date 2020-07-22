@@ -1,23 +1,188 @@
 {
-  "@id": "test.cz",
-  "metadata": {
-    "title": "Test",
-    "description": "testovac isada",
-    "keywords": [
+  "left": {
+    "@id": "test.cz",
+    "metadata": {
+      "title": "Test",
+      "description": "testovac isada",
+      "keywords": [
+      ]
+    },
+    "mappings": [
+    ],
+    "hierarchy": [
+      [
+        "E2",
+        "subclass",
+        "E1"
+      ],
+      [
+        "E3",
+        "subclass",
+        "E1"
+      ]
     ]
   },
-  "mappings": [
-  ],
-  "hierarchy": [
-    [
-      "E2",
-      "subclass",
-      "E1"
+  "right": {
+    "@id": "test.cz",
+    "metadata": {
+      "title": "Test",
+      "description": "testovac isada",
+      "keywords": [
+      ]
+    },
+    "mappings": [
     ],
-    [
-      "E3",
-      "subclass",
-      "E1"
+    "hierarchy": [
+      [
+        "E2",
+        "subclass",
+        "E1"
+      ],
+      [
+        "E3",
+        "subclass",
+        "E1"
+      ]
     ]
-  ]
+  },
+  "labels": {
+    "labels": [
+      {
+        "id": "E1",
+        "label": "a"
+      },
+      {
+        "id": "E2",
+        "label": "b"
+      },
+      {
+        "id": "E3",
+        "label": "c"
+      },
+      {
+        "id": "E4",
+        "label": "d"
+      },
+      {
+        "id": "E5",
+        "label": "e"
+      },
+      {
+        "id": "E6",
+        "label": "f"
+      },
+      {
+        "id": "E7",
+        "label": "g"
+      },
+      {
+        "id": "Q35120",
+        "label": "Q35120"
+      }
+    ]
+  },
+  "default": {
+    "metadata": {
+      "datasets": [
+        "test",
+        "test"
+      ],
+      "method": "distance",
+      "resultPathCount": 1,
+      "totalPathCount": 70
+    },
+    "paths": [
+      {
+        "nodes": [
+          "E1",
+          "E2"
+        ],
+        "shared": "E1"
+      }
+    ],
+    "similarity": {
+      "average": 0.0,
+      "max": 0,
+      "min": 0,
+      "sum": 0
+    }
+  },
+  "rule": {
+    "metadata": {
+      "datasets": [
+        "test",
+        "test"
+      ],
+      "method": "distance",
+      "resultPathCount": 1,
+      "totalPathCount": 70
+    },
+    "paths": [
+      {
+        "nodes": [
+          "E1",
+          "E2"
+        ],
+        "shared": "E1"
+      }
+    ],
+    "similarity": {
+      "average": 0.0,
+      "max": 0,
+      "min": 0,
+      "sum": 0
+    }
+  },
+  "directed": {
+    "metadata": {
+      "datasets": [
+        "test",
+        "test"
+      ],
+      "method": "distance",
+      "resultPathCount": 1,
+      "totalPathCount": 70
+    },
+    "paths": [
+      {
+        "nodes": [
+          "E1",
+          "E2"
+        ],
+        "shared": "E1"
+      }
+    ],
+    "similarity": {
+      "average": 0.0,
+      "max": 0,
+      "min": 0,
+      "sum": 0
+    }
+  },
+  "final": {
+    "metadata": {
+      "datasets": [
+        "test",
+        "test"
+      ],
+      "method": "distance",
+      "resultPathCount": 1,
+      "totalPathCount": 70
+    },
+    "paths": [
+      {
+        "nodes": [
+          "E1",
+          "E2"
+        ],
+        "shared": "E1"
+      }
+    ],
+    "similarity": {
+      "average": 0.0,
+      "max": 0,
+      "min": 0,
+      "sum": 0
+    }
+  }
 }

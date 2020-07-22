@@ -36,7 +36,7 @@ import axios from 'axios'
 import CustomMenu from './CustomMenu.vue'
 import { prepareLabels } from '../utils/nodesUtils'
 import { Labels } from '@/models'
-import { getDataset, datasets } from '../utils/dataset-api'
+import { datasets } from '../../data/'
 
 export default Vue.extend({
   name: 'VisMaster',
@@ -61,16 +61,23 @@ export default Vue.extend({
     pathsChoice: 'default'
   }),
   methods: {
-    datasetChanged: async function (label: string) {
-      const dataset = await getDataset(label)
+    datasetChanged: function (label: string) {
+      const dataset = datasets.filter(x => x.label === label)[0].data
+      // @ts-ignore
       this.labels = prepareLabels(dataset.labels.labels)
+      // @ts-ignore
       this.leftDataset = dataset.left
+      // @ts-ignore
       this.rightDataset = dataset.right
       this.paths = {
-        defaultPath: dataset.defaultPath.paths,
-        rulePath: dataset.rulePath.paths,
-        directedPath: dataset.directedPath.paths,
-        finalPath: dataset.finalPath.paths
+        // @ts-ignore
+        defaultPath: dataset.default.paths,
+        // @ts-ignore
+        rulePath: dataset.rule.paths,
+        // @ts-ignore
+        directedPath: dataset.directed.paths,
+        // @ts-ignore
+        finalPath: dataset.final.paths
       }
       this.changePath()
       this.datasetAdded = true

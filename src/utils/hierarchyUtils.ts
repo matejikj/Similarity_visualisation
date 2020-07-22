@@ -51,7 +51,6 @@ export function visitChildren (root: Node, maxDepth: number, depth: number, coun
       })
     }
   }
-  console.log(root)
   return { root, maxDepth }
 }
 
@@ -97,7 +96,7 @@ export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, tree
   return (visitChildren(rootCopy, maxDepth, depth, keyCounter, nodes))
 }
 
-function findNodePredecesorsInActualView (node: Node, url: MappingNode) {
+export function findNodePredecesorsInActualView (node: Node, url: MappingNode) {
   const result = Array<ArrowData>()
   const stack = Array<Node>()
   stack.push(node)
@@ -141,6 +140,7 @@ export function mapUrlsToActiveView (urls: Array<MappingNode>, nodes: Array<Node
       predecessors = predecessors.concat(nodePredecesors)
     }
   })
+  console.log(predecessors)
   return predecessors
 }
 

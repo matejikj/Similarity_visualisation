@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { datasets } from '../utils/dataset-api'
+import { datasets } from '../../data'
 
 export default {
   name: 'AddDatasetForm',
