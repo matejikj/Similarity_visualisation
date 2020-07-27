@@ -6,6 +6,7 @@ import VueTippy from 'vue-tippy'
 import Vuetify from 'vuetify/lib'
 
 Vue.config.productionTip = false
+Vue.config.performance = true
 Vue.use(VueTippy)
 Vue.use(Vuetify)
 

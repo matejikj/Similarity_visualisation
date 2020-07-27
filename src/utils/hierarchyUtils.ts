@@ -140,7 +140,6 @@ export function mapUrlsToActiveView (urls: Array<MappingNode>, nodes: Array<Node
       predecessors = predecessors.concat(nodePredecesors)
     }
   })
-  console.log(predecessors)
   return predecessors
 }
 

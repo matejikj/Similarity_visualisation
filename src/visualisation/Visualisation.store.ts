@@ -288,7 +288,7 @@ function createPathHierarchyForTree (context: any) {
         context.state.nodes, activePath.height).root, activePath.vertices))
       context.commit(Mutations.CHANGE_TREE_HEIGHT, activePath.height)
     } else {
-      context.commit(Mutations.CHANGE_TREE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, MAX_TREE_DEPTH))
+      context.commit(Mutations.CHANGE_TREE_HIERARCHY, createTree(context.state.rootId, context.state.nodes, MAX_TREE_DEPTH).root)
       context.commit(Mutations.CHANGE_TREE_HEIGHT, MAX_TREE_DEPTH)
     }
   }
