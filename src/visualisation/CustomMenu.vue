@@ -82,17 +82,21 @@ export default Vue.extend({
     datasetChanged: function (url: string) {
       this.dialogDisplay = false
       this.floatingActionBtnVisible = false
+      // emit dataset has changed
       this.$emit('datasetChanged', url)
     },
     pathsDatasetChanged: function (url: string) {
+      // emit paths dataset has changed
       this.$emit('pathsChanged', url)
       this.floatingActionBtnVisible = false
     },
     viewCircles: function () {
+      // emit view has changed to vertical tree-based vis
       this.$emit('setCircleView')
       this.floatingActionBtnVisible = false
     },
     viewTree: function () {
+      // emit view has changed to horizontal tree-based vis
       this.$emit('setTreeView')
       this.floatingActionBtnVisible = false
     },

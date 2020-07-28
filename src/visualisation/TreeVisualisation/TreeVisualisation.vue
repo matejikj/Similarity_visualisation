@@ -104,6 +104,9 @@ export default Vue.extend({
       this.createHierarchyForTree(MAX_TREE_DEPTH)
       this.updateTreeCanvas()
     },
+    /**
+     * @param {WindowEvent} Window was resized
+     */
     handleResize () {
       this.resizeCanvas({
         // @ts-ignore

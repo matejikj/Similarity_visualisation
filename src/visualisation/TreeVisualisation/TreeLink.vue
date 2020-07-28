@@ -23,6 +23,9 @@ export default Vue.extend({
   data: () => ({
   }),
   computed: {
+    /**
+     * @param Transform text for diagram
+     */
     pathText: function () {
       // @ts-ignore
       const leftx: number = this.linkData.lx

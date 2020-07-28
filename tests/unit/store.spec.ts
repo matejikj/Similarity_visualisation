@@ -3,9 +3,10 @@ import Vuex from 'vuex'
 import storeVisualisation, { Mutations, Getters } from '../../src/visualisation/Visualisation.store'
 import { cloneDeep } from 'lodash'
 
+const localVue = createLocalVue()
+localVue.use(Vuex)
+
 test('increments count value when increment is commited', () => {
-  const localVue = createLocalVue()
-  localVue.use(Vuex)
   const store = new Vuex.Store(cloneDeep(storeVisualisation))
   expect(store.getters[Getters.GET_DEPTH]).toBe(1)
   store.commit(Mutations.CHANGE_DEPTH, 2)

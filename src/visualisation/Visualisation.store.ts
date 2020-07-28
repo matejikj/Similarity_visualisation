@@ -80,6 +80,7 @@ export const Getters = {
 export default {
   namespaced: true,
   state: {
+    /** unique id of this arrow */
     leftMappingList: Array<ComboboxItem>(),
     leftMapping: Array<MappingNode>(),
     rightMappingList: Array<ComboboxItem>(),

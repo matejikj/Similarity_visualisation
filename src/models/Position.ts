@@ -1,3 +1,6 @@
 export enum Position {
-    Left, Right
+    /** left position on screen */
+    Left,
+    /** right position on screen */
+    Right
 }

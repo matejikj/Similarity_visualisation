@@ -27,10 +27,15 @@ export default Vue.extend({
   computed: {
   },
   methods: {
-    /** @param {MouseEvent} event */
+    /**
+     * @param {MouseEvent} Node was clicked to zoom
+     */
     emit (event: Circle) {
       this.$emit('labelClicked', event)
     },
+    /**
+     * @param {MouseEvent} Node was clicked with ctrl to show Wikipage
+     */
     // eslint-disable-next-line
     openWiki: function (data: Circle) {
       const win = window.open('https://www.wikidata.org/wiki/' + data.id, '_blank')

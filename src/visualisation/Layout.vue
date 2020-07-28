@@ -100,6 +100,10 @@ export default Vue.extend({
       changeLeftSelectedIds: Mutations.CHANGE_LEFT_SELECTED_ITEMS,
       changeRightSelectedIds: Mutations.CHANGE_RIGHT_SELECTED_ITEMS
     }),
+    /**
+     * Pokud dojde ke zmene vstupu paths, obnovim pohled.
+     * Znovu vynuluji vsehcny hodnoty sdilenych dat ve store a pote znovu vytvorim vizualizaci
+     */
     updatePaths: function () {
       if (this.activePath !== undefined) {
         this.changeActivePath(undefined)
@@ -118,6 +122,9 @@ export default Vue.extend({
         }
       }
       this.historyBarVisible = true
+      /**
+       * Pokud mam na vstupu i dataset pro paths, zobrazim vsechny cesty v listu
+       */
       if (this.pathsDataset !== undefined) {
         this.pathsVisible = true
         this.leftPathLabels = createPathLabels(this.leftDataset)
@@ -127,6 +134,9 @@ export default Vue.extend({
       }
     },
     cancelClicked: function () {
+      /**
+       * Po kliknuti na cancel resetuji stav storu, co se tyce mapovani, rootu i cesty
+       */
       this.changeLeftMapping([])
       this.changeRightMapping([])
       this.changeRootId(ROOT_ID)
@@ -134,6 +144,10 @@ export default Vue.extend({
       this.changePathNodes([])
       this.changeActivePath(undefined)
     },
+    /**
+      * Po jakekoliv zmene aktualni cesty nebo po vynulovani kliknutim na tlacitko cancel
+      * se obnovi zobrazeni cesty do akutlaniho pohledu
+      */
     pathUpdated: function () {
       this.$emit('pathUpdated')
       let height = MAX_TREE_DEPTH
@@ -169,6 +183,9 @@ export default Vue.extend({
           break
       }
     },
+    /**
+      * Pokud kliknu na nodu, ktera patri ceste a chci ji zamerit jako root
+      */
     pathNodeClicked: function (data) {
       this.historyBarVisible = false
       if (this.activeView === 1) {
