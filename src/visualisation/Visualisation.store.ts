@@ -416,9 +416,11 @@ function updateTreeCanvas (context: any) {
   const result = packTreeHierarchy(context.state.treeHierarchy, context.state.window.width, context.state.treeHeight)
   context.commit(Mutations.CHANGE_TREE_NODES, result.circles)
   context.commit(Mutations.CHANGE_TREE_LINKS, result.links)
-  highlightTreeMapping(context.state.treeNodes,
+  context.commit(Mutations.CHANGE_TREE_NODES, highlightTreeMapping(
+    context.state.treeNodes,
     mapUrlsToActiveView(context.getters[Getters.GET_LEFT_MAPPING], context.state.nodes),
-    mapUrlsToActiveView(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes))
+    mapUrlsToActiveView(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes)
+  ))
   if (context.state.activePath !== undefined) {
     context.commit(Mutations.CHANGE_TREE_NODES, highlightPaths(context.state.treeNodes, context.state.activePath))
   }

@@ -5,10 +5,8 @@ import Vue from 'vue'
 import VueTippy from 'vue-tippy'
 import Vuex from 'vuex'
 
-const localVue = createLocalVue()
-
-localVue.use(Vuex)
-localVue.use(VueTippy)
+Vue.use(Vuex)
+Vue.use(VueTippy)
 
 // Mount the component
 const wrapper = shallowMount(TreeNode, {

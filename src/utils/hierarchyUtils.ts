@@ -1,7 +1,8 @@
 import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Labels, MAX_TREE_DEPTH } from '../models'
 import { getNodeById, getNodeLabel, initalizeNodes } from './nodesUtils'
 
-export function createHierarchy (leftDataset: {hierarchy: [string, string, string][]}, rightDataset: {hierarchy: [string, string, string][]}) {
+export function createHierarchy (leftDataset: {hierarchy: [string, string, string][]},
+  rightDataset: {hierarchy: [string, string, string][]}) {
   let hierarchyArray: any = []
   if (leftDataset !== undefined) {
     hierarchyArray = hierarchyArray.concat(leftDataset.hierarchy)
@@ -181,11 +182,12 @@ export function collapseIrrelevantSubtrees (root: Node, vertices: string[]) {
   return root
 }
 
-function getCircleById (circles: Array<Circle>, id: string) {
+export function getCircleById (circles: Array<Circle>, id: string) {
   return circles.filter(x => x.id === id)[0]
 }
 
-export function packMappingArrows (height: number, width: number, circles: Array<Circle>, viewDepthLevel: Array<ArrowData>, position: Position): Array<Arrow> {
+export function packMappingArrows (height: number, width: number, circles: Array<Circle>,
+  viewDepthLevel: Array<ArrowData>, position: Position): Array<Arrow> {
   let counter = 0
   const result = new Array<Arrow>()
   for (let i = 0; i < viewDepthLevel.length; i++) {
@@ -206,12 +208,14 @@ export function packMappingArrows (height: number, width: number, circles: Array
   return result
 }
 
-function mappingsIntersection (leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
+export function mappingsIntersection (leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
   return leftMappingNodes.filter(n => rightMappingNodes.some(n2 => n.id === n2.id))
 }
 
-export function highlightTreeMapping (circles: Array<Circle>, leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
+export function highlightTreeMapping (circles: Array<Circle>,
+  leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
   const intersection = mappingsIntersection(leftMappingNodes, rightMappingNodes)
+
   for (let i = 0; i < leftMappingNodes.length; i++) {
     const targetCircle = getCircleById(circles, leftMappingNodes[i].id)
     if (targetCircle !== undefined) {
@@ -233,9 +237,10 @@ export function highlightTreeMapping (circles: Array<Circle>, leftMappingNodes: 
       targetCircle.stroke = 'red'
     }
   }
+  return circles
 }
 
-function createMappingNodeWithChildren (id: number, name: string, children: MappingNode[]) {
+export function createMappingNodeWithChildren (id: number, name: string, children: MappingNode[]) {
   const newNode: MappingNode = {
     id: id,
     name: name,
@@ -244,7 +249,7 @@ function createMappingNodeWithChildren (id: number, name: string, children: Mapp
   return newNode
 }
 
-function createMappingNodeWithMap (id: number, name: string, mapBy: string, nodeID: string) {
+export function createMappingNodeWithMap (id: number, name: string, mapBy: string, nodeID: string) {
   const newNode: MappingNode = {
     id: id,
     name: name,
