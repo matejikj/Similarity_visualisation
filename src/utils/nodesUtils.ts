@@ -2,6 +2,9 @@ import { ROOT_ID, Node, Link, Circle, Arrow, TREE_CIRCLE_RADIUS, Labels } from '
 import * as d3 from 'd3'
 import { createArrayFromHierarchy } from './hierarchyUtils'
 
+/**
+ * Process labels form dataset
+ */
 export function prepareLabels (labels: {id: string; label: string}[]) {
   const result: Labels = {}
   labels.forEach((item) => {
@@ -10,6 +13,11 @@ export function prepareLabels (labels: {id: string; label: string}[]) {
   return result
 }
 
+/**
+ * Create node to history bar
+ * @param id Id
+ * @param label Label
+ */
 export function createVisitedNode (id: string, label: string) {
   return {
     id: id !== undefined ? id : 'Q0',
@@ -17,6 +25,10 @@ export function createVisitedNode (id: string, label: string) {
   }
 }
 
+/**
+ * Process the hierarchy from dataset into an array of links
+ * @param hierarchy Hierarchy from dataset
+ */
 export function mapLinks (hierarchy: Array<[string, string, string]>) {
   let result = Array<Link>()
   if (hierarchy !== undefined) {

@@ -1,24 +1,34 @@
 /**
- * Model slouzici k vizualizaci sipek, ktere zobrazuji kam se mapoji jednotlive slova
+ * A model used to visualize arrows that show where individual words are mapped
  */
 export class Arrow {
   /** unique id of this arrow */
   id: number;
-  /** slovo, na zaklade, ktereho se mapuje */
+  /** word, based on which it is mapped */
   word?: string;
-  /** do ktere entity se mapuje */
+  /** to which entity is mapped */
   mapTo?: string;
-  /** left x-coordiante */
+  /** left x-coordinate */
   lx: number;
-  /** left y-coordiante */
+  /** left y-coordinate */
   ly: number;
-  /** right x-coordiante */
+  /** right x-coordinate */
   rx: number;
-  /** right y-coordiante */
+  /** right y-coordinate */
   ry: number;
-  /** radius of circle, where arrows smeruej */
+  /** radius of circle, where arrows point */
   r: number;
 
+  /**
+   * @param id id
+   * @param lx left x-coordinate
+   * @param ly left y-coordinate
+   * @param rx right x-coordinate
+   * @param ry right y-coordinate
+   * @param r radius of circle
+   * @param word mapping based word
+   * @param mapTo label of entity where it is mapped to
+   */
   constructor (id: number, lx: number, ly: number, rx: number, ry: number, r: number, word?: string, mapTo?: string) {
     this.id = id
     this.lx = lx

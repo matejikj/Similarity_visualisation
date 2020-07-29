@@ -35,9 +35,15 @@ export default Vue.extend({
   computed: {
   },
   methods: {
+    /**
+     * @param {MouseEvent} Node was clicked to zoom
+     */
     emit (circle: Circle) {
       this.$emit('nodeClicked', circle)
     },
+    /**
+     * @param {MouseEvent} Node was clicked with ctrl to show Wikipage
+     */
     openWiki: function (circle: Circle) {
       const win = window.open('https://www.wikidata.org/wiki/' + circle.id, '_blank')
       if (win !== null) {

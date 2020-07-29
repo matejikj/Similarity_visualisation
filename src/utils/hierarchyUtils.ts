@@ -1,6 +1,11 @@
 import { MappingNode, Node, ArrowData, ROOT_ID, Circle, Arrow, Position, Labels, MAX_TREE_DEPTH } from '../models'
 import { getNodeById, getNodeLabel, initalizeNodes } from './nodesUtils'
 
+/**
+ * Merge hierarchies from both datasets
+ * @param leftDataset Left dataset
+ * @param rightDataset Right dataset
+ */
 export function createHierarchy (leftDataset: {hierarchy: [string, string, string][]},
   rightDataset: {hierarchy: [string, string, string][]}) {
   let hierarchyArray: any = []
@@ -13,12 +18,24 @@ export function createHierarchy (leftDataset: {hierarchy: [string, string, strin
   return hierarchyArray
 }
 
+/**
+ * Make node a leaf
+ * @param node Node to make a leaf from it
+ */
 export function setNodeAsLeaf (node: Node) {
   node.children = []
   node.value = 1
   node.isLeaf = true
 }
 
+/**
+ * BFS to go through the nodes to create hierarchy
+ * @param root the root of the hierarchy
+ * @param maxDepth what is the greatest depth in the actual hierarchy
+ * @param depth how deep the hierarchy should be
+ * @param counter node counter
+ * @param nodes array of nodes from dataset with their parents and childs
+ */
 export function visitChildren (root: Node, maxDepth: number, depth: number, counter: number, nodes: Array<Node>) {
   const queue = [root]
   while (queue.length !== 0) {
@@ -55,6 +72,10 @@ export function visitChildren (root: Node, maxDepth: number, depth: number, coun
   return { root, maxDepth }
 }
 
+/**
+ * Create a node copy
+ * @param node Nody to create a copy
+ */
 export function copyNode (node: Node) {
   return new Node(
     node.label,
@@ -67,12 +88,22 @@ export function copyNode (node: Node) {
   )
 }
 
+/**
+ * Resets the depths of all nodes in the array
+ * @param nodes Array of nodes
+ */
 export function resetNodeDepths (nodes: Array<Node>) {
   nodes.forEach(element => {
     element.depth = undefined
   })
 }
 
+/**
+ * Create a tree of nodes for visualisation
+ * @param rootId Id of root
+ * @param nodes Array of nodes
+ * @param depth How depth the hierarchy should be
+ */
 export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
   resetNodeDepths(nodes)
   const root = getNodeById(nodes, rootId)
@@ -86,6 +117,13 @@ export function createTree (rootId: string, nodes: Array<Node>, depth: number) {
   return (visitChildren(rootCopy, maxDepth, depth, keyCounter, nodes))
 }
 
+/**
+ * Attach another tree to an existing tree
+ * @param root Where will we add a new tree
+ * @param nodes Array of nodes
+ * @param maxKey Currently the highest key in the hierarchy
+ * @param treeHeight Current depth of the tree
+ */
 export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, treeHeight: number) {
   const rootCopy = copyNode(root)
   let keyCounter = maxKey
@@ -97,6 +135,11 @@ export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, tree
   return (visitChildren(rootCopy, maxDepth, depth, keyCounter, nodes))
 }
 
+/**
+ * Find all predecessors in the current view by going to the match
+ * @param node The node I'm looking for an ancestor for
+ * @param url Urls of searched entities
+ */
 export function findNodePredecesorsInActualView (node: Node, url: MappingNode) {
   const result = Array<ArrowData>()
   const stack = Array<Node>()
@@ -132,6 +175,11 @@ export function findNodePredecesorsInActualView (node: Node, url: MappingNode) {
   return result
 }
 
+/**
+ * Function for displaying the predecessor of the mapped node
+ * @param urls Urls of searched entities
+ * @param nodes Nodes to find their preddecesors
+ */
 export function mapUrlsToActiveView (urls: Array<MappingNode>, nodes: Array<Node>): Array<ArrowData> {
   let predecessors = Array<ArrowData>()
   urls.forEach((url: MappingNode) => {
@@ -162,6 +210,11 @@ export function createArrayFromHierarchy (root: Node) {
   return result
 }
 
+/**
+ * Collapse all unnecessary nodes in the view for easier understanding of the path visualization
+ * @param root Root of path
+ * @param vertices Important entities on the path
+ */
 export function collapseIrrelevantSubtrees (root: Node, vertices: string[]) {
   const queue = Array<Node>()
   queue.push(root)
@@ -182,6 +235,11 @@ export function collapseIrrelevantSubtrees (root: Node, vertices: string[]) {
   return root
 }
 
+/**
+ * Get circle by id
+ * @param circles Circles array
+ * @param id id of circle
+ */
 export function getCircleById (circles: Array<Circle>, id: string) {
   return circles.filter(x => x.id === id)[0]
 }
@@ -208,10 +266,21 @@ export function packMappingArrows (height: number, width: number, circles: Array
   return result
 }
 
+/**
+ * Get intersection of two mappings
+ * @param leftMappingNodes Left mapping nodes
+ * @param rightMappingNodes Right mapping nodes
+ */
 export function mappingsIntersection (leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
   return leftMappingNodes.filter(n => rightMappingNodes.some(n2 => n.id === n2.id))
 }
 
+/**
+ * Highlight the mapped nodes in the visualization by coloring them
+ * @param circles Array of circles
+ * @param leftMappingNodes left mapping nodes
+ * @param rightMappingNodes right mapping nodes
+ */
 export function highlightTreeMapping (circles: Array<Circle>,
   leftMappingNodes: Array<ArrowData>, rightMappingNodes: Array<ArrowData>) {
   const intersection = mappingsIntersection(leftMappingNodes, rightMappingNodes)
@@ -240,6 +309,12 @@ export function highlightTreeMapping (circles: Array<Circle>,
   return circles
 }
 
+/**
+ * Create Mapping Node With Children Array
+ * @param id id
+ * @param name name
+ * @param children children array
+ */
 export function createMappingNodeWithChildren (id: number, name: string, children: MappingNode[]) {
   const newNode: MappingNode = {
     id: id,
@@ -249,6 +324,13 @@ export function createMappingNodeWithChildren (id: number, name: string, childre
   return newNode
 }
 
+/**
+ * Create Mapping Node With Mapping
+ * @param id id
+ * @param name name
+ * @param mapBy map by
+ * @param nodeID node's id
+ */
 export function createMappingNodeWithMap (id: number, name: string, mapBy: string, nodeID: string) {
   const newNode: MappingNode = {
     id: id,
@@ -259,6 +341,10 @@ export function createMappingNodeWithMap (id: number, name: string, mapBy: strin
   return newNode
 }
 
+/**
+ * Create labels for mapping
+ * @param mapping dataset
+ */
 export function createPathLabels (mapping: any) {
   const mapArray: {[key: string]: string[]} = {}
   if (mapping === undefined) {
@@ -279,6 +365,12 @@ export function createPathLabels (mapping: any) {
   return mapArray
 }
 
+/**
+ * Process mapping in datasets to display
+ * @param labels labels
+ * @param mapping mapping
+ * @param mappingID mapping id
+ */
 export function createMapping (labels: Labels, mapping: any, mappingID: number) {
   const result = Array<MappingNode>()
   const mapArray: {[key: string]: string[]} = {}
@@ -314,6 +406,11 @@ export function createMapping (labels: Labels, mapping: any, mappingID: number) 
   return result
 }
 
+/**
+ * Choose mapping item
+ * @param mapping mapping
+ * @param id id
+ */
 export function chooseItemFromMapping (mapping: Array<MappingNode>, id: string) {
   const result: number[] = []
   const childrens: Array<MappingNode> = []

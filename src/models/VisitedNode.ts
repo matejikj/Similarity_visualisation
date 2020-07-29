@@ -1,5 +1,5 @@
 /**
- * Node, ktere se zobrazuji v panelu HistoryBar
+ * The nodes that appear in the HistoryBar
  */
 export interface VisitedNode {
   /** unique id of this visited nodes */

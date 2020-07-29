@@ -75,12 +75,21 @@ export default Vue.extend({
     }
   },
   methods: {
+    /**
+     * volba baze mapovani
+     */
     changeMapping: function (data: ComboboxItem) {
       this.$emit('mappingChoosed', this.sidebarPosition, data.id)
     },
+    /**
+     * After change mappings entities
+     */
     selectedChanged: function (array: Array<MappingNode>) {
       this.$emit('mappingChanged', this.sidebarPosition, array)
     },
+    /**
+     * Open dataset infomrations in browser
+     */
     visitDataset: function () {
       const win = window.open(this.url)
       if (win !== null) {

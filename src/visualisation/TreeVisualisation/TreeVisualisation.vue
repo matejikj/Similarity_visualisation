@@ -105,7 +105,7 @@ export default Vue.extend({
       this.updateTreeCanvas()
     },
     /**
-     * @param {WindowEvent} Window was resized
+     * Window was resized
      */
     handleResize () {
       this.resizeCanvas({
@@ -116,6 +116,9 @@ export default Vue.extend({
       })
       this.updateTreeCanvas()
     },
+    /**
+     * Po vybrani nody ke svinuti nebo rozbaleni proved prislousnou operaci
+     */
     nodeClicked (item: Circle) {
       if (item.isLeaf) {
         this.appendNode(item)
@@ -123,6 +126,9 @@ export default Vue.extend({
         this.cutChildren(item)
       }
     },
+    /**
+     * Prizpusob zobrazeni zazoomovani
+     */
     zoomed: function () {
       d3.selectAll('g')
         .attr('transform', d3.event.transform)

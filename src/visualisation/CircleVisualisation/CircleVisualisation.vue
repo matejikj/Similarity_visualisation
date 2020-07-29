@@ -73,7 +73,8 @@ export default Vue.extend({
       leftArrows: Getters.GET_LEFT_ARROWS,
       rightArrows: Getters.GET_RIGHT_ARROWS,
       hierarchy: Getters.GET_HIERARCHY,
-      nodes: Getters.GET_NODES
+      nodes: Getters.GET_NODES,
+      visitedNodes: Getters.GET_VISITED_NODES
     })
   },
   created () {
@@ -134,9 +135,11 @@ export default Vue.extend({
     },
     circleClicked: function (leaf: Circle) {
       const labels = this.labels
-      this.addNodeToVisitedNodes({ labels, leaf })
-      this.createHierarchyForCircles()
-      this.updateCircleCanvas()
+      if (this.visitedNodes[this.visitedNodes.length - 1].id !== leaf.id) {
+        this.addNodeToVisitedNodes({ labels, leaf })
+        this.createHierarchyForCircles()
+        this.updateCircleCanvas()
+      }
     },
     initNodes: function () {
       this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))

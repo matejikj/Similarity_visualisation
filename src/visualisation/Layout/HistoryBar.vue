@@ -47,6 +47,9 @@ export default Vue.extend({
       createHierarchyForTree: Actions.CREATE_HIERARCHY_FOR_TREE,
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
     }),
+    /**
+     * Po kliknuti na jednu z nodes, ktere jsou rpedkove aktualniho rootu jej zamer jako root
+     */
     click: function (data: VisitedNode) {
       this.updatePath(data)
       if (this.activeView === 1) {

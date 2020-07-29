@@ -43,6 +43,9 @@ export default Vue.extend({
       createHierarchyForCircles: Actions.CREATE_HIERARCHY_FOR_CIRCLES,
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS
     }),
+    /**
+     * Po zmene hloubky zobrazeni, tuto hloubku uloz a obnov zobrazeni
+     */
     // eslint-disable-next-line
     handleDepthChange: function (data: number) {
       this.changeDepth(data)

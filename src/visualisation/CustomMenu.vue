@@ -79,24 +79,32 @@ export default Vue.extend({
     floatingActionBtnVisible: false
   }),
   methods: {
+    /**
+     * emit dataset has changed
+     */
     datasetChanged: function (url: string) {
       this.dialogDisplay = false
       this.floatingActionBtnVisible = false
-      // emit dataset has changed
       this.$emit('datasetChanged', url)
     },
+    /**
+     * emit paths dataset has changed
+     */
     pathsDatasetChanged: function (url: string) {
-      // emit paths dataset has changed
       this.$emit('pathsChanged', url)
       this.floatingActionBtnVisible = false
     },
+    /**
+     * emit view has changed to vertical tree-based vis
+     */
     viewCircles: function () {
-      // emit view has changed to vertical tree-based vis
       this.$emit('setCircleView')
       this.floatingActionBtnVisible = false
     },
+    /**
+     * emit view has changed to horizontal tree-based vis
+     */
     viewTree: function () {
-      // emit view has changed to horizontal tree-based vis
       this.$emit('setTreeView')
       this.floatingActionBtnVisible = false
     },
