@@ -1,4 +1,6 @@
-# similarity
+# Similarity visualisation
+
+Web-based module for visalization of navigation similarity between datasets.
 
 ## Project setup
 ```
