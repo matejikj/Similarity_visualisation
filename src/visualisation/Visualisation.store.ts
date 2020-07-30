@@ -1,11 +1,17 @@
+/**
+ * Store for maintaining the state of components for visualization
+ */
 import { ROOT_LABEL, ROOT_ID, MAX_DEPTH, MappingNode, Labels, Node, Circle, Arrow, Position, Path, ComboboxItem, MAX_TREE_DEPTH } from '../models'
-import { createTree, mapUrlsToActiveView, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping, collapseIrrelevantSubtrees } from '../utils/hierarchyUtils'
+import { createTree, mapUrlsToActiveView, packMappingArrows, appendNode, createArrayFromHierarchy, highlightTreeMapping, collapseIrrelevantSubtrees, cutNodeUpdate } from '../utils/hierarchyUtils'
 import { packNodes, packTreeHierarchy, getNodeByKey, createVisitedNode, getNodeLabel } from '../utils/nodesUtils'
 import { highlightPaths, createPathNodes } from '../utils/pathUtils'
 import { VisitedNode } from '../models/VisitedNode'
 
 export const STORE_NAME = 'Visualisation'
 
+/**
+ * Export actions for work with datas
+ */
 export const Actions = {
   RESIZE_CANVAS: 'RESIZE_CANVAS',
   CREATE_HIERARCHY_FOR_CIRCLES: 'CREATE_HIERARCHY_FOR_CIRCLES',
@@ -21,6 +27,9 @@ export const Actions = {
   CREATE_PATH_HIERARCHY_FOR_TREE: 'CREATE_PATH_HIERARCHY_FOR_TREE'
 }
 
+/**
+ * Export all mutations for change store state
+ */
 export const Mutations = {
   CHANGE_WINDOW: 'CHANGE_WINDOW',
   CHANGE_LEFT_MAPPING_LIST: 'CHANGE_LEFT_MAPPING_LIST',
@@ -49,6 +58,9 @@ export const Mutations = {
   CHANGE_RIGHT_MAPPING_TREE_LIST: 'CHANGE_RIGHT_MAPPING_TREE_LIST'
 }
 
+/**
+ * Export all getters for store state
+ */
 export const Getters = {
   GET_TREE_HEIGHT: 'GET_TREE_HEIGHT',
   GET_LEFT_MAPPING_LIST: 'GET_LEFT_MAPPING_LIST',
@@ -60,7 +72,7 @@ export const Getters = {
   GET_MAX_DEPTH: 'GET_MAX_DEPTH',
   GET_NODES: 'GET_NODES',
   GET_VISITED_NODES: 'GET_VISITED_NODES',
-  GET_CIRCLE_HIERARCHY: 'GET_HIERARCHY',
+  GET_CIRCLE_HIERARCHY: 'GET_CIRCLE_HIERARCHY',
   GET_ROOT_ID: 'GET_ROOT_ID',
   GET_CIRCLES: 'GET_CIRCLES',
   GET_RIGHT_ARROWS: 'GET_RIGHT_ARROWS',
@@ -279,6 +291,9 @@ export default {
   }
 }
 
+/**
+ * Create hierarchy for active path in horizontal tree view
+ */
 function createPathHierarchyForTree (context: any) {
   const activePath: Path = context.getters[Getters.GET_ACTIVE_PATH]
   if (context.state.nodes.length === 0) {
@@ -295,10 +310,16 @@ function createPathHierarchyForTree (context: any) {
   }
 }
 
+/**
+ * Initialize nodes for path
+ */
 function initPathNodes (context: any) {
   context.commit(Mutations.CHANGE_PATH_NODES, Array<Node>())
 }
 
+/**
+ * Create hierarchy for active path in horizontal tree view
+ */
 function selectPath (context: any, labels: Labels) {
   const activePath: Path = context.getters[Getters.GET_ACTIVE_PATH]
   const rootId: string = activePath.vertices[activePath.up]
@@ -328,11 +349,17 @@ function selectPath (context: any, labels: Labels) {
   context.commit(Mutations.CHANGE_PATH_NODES, createPathNodes(context.state.nodes, context.state.activePath))
 }
 
+/**
+ * Update history of visited nodes aftre clickng one
+ */
 function updatePath (context: any, value: number) {
   context.commit(Mutations.CHANGE_ROOT_ID, context.state.visitedNodes[value].id)
   context.commit(Mutations.CHANGE_VISITED_NODES, context.state.visitedNodes.slice(0, value + 1))
 }
 
+/**
+ * Creating hierarhcy for circles
+ */
 function createHierarchyForCircles (context: any) {
   if (context.state.nodes.length === 0) {
     return undefined
@@ -358,6 +385,10 @@ function createHierarchyForCircles (context: any) {
   }
 }
 
+/**
+ * Cut tree under selected node
+ * @param circle circle
+ */
 function cutNodeTreeChildren (context: any, circle: Circle) {
   if (context.state.nodes.length === 0) {
     return undefined
@@ -366,10 +397,15 @@ function cutNodeTreeChildren (context: any, circle: Circle) {
     const root = getNodeByKey(hierarchyArray, circle.key)
     root.children = []
     root.isLeaf = true
+    cutNodeUpdate(context.state.treeHierarchy, context.state.nodes)
     context.dispatch(Actions.UPDATE_TREE_CANVAS)
   }
 }
 
+/**
+ * Attach a new tree to the selected node
+ * @param circle Clicked circle
+ */
 function appendNodeTree (context: any, circle: Circle) {
   if (context.state.nodes.length === 0) {
     return undefined
@@ -384,6 +420,10 @@ function appendNodeTree (context: any, circle: Circle) {
   }
 }
 
+/**
+ * Create hierarchy for tree
+ * @param depth Depth of new hierarchy
+ */
 function createHierarchyForTree (context: any, depth: number) {
   if (context.state.nodes.length === 0) {
     return undefined
@@ -394,25 +434,36 @@ function createHierarchyForTree (context: any, depth: number) {
   }
 }
 
+/**
+ * Change value of width and height of canvas after resize
+ */
 function resizeCanvas (context: any, value: {width: number; height: number}) {
   context.commit(Mutations.CHANGE_WINDOW, value)
 }
 
+/**
+ * Create circles from hierarchy for visualisation
+ */
 function createCircles (context: any): Array<Circle> {
   return packNodes(context.state.window.height, context.state.window.width, context.state.circleHierarchy, context.state.maxDepth)
 }
 
+/**
+ * Update circle canvas
+ */
 function updateCircleCanvas (context: any) {
   context.commit(Mutations.CHANGE_CIRCLES, createCircles(context))
   context.commit(Mutations.CHANGE_LEFT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
     context.state.circles, mapUrlsToActiveView(context.state.leftMapping, context.state.nodes), Position.Left))
-  context.commit(Mutations.CHANGE_RIGHT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width,
-    context.state.circles, mapUrlsToActiveView(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes), Position.Right))
+  context.commit(Mutations.CHANGE_RIGHT_ARROWS, packMappingArrows(context.state.window.height, context.state.window.width, context.state.circles, mapUrlsToActiveView(context.getters[Getters.GET_RIGHT_MAPPING], context.state.nodes), Position.Right))
   if (context.state.activePath !== undefined) {
     context.commit(Mutations.CHANGE_CIRCLES, highlightPaths(context.state.circles, context.state.activePath))
   }
 }
 
+/**
+ * Update tree canvas
+ */
 function updateTreeCanvas (context: any) {
   const result = packTreeHierarchy(context.state.treeHierarchy, context.state.window.width, context.state.treeHeight)
   context.commit(Mutations.CHANGE_TREE_NODES, result.circles)
@@ -427,6 +478,9 @@ function updateTreeCanvas (context: any) {
   }
 }
 
+/**
+ * Add new node to visited nodes
+ */
 function addNodeToVisitedNodes (context: any, data: { labels: Labels; leaf: Circle }) {
   context.commit(Mutations.CHANGE_ROOT_ID, data.leaf.id)
   const array = Array<VisitedNode>()

@@ -97,8 +97,8 @@ export default Vue.extend({
   },
   watch: {
     /**
-     * Vsechny ukony spojene s updatem leveho datasetu.
-     * Zahrnuje obnovit mapovani, inicializovat vizualizaci a obvnoti informace o datasetu.
+     * .All terminations associated with the update of the left dataset
+     * .Includes reset mapping, initialize visualization, and update dataset information
      */
     leftDataset () {
       this.initNodes()
@@ -116,8 +116,8 @@ export default Vue.extend({
       }
     },
     /**
-     * Vsechny ukony spojene s updatem praveho datasetu.
-     * Zahrnuje obnovit mapovani, inicializovat vizualizaci a obvnoti informace o datasetu.
+     * All terminations associated with updating the actual dataset
+     * Includes reset mapping, initialize visualization, and update dataset information.
      */
     rightDataset () {
       this.initNodes()
@@ -155,7 +155,7 @@ export default Vue.extend({
       changeHierarchy: Mutations.CHANGE_HIERARCHY
     }),
     /**
-     * Inicializace vizualizace
+     * Visualization initialization
      */
     initializeVisualisation: function () {
       this.changeRootId(ROOT_ID)
@@ -164,14 +164,14 @@ export default Vue.extend({
       this.initPathNodes()
     },
     /**
-     * Inicializace entitovych nodu
+     * Initialization of entity nodes
      */
     initNodes: function () {
       this.changeHierarchy(createHierarchy(this.leftDataset, this.rightDataset))
       this.changeNodes(initalizeNodes(this.hierarchy, this.labels))
     },
     /**
-     * Update vizualiazce
+     * Visualization update
      */
     updateVisualisation: function () {
       if (this.activeView === 1) {
@@ -182,7 +182,7 @@ export default Vue.extend({
       }
     },
     /**
-     * Po volbe na zaklade jake baze chci mapovat, chci zobrazit jednotlive namapovane hesla, kam se mapuji
+     * After choosing on the basis of which database I want to map, I want to display individual mapped passwords, where I map
      */
     mappingChoosed: function (position: Position, id: number) {
       switch (position) {
@@ -195,7 +195,7 @@ export default Vue.extend({
       }
     },
     /**
-     * Zvolil jsem si jednotlive entity, abych si zobrazil, kde se nachazeji
+     * I chose individual entities to see where they are
      */
     mappingChanged: function (position: Position, array: Array<MappingNode>) {
       switch (position) {
@@ -209,7 +209,7 @@ export default Vue.extend({
       this.updateVisualisation()
     },
     /**
-     * Aktualizace tree view listu
+     * Update the tree view sheet
      */
     updateMappingsCombobox: function (dataset: any, position: Position) {
       const result: Array<ComboboxItem> = []

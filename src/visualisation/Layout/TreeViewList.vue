@@ -46,7 +46,7 @@ export default Vue.extend({
   },
   methods: {
     /**
-     * Po vybrani slova nebo konkretni entity priprav list entit k mapovani
+     * After selecting a word or a specific entity, prepare the list of entities for mapping
      */
     selectedChanged: function (data: [number]): void {
       const array = Array<MappingNode>()

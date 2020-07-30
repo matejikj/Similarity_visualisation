@@ -117,7 +117,7 @@ export default Vue.extend({
       this.updateTreeCanvas()
     },
     /**
-     * Po vybrani nody ke svinuti nebo rozbaleni proved prislousnou operaci
+     * After selecting the node to roll or unpack, perform an appropriate operation
      */
     nodeClicked (item: Circle) {
       if (item.isLeaf) {
@@ -127,7 +127,7 @@ export default Vue.extend({
       }
     },
     /**
-     * Prizpusob zobrazeni zazoomovani
+     * Adjust the zoom display
      */
     zoomed: function () {
       d3.selectAll('g')

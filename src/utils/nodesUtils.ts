@@ -40,6 +40,11 @@ export function mapLinks (hierarchy: Array<[string, string, string]>) {
   return result
 }
 
+/**
+ * Get node label from array of labels
+ * @param labels labels
+ * @param nodeId id of node
+ */
 export function getNodeLabel (labels: Labels, nodeId: string) {
   if (labels !== undefined) {
     if (labels[nodeId] !== undefined) {
@@ -49,6 +54,11 @@ export function getNodeLabel (labels: Labels, nodeId: string) {
   return nodeId
 }
 
+/**
+ * Create node
+ * @param labels labels
+ * @param nodeId id
+ */
 export function createNode (labels: Labels, nodeId: string): Node {
   return new Node(
     getNodeLabel(labels, nodeId),
@@ -61,6 +71,11 @@ export function createNode (labels: Labels, nodeId: string): Node {
   )
 }
 
+/**
+ * Contains the node field
+ * @param nodes nodes
+ * @param nodeId id
+ */
 export function containsNode (nodes: Array<Node>, nodeId: string) {
   let value = false
   if (nodes !== undefined) {
@@ -73,14 +88,29 @@ export function containsNode (nodes: Array<Node>, nodeId: string) {
   return value
 }
 
+/**
+ * Get node by it's id
+ * @param nodes nodes
+ * @param id id
+ */
 export function getNodeById (nodes: Array<Node>, id: string) {
   return nodes.filter(x => x.id === id)[0]
 }
 
+/**
+ * Get node by it's key
+ * @param nodes nodes
+ * @param key key
+ */
 export function getNodeByKey (nodes: Array<Node>, key: number) {
   return nodes.filter(x => x.key === key)[0]
 }
 
+/**
+ * Collect all occurring nodes
+ * @param links array of links
+ * @param labels array of labels
+ */
 export function getUniqueNodes (links: Array<Link>, labels: Labels) {
   const visitedNodes = new Array<string>()
   const result = new Array<Node>()
@@ -97,6 +127,11 @@ export function getUniqueNodes (links: Array<Link>, labels: Labels) {
   return result
 }
 
+/**
+ * Add relationships of nodes
+ * @param links links
+ * @param nodes nodes
+ */
 export function createNodesWithRelationships (links: Array<Link>, nodes: Array<Node>) {
   links.forEach(link => {
     const child = getNodeById(nodes, link.child)
@@ -111,6 +146,11 @@ export function createNodesWithRelationships (links: Array<Link>, nodes: Array<N
   return nodes
 }
 
+/**
+ * Initialization of nodes
+ * @param hierarchy hierarchy
+ * @param labels labels
+ */
 export function initalizeNodes (hierarchy: any, labels: Labels) {
   const links: Array<Link> = mapLinks(hierarchy)
   const result = createNodesWithRelationships(links, getUniqueNodes(links, labels))
@@ -131,6 +171,12 @@ export function initalizeNodes (hierarchy: any, labels: Labels) {
   return result
 }
 
+/**
+ * Transform data to circle array
+ * @param chartItems elements of visualisation
+ * @param maxDepth maximal depth of view
+ * @param constantRadius radius
+ */
 export function treeDataToCircles (chartItems: any, maxDepth: number, constantRadius: boolean) {
   const circles = new Array<Circle>()
   const interpolate = function (i: number) { return d3.interpolateCool(i) }
@@ -169,6 +215,13 @@ export function treeDataToLinks (treeData: any) {
   return links
 }
 
+/**
+ * Prepare a hierarchy for a structure for display
+ * @param height height of canvas
+ * @param width width of canvas
+ * @param root root
+ * @param maxDepth maximal depth of view
+ */
 export function packNodes (height: number, width: number, root: Node, maxDepth: number): Array<Circle> {
   const margin = 0
   const packChart = d3.pack()
@@ -183,6 +236,10 @@ export function packNodes (height: number, width: number, root: Node, maxDepth: 
   return treeDataToCircles(chartItems, maxDepth, false)
 }
 
+/**
+ * Get the number of nodes at the widest level
+ * @param root root
+ */
 export function maxTreeWidth (root: Node) {
   const levelWidth = [1]
   const childCount = function (level: number, n: Node) {
@@ -200,6 +257,12 @@ export function maxTreeWidth (root: Node) {
   return d3.max(levelWidth)
 }
 
+/**
+ * Transform hierarchy to structure for horizontal tree visualisation
+ * @param root root
+ * @param width width
+ * @param height height
+ */
 export function packTreeHierarchy (root: Node, width: number, height: number) {
   const maxWidth: number = maxTreeWidth(root)
   const treemap = d3.tree().size([maxWidth * 45, height * 200])

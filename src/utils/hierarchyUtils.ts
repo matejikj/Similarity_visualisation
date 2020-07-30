@@ -136,6 +136,20 @@ export function appendNode (root: Node, nodes: Array<Node>, maxKey: number, tree
 }
 
 /**
+ * After cutting node update depth state for nodes if is in hierarchy
+ * @param root
+ * @param nodes
+ */
+export function cutNodeUpdate (root: Node, nodes: Array<Node>) {
+  const hierarchyArray = createArrayFromHierarchy(root)
+  resetNodeDepths(nodes)
+  hierarchyArray.forEach(x => {
+    const node = nodes.filter(y => y.id === x.id)[0]
+    node.depth = 1
+  })
+}
+
+/**
  * Find all predecessors in the current view by going to the match
  * @param node The node I'm looking for an ancestor for
  * @param url Urls of searched entities
@@ -192,6 +206,10 @@ export function mapUrlsToActiveView (urls: Array<MappingNode>, nodes: Array<Node
   return predecessors
 }
 
+/**
+ * Create array from hierarhcy
+ * @param root Root
+ */
 export function createArrayFromHierarchy (root: Node) {
   const queue = Array<Node>()
   const result = Array<Node>()
@@ -250,14 +268,19 @@ export function packMappingArrows (height: number, width: number, circles: Array
   const result = new Array<Arrow>()
   for (let i = 0; i < viewDepthLevel.length; i++) {
     const targetNode = getCircleById(circles, viewDepthLevel[i].id)
+    const rad = Math.abs(targetNode.y - height / 2) / targetNode.x
     const arrow: Arrow = {
       id: counter,
       word: viewDepthLevel[i].word,
       mapTo: viewDepthLevel[i].label,
       lx: position === Position.Left ? 0 : width,
       ly: height / 2,
-      rx: position === Position.Left ? targetNode.x - targetNode.r : targetNode.x + targetNode.r,
-      ry: targetNode.y,
+      rx: position === Position.Left
+        ? (targetNode.x - 2 * Math.cos(rad) - targetNode.r * Math.cos(rad))
+        : (targetNode.x + 2 * Math.cos(rad) + targetNode.r * Math.cos(rad)),
+      ry: targetNode.y > height / 2
+        ? (targetNode.y - 2 * Math.sin(rad) - targetNode.r * Math.sin(rad))
+        : (targetNode.y + 2 * Math.sin(rad) + targetNode.r * Math.sin(rad)),
       r: targetNode.r
     }
     counter++

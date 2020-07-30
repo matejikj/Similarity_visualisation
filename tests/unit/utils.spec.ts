@@ -1,6 +1,7 @@
 import { createVisitedNode, prepareLabels, mapLinks, getNodeLabel, createNode, containsNode, getNodeById, getUniqueNodes, getNodeByKey, createNodesWithRelationships, initalizeNodes, treeDataToCircles } from '@/utils/nodesUtils'
-import { Labels, Circle, Node, Link, MappingNode, ArrowData, Arrow, Position } from '@/models'
+import { Labels, Circle, Node, Link, MappingNode, ArrowData, Arrow, Position, Path } from '@/models'
 import { createHierarchy, copyNode, resetNodeDepths, createTree, appendNode, findNodePredecesorsInActualView, setNodeAsLeaf, getCircleById, visitChildren, mapUrlsToActiveView, createArrayFromHierarchy, collapseIrrelevantSubtrees, packMappingArrows, mappingsIntersection, highlightTreeMapping, createMappingNodeWithChildren, createMappingNodeWithMap, createPathLabels, createMapping, chooseItemFromMapping } from '@/utils/hierarchyUtils'
+import { createPaths } from '@/utils/pathUtils'
 
 describe('Create visited node', () => {
   test('it should create node', () => {
@@ -10,6 +11,107 @@ describe('Create visited node', () => {
     const output = { id: 'id', label: 'label' }
 
     expect(createVisitedNode(id, label)).toEqual(output)
+  })
+})
+
+describe('Create path', () => {
+  test('create path', () => {
+    const paths = {
+      metadata: {
+        datasets: [
+          'https://data.gov.cz/zdroj/datov\u00e9-sady/Bohumin/3384768',
+          'https://data.gov.cz/zdroj/datov\u00e9-sady/https---opendata.ostrava.cz-api-3-action-package_show-id-program-narodniho-divadla-moravskoslezskeho'
+        ],
+        method: 'distance',
+        resultPathCount: 4379,
+        totalPathCount: 4379
+      },
+      paths: [
+        {
+          nodes: ['E4', 'E2', 'E1', 'E3', 'E7'],
+          shared: 'E1'
+        }
+      ]
+    }
+
+    const path: Path = {
+      from: 'd',
+      to: 'g',
+      vertices: ['E4', 'E2', 'E1', 'E3', 'E7'],
+      up: 2,
+      down: 2,
+      height: 2,
+      arrows: [
+        '▲',
+        '▲',
+        '▼',
+        '▼'
+      ],
+      leftKeywords: 'word1 ',
+      rightKeywords: 'word2, '
+    }
+
+    const hierarchy1: any = [
+      [
+        'E2',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E3',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E8',
+        'subclass',
+        'E1'
+      ],
+      [
+        'E4',
+        'subclass',
+        'E2'
+      ],
+      [
+        'E5',
+        'subclass',
+        'E2'
+      ],
+      [
+        'E6',
+        'subclass',
+        'E2'
+      ],
+      [
+        'E7',
+        'subclass',
+        'E3'
+      ],
+      [
+        'E9',
+        'subclass',
+        'E8'
+      ]
+    ]
+
+    const labels1: Labels = {
+      E1: 'a',
+      E2: 'b',
+      E3: 'c',
+      E4: 'd',
+      E5: 'e',
+      E6: 'f',
+      E7: 'g',
+      E8: 'h',
+      E9: 'i',
+      Q35120: 'Q35120'
+    }
+    const nodes = initalizeNodes(hierarchy1, labels1)
+    const id = 'id'
+    const label = 'label'
+
+    // @ts-ignore
+    expect(createPaths(nodes, paths.paths, labels1, { E4: ['word1'] }, { E7: ['word2'] })).toEqual([path])
   })
 })
 

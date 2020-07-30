@@ -11,7 +11,7 @@
         :x2="linkData.rx"
         :y2="linkData.ry"
         stroke='black'
-        stroke-width='2'
+        stroke-width='1'
         marker-end="url(#arrow)"
         >
     </line>

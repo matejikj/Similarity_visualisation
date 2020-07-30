@@ -48,7 +48,7 @@ export default Vue.extend({
       updateTreeCanvas: Actions.UPDATE_TREE_CANVAS
     }),
     /**
-     * Po kliknuti na jednu z nodes, ktere jsou rpedkove aktualniho rootu jej zamer jako root
+     * After clicking on one of the nodes that are rped of the current root, aim it as root
      */
     click: function (data: VisitedNode) {
       this.updatePath(data)

@@ -101,8 +101,8 @@ export default Vue.extend({
       changeRightSelectedIds: Mutations.CHANGE_RIGHT_SELECTED_ITEMS
     }),
     /**
-     * Pokud dojde ke zmene vstupu paths, obnovim pohled.
-     * Znovu vynuluji vsehcny hodnoty sdilenych dat ve store a pote znovu vytvorim vizualizaci
+     * If the paths input changes, I will refresh the view.
+     * I reset all the values of the shared data in the store and then re-create the visualization
      */
     updatePaths: function () {
       if (this.activePath !== undefined) {
@@ -123,7 +123,7 @@ export default Vue.extend({
       }
       this.historyBarVisible = true
       /**
-       * Pokud mam na vstupu i dataset pro paths, zobrazim vsechny cesty v listu
+       * If I also have a dataset for paths on the input, I will display all the paths in the sheet
        */
       if (this.pathsDataset !== undefined) {
         this.pathsVisible = true
@@ -135,7 +135,7 @@ export default Vue.extend({
     },
     cancelClicked: function () {
       /**
-       * Po kliknuti na cancel resetuji stav storu, co se tyce mapovani, rootu i cesty
+       * After clicking on cancel, I reset the status of the store in terms of mapping, root and path
        */
       this.changeLeftMapping([])
       this.changeRightMapping([])
@@ -145,8 +145,8 @@ export default Vue.extend({
       this.changeActivePath(undefined)
     },
     /**
-      * Po jakekoliv zmene aktualni cesty nebo po vynulovani kliknutim na tlacitko cancel
-      * se obnovi zobrazeni cesty do akutlaniho pohledu
+      * After any change of the current route or after resetting by clicking on the cancel button
+      * the path display to the current view is restored
       */
     pathUpdated: function () {
       this.$emit('pathUpdated')
@@ -184,7 +184,7 @@ export default Vue.extend({
       }
     },
     /**
-      * Pokud kliknu na nodu, ktera patri ceste a chci ji zamerit jako root
+      * If I click on a node that belongs to a path and want to target it as root
       */
     pathNodeClicked: function (data) {
       this.historyBarVisible = false

@@ -44,7 +44,7 @@ export default Vue.extend({
       updateCircleCanvas: Actions.UPDATE_CIRCLE_CANVAS
     }),
     /**
-     * Po zmene hloubky zobrazeni, tuto hloubku uloz a obnov zobrazeni
+     * After changing the display depth, save this depth and restore the display
      */
     // eslint-disable-next-line
     handleDepthChange: function (data: number) {

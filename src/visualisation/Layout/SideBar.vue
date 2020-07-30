@@ -76,7 +76,7 @@ export default Vue.extend({
   },
   methods: {
     /**
-     * volba baze mapovani
+     * base mapping choice
      */
     changeMapping: function (data: ComboboxItem) {
       this.$emit('mappingChoosed', this.sidebarPosition, data.id)

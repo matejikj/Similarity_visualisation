@@ -2,6 +2,11 @@ import * as d3 from 'd3'
 import { Node, Circle, Path, Labels } from '../models'
 import { getNodeById, getNodeLabel } from './nodesUtils'
 
+/**
+ * Create nodes of paths
+ * @param nodes nodes
+ * @param activePath active path
+ */
 export function createPathNodes (nodes: Array<Node>, activePath: Path) {
   const pathNodes = Array<Node>()
   const pathColor = function (i: number) { return d3.interpolateOrRd((i + 1) / (activePath.height + 1)) }
@@ -17,6 +22,14 @@ export function createPathNodes (nodes: Array<Node>, activePath: Path) {
   return pathNodes
 }
 
+/**
+ * Create array of pahts with all information about paths from path dataset
+ * @param nodes nodes
+ * @param paths paths
+ * @param labels labels
+ * @param leftLabels left labels
+ * @param rightLabels right labels
+ */
 // eslint-disable-next-line
 export function createPaths (nodes: Array<Node>, paths: any, labels: Labels,
   leftLabels: {[key: string]: string[]}, rightLabels: {[key: string]: string[]}): Array<Path> {
@@ -70,6 +83,11 @@ export function createPaths (nodes: Array<Node>, paths: any, labels: Labels,
   return array
 }
 
+/**
+ * Highlight path
+ * @param circles circles
+ * @param activePath active path
+ */
 export function highlightPaths (circles: Array<Circle>, activePath: Path) {
   if (activePath !== undefined) {
     const pathColor = function (i: number) { return d3.interpolateOrRd((i + 1) / (activePath.height + 1)) }
