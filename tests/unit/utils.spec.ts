@@ -1804,8 +1804,8 @@ describe('Pack arrows', () => {
     arrowData1.word = 'foo'
     arrowData2.word = 'bar'
 
-    const arrow1: Arrow = new Arrow(0, 0, 500, 10, 20, 10, 'foo', 'a')
-    const arrow2: Arrow = new Arrow(1, 0, 500, 30, 40, 10, 'bar', 'b')
+    const arrow1 = { id: 0, lx: 0, ly: 500, rx: 14.909851911956036, ry: 9.133059655920514, r: 10, word: 'foo', mapTo: 'a' }
+    const arrow2 = { id: 1, lx: 0, ly: 500, rx: 34.200342894963924, ry: 29.494573903738853, r: 10, word: 'bar', mapTo: 'b' }
 
     expect(packMappingArrows(1000, 1000, [circle1, circle2], [arrowData1, arrowData2], Position.Left)).toEqual([arrow1, arrow2])
   })
