@@ -53,14 +53,14 @@ export default Vue.extend({
   data: () => ({
     dialog: false,
     images: [
-      'add_dataset',
-      'choose_map_by',
-      'choosing_mapping',
+      'choose_dataset',
+      'choose_mapping',
+      'mapping',
       'zooming',
-      'adding_paths',
-      'paths',
-      'paths-tree',
-      'tree'
+      'change-paths',
+      'path',
+      'tree',
+      'tree-mapping'
     ],
     titles: [
       'Add dataset',
@@ -73,7 +73,7 @@ export default Vue.extend({
       'Tree'
     ],
     texts: [
-      'Add url of file with hierarchy and mapping.',
+      'Choose dataset with hierarchy and mapping.',
       'Select based on what you want to map to hierarchy.',
       'Tick the words you want to see where it is mapped.',
       'With the slider you can specify the descendants of what level you will see.',
