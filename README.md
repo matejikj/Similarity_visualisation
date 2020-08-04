@@ -2,6 +2,8 @@
 
 Web-based module for visalization of navigation similarity between datasets.
 
+Demo [here](https://matejikj.github.io/similarity_visualisation/)
+
 ## Project setup
 ```
 npm install
